@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_content_nav_graph"
+    app:startDestination="@id/searchFragment">
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.babilonia.presentation.flow.main.search.list.SearchFragment"
+        android:label="search_fragment"
+        tools:layout="@layout/search_fragment">
+        <action
+            android:id="@+id/action_searchFragment_to_listingsMapFragment"
+            app:destination="@id/listingsMapFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@+id/searchFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/listingsMapFragment"
+        android:name="com.babilonia.presentation.flow.main.search.map.ListingsMapFragment"
+        android:label="ListingsMapFragment">
+        <action
+            android:id="@+id/action_listingsMapFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@+id/searchFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clBottomListingRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_ar_scene_bottom_listing_preview"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivArrowHide"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:paddingStart="96dp"
+        android:paddingEnd="96dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        app:layout_constraintEnd_toEndOf="@+id/vpImages"
+        app:layout_constraintStart_toStartOf="@+id/vpImages"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_hide_down_silver_16dp" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vpImages"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivArrowHide"
+        app:srcCompat="@drawable/ic_listing_placeholder" />
+
+    <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+        android:id="@+id/pagerIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/create_listing_margin_left_right"
+        app:layout_constraintBottom_toBottomOf="@id/vpImages"
+        app:layout_constraintEnd_toEndOf="@id/vpImages"
+        app:layout_constraintStart_toStartOf="@id/vpImages"
+        app:spi_dotColor="@color/pager_dot_color"
+        app:spi_dotSelectedColor="@android:color/white" />
+
+    <!--Temporary hidden-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivFavorite"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/vpImages"
+        app:layout_constraintTop_toTopOf="@+id/vpImages"
+        app:srcCompat="@drawable/ic_heart_24dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clListingTypeContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_listing_types"
+        android:minWidth="104dp"
+        android:minHeight="32dp"
+        app:layout_constraintStart_toStartOf="@+id/vpImages"
+        app:layout_constraintTop_toTopOf="@+id/vpImages">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPropertyType"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:tint="@color/text_color_listing_type"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/ic_apartment_small" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPropertyType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:maxLines="1"
+            android:textColor="@color/text_color_listing_type"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvListingType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/ivPropertyType"
+            app:layout_constraintTop_toTopOf="@+id/ivPropertyType"
+            tools:text="Apartments" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvListingType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:maxLines="1"
+            android:textColor="@color/text_color_listing_type"
+            android:textStyle="bold"
+            app:fontFamily="@font/avenir_heavy"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPropertyType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/ivPropertyType"
+            app:layout_constraintTop_toBottomOf="@+id/tvPropertyType"
+            tools:text="for Sale" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/llListingImagesCountContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_listing_image_count"
+        android:gravity="center"
+        android:minWidth="48dp"
+        android:minHeight="24dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/vpImages"
+        app:layout_constraintEnd_toEndOf="@+id/vpImages">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivImagesCount"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="2dp"
+            app:srcCompat="@drawable/ic_camera_small" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvImagesCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="1dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:maxLines="1"
+            android:textColor="@color/text_color_listing_images_count"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="12" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glVerticalCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPrice"
+        style="@style/PriceStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        app:autoSizeMaxTextSize="@dimen/fs_listing_item_price_max"
+        app:autoSizeMinTextSize="@dimen/fs_listing_item_price_min"
+        app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+        app:autoSizeTextType="uniform"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/tvSubPrice"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vpImages"
+        tools:text="$100,100" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSubPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_color_listing_sub_price"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPrice"
+        app:layout_constraintEnd_toStartOf="@+id/glVerticalCenter"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvPrice"
+        app:layout_constraintTop_toTopOf="@+id/tvPrice"
+        tools:text="$570/m2" />
+
+    <LinearLayout
+        android:id="@+id/llListingContentsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glVerticalCenter"
+        app:layout_constraintTop_toTopOf="@+id/tvPrice">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCountBedroom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="3 bd" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivFirstDivider"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvBedroomCount"
+            app:layout_constraintStart_toEndOf="@+id/tvBedroomCount"
+            app:layout_constraintTop_toTopOf="@+id/tvBedroomCount"
+            app:srcCompat="@drawable/circle_divider" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCountBathroom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="3 ba" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivSecondDivider"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvBedroomCount"
+            app:layout_constraintStart_toEndOf="@+id/tvBedroomCount"
+            app:layout_constraintTop_toTopOf="@+id/tvBedroomCount"
+            app:srcCompat="@drawable/circle_divider" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTotalArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="1,456 m2" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="@id/vpImages"
+        app:layout_constraintEnd_toStartOf="@id/ivPlanIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvPrice"
+        tools:text="83 Swainawski Ranch Apt. 234" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivPlanIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvAddress" />
+
+    <View
+        android:id="@+id/vListingDetails"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/vpImages"
+        app:layout_constraintEnd_toEndOf="@id/vpImages"
+        app:layout_constraintTop_toBottomOf="@id/vpImages"
+        app:layout_constraintBottom_toBottomOf="@id/tvAddress"/>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cbFavorite"
+        android:theme="@style/CheckboxCustomStyle"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:button="@drawable/favourite_checkbox"
+        app:layout_constraintEnd_toEndOf="@+id/vpImages"
+        app:layout_constraintTop_toTopOf="@+id/vpImages"
+        app:srcCompat="@drawable/ic_heart_24dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnShowDetails"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/show_details"
+        android:textColor="@color/text_color_ar_screen_btn_show_details"
+        app:fontFamily="@font/samsungsharpsans_bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/groupNavigateOrContact"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+
+    <FrameLayout
+        android:id="@+id/groupNavigateOrContact"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnShowDetails"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress" >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNavigate"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:text="@string/navigate"
+            android:paddingStart="36dp"
+            android:gravity="start|center_vertical"
+            app:fontFamily="@font/samsungsharpsans_bold"
+            app:icon="@drawable/ic_navigate_24dp"
+            app:iconPadding="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnContact"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:visibility="gone"
+            android:text="@string/contact"
+            app:fontFamily="@font/samsungsharpsans_bold" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

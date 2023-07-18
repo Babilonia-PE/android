@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CellImageView">
+        <attr name="meow_imageview_useColor" format="boolean" />
+        <attr name="meow_imageview_isBitmap" format="boolean" />
+        <attr name="meow_imageview_resource" format="reference" />
+        <attr name="meow_imageview_color" format="color" />
+        <attr name="meow_imageview_size" format="dimension" />
+        <attr name="meow_imageview_isAction" format="boolean" />
+        <attr name="meow_imageview_actionBackgroundAlpha" format="boolean" />
+        <attr name="meow_imageview_changeSize" format="boolean" />
+        <attr name="meow_imageview_fitImage" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="MeowBottomNavigation">
+        <attr name="mbn_defaultIconColor" format="color" />
+        <attr name="mbn_selectedIconColor" format="color" />
+        <attr name="mbn_backgroundBottomColor" format="color" />
+        <attr name="mbn_countTextColor" format="color" />
+        <attr name="mbn_countBackgroundColor" format="color" />
+        <attr name="mbn_countTypeface" format="string" />
+        <attr name="mbn_rippleColor" format="color" />
+        <attr name="mbn_shadowColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ClickNumberPickerView">
+
+        <!--current picker value. Default is 0 -->
+        <attr name="value" format="integer" />
+
+        <!--Min picker value. Default is 0 -->
+        <attr name="min_value" format="integer" />
+
+        <!--Max picker value. Default is 100 -->
+        <attr name="max_value" format="integer" />
+
+        <!-- Step value. Default is 1 -->
+        <attr name="step" format="integer" />
+
+        <!-- Round value after comma. Default is 2 -->
+        <attr name="decimal_number" format="integer" />
+
+        <!-- If current value is integer, show it without fraction part. Default is false -->
+        <attr name="integer_priority" format="boolean" />
+
+        <!-- Value background color -->
+        <attr name="value_background_color" format="color" />
+
+        <!-- Pickers background color -->
+        <attr name="pickers_background_color" format="color" />
+
+        <!-- Flag to allow swipe animation. Default is false -->
+        <attr name="swipe_animation" format="boolean" />
+
+        <!-- Flag to turn on or off value change up animation. Default is false -->
+        <attr name="value_animation_up" format="boolean" />
+
+        <!-- Flag to turn on or off value change down animation. Default is false -->
+        <attr name="value_animation_down" format="boolean" />
+
+        <!-- Duration of animation down -->
+        <attr name="animation_value_down_duration" format="integer" />
+
+        <!-- Duration of animation up -->
+        <attr name="animation_value_up_duration" format="integer" />
+
+        <!-- Value text color -->
+        <attr name="value_text_color" format="color" />
+
+        <!-- Value text size -->
+        <attr name="value_text_size" format="dimension" />
+
+        <!-- Value text min size for animation down -->
+        <attr name="value_min_text_size" format="dimension" />
+
+        <!-- Value text max size for animation up -->
+        <attr name="value_max_text_size" format="dimension" />
+
+        <!--enable or disable swipe gestures, default is true -->
+        <attr name="swipe_enabled" format="boolean" />
+
+        <!-- Offset value for swiping animation -->
+        <attr name="value_view_offset" format="float" />
+
+        <!-- Pickers corner radius-->
+        <attr name="picker_corner_radius" format="float" />
+
+        <!-- Pickers border stroke width -->
+        <attr name="picker_border_stroke_width" format="integer" />
+
+        <!-- Pickers border stroke color -->
+        <attr name="picker_border_stroke_color" format="color" />
+
+        <!-- Animation offset left duration -->
+        <attr name="animation_offset_left_duration" format="integer" />
+
+        <!-- Animation offset right duration -->
+        <attr name="animation_offset_right_duration" format="integer" />
+
+        <!-- Left picker layout -->
+        <attr name="left_picker_layout" format="reference" />
+
+        <!-- Right picker layout -->
+        <attr name="right_picker_layout" format="reference" />
+        <attr name="title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="CheckFilter">
+        <attr name="filter_name" format="string" />
+        <attr name="filter_icon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="BubbleToggleView">
+        <attr name="bt_icon" format="reference" />
+        <attr name="bt_iconWidth" format="dimension" />
+        <attr name="bt_iconHeight" format="dimension" />
+        <attr name="bt_shape" format="reference" />
+        <attr name="bt_shapeColor" format="color" />
+        <attr name="bt_showShapeAlways" format="boolean" />
+        <attr name="bt_title" format="string" />
+        <attr name="bt_titleSize" format="dimension" />
+        <attr name="bt_colorActive" format="color" />
+        <attr name="bt_colorInactive" format="color" />
+        <attr name="bt_active" format="boolean" />
+        <attr name="bt_duration" format="integer" />
+        <attr name="bt_padding" format="dimension" />
+        <attr name="bt_titlePadding" format="dimension" />
+        <attr name="bt_badgeTextSize" format="dimension" />
+        <attr name="bt_badgeBackgroundColor" format="color" />
+        <attr name="bt_badgeTextColor" format="color" />
+        <attr name="bt_badgeText" format="string" />
+    </declare-styleable>
+    <declare-styleable name="BubbleNavigationConstraintView">
+        <attr name="bnc_mode">
+            <enum name="spread" value="0" />
+            <enum name="inside" value="1" />
+            <enum name="packed" value="2" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="SimpleRangeView">
+        <attr name="lineColor" format="color" />
+        <attr name="activeLineColor" format="color" />
+        <attr name="fixedLineColor" format="color" />
+        <attr name="tickColor" format="color" />
+        <attr name="activeTickColor" format="color" />
+        <attr name="fixedTickColor" format="color" />
+        <attr name="activeThumbColor" format="color" />
+        <attr name="activeFocusThumbColor" format="color" />
+        <attr name="fixedThumbColor" format="color" />
+
+        <attr name="labelColor" format="color" />
+        <attr name="activeLabelColor" format="color" />
+        <attr name="activeThumbLabelColor" format="color" />
+        <attr name="fixedLabelColor" format="color" />
+        <attr name="fixedThumbLabelColor" format="color" />
+
+        <attr name="activeFocusThumbAlpha" format="float" />
+
+        <attr name="lineThickness" format="dimension" />
+        <attr name="activeLineThickness" format="dimension" />
+        <attr name="fixedLineThickness" format="dimension" />
+
+        <attr name="activeThumbRadius" format="dimension" />
+        <attr name="activeThumbFocusRadius" format="dimension" />
+        <attr name="fixedThumbRadius" format="dimension" />
+        <attr name="tickRadius" format="dimension" />
+        <attr name="activeTickRadius" format="dimension" />
+        <attr name="fixedTickRadius" format="dimension" />
+        <attr name="labelMarginBottom" format="dimension" />
+        <attr name="labelFontSize" format="dimension" />
+        <attr name="minDistanceBetweenLabels" format="dimension" />
+        <attr name="innerRangePadding" format="dimension" />
+        <attr name="innerRangePaddingLeft" format="dimension" />
+        <attr name="innerRangePaddingRight" format="dimension" />
+
+        <attr name="start" format="integer" />
+        <attr name="end" format="integer" />
+        <attr name="startFixed" format="integer" />
+        <attr name="endFixed" format="integer" />
+        <attr name="count" format="integer" />
+        <attr name="minDistance" format="integer" />
+        <attr name="maxDistance" format="integer" />
+
+        <attr name="movable" format="boolean" />
+        <attr name="showFixedLine" format="boolean" />
+        <attr name="showTicks" format="boolean" />
+        <attr name="showActiveTicks" format="boolean" />
+        <attr name="showFixedTicks" format="boolean" />
+        <attr name="showLabels" format="boolean" />
+        <attr name="isRange" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="PriceRangeBar">
+        <attr name="barChartSelectedBackgroundColor" format="color" />
+        <attr name="barChartUnselectedBackgroundColor" format="color" />
+        <attr name="barChartSelectedLineColor" format="color" />
+        <attr name="barChartUnSelectedLineColor" format="color" />
+        <attr name="barActiveLineColor" format="color" />
+        <attr name="barLineColor" format="color" />
+        <attr name="barThumbColor" format="color" />
+        <attr name="barActiveTickRadius" format="dimension" />
+        <attr name="barActiveThumbColor" format="dimension" />
+    </declare-styleable>
+
+</resources>

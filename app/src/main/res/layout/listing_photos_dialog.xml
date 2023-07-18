@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:outlineProvider="background"
+    android:background="@drawable/bottom_bar_shape"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvSetMain"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_gallery"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/set_as_main_picture"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/tvDelete"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_trash"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/delete_picture"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+</LinearLayout>

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="java.util.Locale" />
+
+        <import type="java.text.NumberFormat" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="com.babilonia.domain.model.Listing" />
+
+        <variable
+            name="viewsCount"
+            type="Integer" />
+
+        <variable
+            name="favoritesCount"
+            type="Integer" />
+
+        <variable
+            name="contactedCount"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivListingImage"
+            android:layout_width="112dp"
+            android:layout_height="112dp"
+            android:layout_margin="@dimen/create_listing_margin_left_right"
+            android:background="@drawable/listing_images_shape"
+            android:backgroundTint="@color/divider_color"
+            app:layout_constraintBottom_toTopOf="@id/bgStatistics"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_listing_placeholder" />
+
+        <TextView
+            android:id="@+id/tvExpired"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:text="@string/expired"
+            android:gravity="center"
+            android:fontFamily="@font/avenir_heavy"
+            android:textSize="12sp"
+            android:textColor="@color/dirty_white"
+            android:background="@drawable/bg_expired_status"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/ivListingImage"
+            app:layout_constraintEnd_toEndOf="@id/ivListingImage"
+            app:layout_constraintTop_toTopOf="@id/ivListingImage" />
+        
+        <ImageView
+            android:id="@+id/ivMore"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="@dimen/create_listing_margin_left_right"
+            android:background="@drawable/listing_images_shape"
+            android:backgroundTint="@color/divider_color"
+            android:src="@drawable/ic_menu_more_white_24"
+            app:tint="@color/listing_bottombar_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvListingStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+            android:background="@drawable/pet_friendly_shape"
+            android:backgroundTint="@color/colorAccent"
+            android:fontFamily="@font/avenit_medium"
+            android:gravity="center"
+            android:letterSpacing="0.02"
+            android:minWidth="72dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/ivListingImage"
+            app:layout_constraintTop_toTopOf="@+id/ivListingImage"
+            tools:text="Published" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPlanIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@color/transparent"
+            app:layout_constraintStart_toEndOf="@id/tvListingStatus"
+            app:layout_constraintTop_toTopOf="@id/tvListingStatus"
+            app:layout_constraintBottom_toBottomOf="@id/tvListingStatus"/>
+
+        <TextView
+            android:id="@+id/tvCreatedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/avenir_roman"
+            android:textColor="@color/steel"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@id/tvListingStatus"
+            app:layout_constraintTop_toBottomOf="@id/tvListingStatus" />
+
+        <TextView
+            android:id="@+id/tvDaysLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/avenir_roman"
+            android:textColor="@color/steel"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@id/tvCreatedAt"
+            app:layout_constraintTop_toTopOf="@id/tvCreatedAt"
+            app:layout_constraintBottom_toBottomOf="@id/tvCreatedAt"/>
+
+        <TextView
+            android:id="@+id/tvListingPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:letterSpacing="0.02"
+            android:text="@{'$'+NumberFormat.getInstance(Locale.US).format(model.price)}"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/tvListingStatus"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreatedAt"
+            tools:text="$ 730,900" />
+
+        <TextView
+            android:id="@+id/tvListingAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+            android:ellipsize="end"
+            android:fontFamily="@font/avenir_roman"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="12sp"
+            android:lines="1"
+            android:text="@{model.locationAttributes.address}"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvListingPrice"
+            app:layout_constraintTop_toBottomOf="@+id/tvListingPrice"
+            tools:text="83 Swainawski Ranch Apt. 234" />
+
+        <TextView
+            android:id="@+id/tvListingType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/listing_for_rent_shape"
+            android:drawableStart="@drawable/ic_apartment_small"
+            android:drawablePadding="6dp"
+            android:drawableTint="@android:color/white"
+            android:gravity="start|center_vertical"
+            android:letterSpacing="0.01"
+            android:minHeight="32dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivListingImage"
+            app:layout_constraintStart_toStartOf="@+id/ivListingImage"
+            tools:ignore="TextViewEdits"
+            tools:text="Apartments \nfor sale" />
+
+        <TextView
+            android:id="@+id/tvListingBeds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:drawableEnd="@drawable/gray_circle"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/beds_numb_small(model.bedroomsCount)}"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvListingBath"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/ivListingImage"
+            app:layout_constraintStart_toStartOf="@+id/tvListingAddress"
+            app:layout_constraintTop_toBottomOf="@+id/tvListingAddress"
+            tools:text="3 beds"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvListingBath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:drawableEnd="@drawable/gray_circle"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/bath_numb_small(model.bathroomsCount)}"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvListingArea"
+            app:layout_constraintStart_toEndOf="@+id/tvListingBeds"
+            app:layout_constraintTop_toBottomOf="@+id/tvListingAddress"
+            tools:text="3 beds" />
+
+
+        <TextView
+            android:id="@+id/tvListingArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/area_numb(NumberFormat.getInstance(Locale.US).format(model.area))}"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvListingBath"
+            app:layout_constraintTop_toBottomOf="@+id/tvListingAddress"
+            tools:text="3 beds" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierStatistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvListingArea, ivListingImage" />
+
+        <View
+            android:id="@+id/bgStatistics"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_rect_with_corners_7dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrierStatistics"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <include layout="@layout/layout_listing_statistics"
+            android:id="@+id/statisticsViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/bgStatistics"
+            app:layout_constraintTop_toTopOf="@id/bgStatistics"
+            app:layout_constraintBottom_toBottomOf="@id/bgStatistics"
+            app:layout_constraintEnd_toStartOf="@id/dividerViews"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            bind:count="@{viewsCount}"
+            bind:description="@{@string/views}"
+            bind:icon="@{viewsCount == 0 ? @drawable/ic_eye_gray_24 : @drawable/ic_eye_yellow_24}"/>
+
+        <View
+            android:id="@+id/dividerViews"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:padding="8dp"
+            android:background="@drawable/bg_round_shape"
+            app:layout_constraintStart_toEndOf="@id/statisticsViews"
+            app:layout_constraintEnd_toStartOf="@id/statisticsFavorites"
+            app:layout_constraintTop_toTopOf="@id/bgStatistics"
+            app:layout_constraintBottom_toBottomOf="@id/bgStatistics"/>
+
+        <include layout="@layout/layout_listing_statistics"
+            android:id="@+id/statisticsFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/dividerViews"
+            app:layout_constraintTop_toTopOf="@id/bgStatistics"
+            app:layout_constraintBottom_toBottomOf="@id/bgStatistics"
+            app:layout_constraintEnd_toStartOf="@id/dividerFavorites"
+            bind:count="@{favoritesCount}"
+            bind:description="@{@string/favorites}"
+            bind:icon="@{favoritesCount == 0 ? @drawable/ic_favorites_gray_24 : @drawable/ic_favorites_red_24}"/>
+
+        <View
+            android:id="@+id/dividerFavorites"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:padding="8dp"
+            android:background="@drawable/bg_round_shape"
+            app:layout_constraintStart_toEndOf="@id/statisticsFavorites"
+            app:layout_constraintEnd_toStartOf="@id/statisticsContacts"
+            app:layout_constraintTop_toTopOf="@id/bgStatistics"
+            app:layout_constraintBottom_toBottomOf="@id/bgStatistics"/>
+
+        <include layout="@layout/layout_listing_statistics"
+            android:id="@+id/statisticsContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/dividerFavorites"
+            app:layout_constraintTop_toTopOf="@id/bgStatistics"
+            app:layout_constraintBottom_toBottomOf="@id/bgStatistics"
+            app:layout_constraintEnd_toEndOf="@id/bgStatistics"
+            bind:count="@{contactedCount}"
+            bind:description="@{@string/contacts}"
+            bind:icon="@{contactedCount == 0 ? @drawable/ic_phone_gray_24 : @drawable/ic_phone_blue_24}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

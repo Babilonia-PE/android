@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.flow.main.publish.photos.ListingPhotosFragment">
+
+        <ImageView
+            android:id="@+id/ivEmptyImages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_listing_camera"
+            app:layout_constraintBottom_toTopOf="@+id/tvEmptyPhotos"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <LinearLayout
+            android:id="@+id/btUploadMore"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+            android:background="@drawable/upload_photos_stroke_drawable"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvUploadMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_upoload_grey"
+                android:drawablePadding="@dimen/create_listing_margin_left_right"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:gravity="center"
+
+                tools:text="@string/upload_more_photos" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvEmptyPhotos"
+            style="@style/emptyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:lineHeight="24dp"
+            android:text="@string/empty_photos_hint"
+            app:layout_constraintBottom_toTopOf="@+id/btEmptyPhotos"
+            app:layout_constraintEnd_toEndOf="@+id/ivEmptyImages"
+            app:layout_constraintStart_toStartOf="@+id/ivEmptyImages"
+            app:layout_constraintTop_toBottomOf="@+id/ivEmptyImages"
+            tools:ignore="UnusedAttribute" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/emptyGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="btEmptyPhotos,ivEmptyImages,tvEmptyPhotos"
+            tools:visibility="gone" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/photosGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="btUploadMore,rcListingPhotosContainer" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcListingPhotosContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btUploadMore"
+            app:spanCount="2"
+            tools:listitem="@layout/list_item_listing_photo" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btEmptyPhotos"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:text="@string/upload_photos"
+            android:textColor="@color/black"
+            app:cornerRadius="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvEmptyPhotos"
+            app:layout_constraintStart_toStartOf="@+id/tvEmptyPhotos"
+            app:layout_constraintTop_toBottomOf="@+id/tvEmptyPhotos" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

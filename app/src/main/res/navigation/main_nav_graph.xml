@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/rootFragment">
+    <fragment
+        android:id="@+id/rootFragment"
+        android:name="com.babilonia.presentation.flow.main.root.RootFragment"
+        android:label="RootFragment">
+        <action
+            android:id="@+id/action_rootFragment_to_my_listings_nav_graph"
+            app:destination="@id/my_listings_nav_graph"
+            app:popUpTo="@+id/rootFragment" />
+        <action
+            android:id="@+id/action_rootFragment_to_search_nav_graph"
+            app:destination="@id/search_nav_graph"
+            app:popUpTo="@+id/rootFragment" />
+        <action
+            android:id="@+id/action_rootFragment_to_profile_nav_graph"
+            app:destination="@id/profile_nav_graph"
+            app:popUpTo="@+id/rootFragment" />
+    </fragment>
+    <include app:graph="@navigation/favorites_nav_graph" />
+    <include app:graph="@navigation/my_listings_nav_graph" />
+    <include app:graph="@navigation/search_nav_graph" />
+    <include app:graph="@navigation/profile_nav_graph" />
+    <fragment
+        android:id="@+id/listingFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.ListingFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right"
+        android:label="ListingFragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <argument
+            android:name="mode"
+            app:argType="com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode" />
+        <action
+            android:id="@+id/action_listingFragment_to_aboutListingFragment"
+            app:destination="@id/aboutListingFragment"
+            app:popUpTo="@+id/listingFragment" />
+        <action
+            android:id="@+id/action_listingFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@+id/listingFragment" />
+        <action
+            android:id="@+id/action_listingFragment_to_listingFullscreenMapFragment"
+            app:destination="@id/listingFullscreenMapFragment"
+            app:popUpTo="@+id/listingFragment" >
+            <argument
+                android:name="id"
+                app:argType="long" />
+        </action>
+    </fragment>
+    <action
+        android:id="@+id/action_global_listingFragment"
+        app:destination="@id/listingFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right" />
+    <fragment
+        android:id="@+id/aboutListingFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.common.about.AboutListingFragment"
+        android:label="AboutListingFragment">
+        <argument
+            android:name="description"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.gallery.GalleryFragment"
+        android:label="GalleryFragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_galleryFragment_to_galleryPhotoFragment"
+            app:destination="@id/galleryPhotoFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@+id/galleryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryPhotoFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.gallery.photo.GalleryPhotoFragment"
+        android:label="GalleryPhotoFragment">
+        <argument
+            android:name="listing_id"
+            app:argType="long" />
+        <argument
+            android:name="image_index"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/listingFullscreenMapFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.map.ListingFullscreenMapFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right"
+        android:label="listingFullscreenMapFragment" >
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
+    <activity
+        android:id="@+id/activity_ar"
+        android:name="com.babilonia.presentation.flow.ar.ArSceneActivity"
+        android:label="Product Details"
+        tools:layout="@layout/activity_ar_scene">
+    </activity>
+    <action
+        android:id="@+id/action_global_ar"
+        app:destination="@id/activity_ar"
+        app:launchSingleTop="true"
+        app:popUpTo="@+id/main_nav_graph"
+        app:popUpToInclusive="true" />
+</navigation>

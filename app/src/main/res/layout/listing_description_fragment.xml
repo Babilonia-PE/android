@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.flow.main.publish.description.ListingDescriptionFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/appBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:cardElevation="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/cardViewAppbarStyle">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:elevation="6dp"
+                android:theme="@style/toolbarTheme"
+                app:title="@string/description">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btDone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@null"
+                    android:padding="@dimen/create_listing_margin_left_right"
+                    android:tint="@color/colorPrimary"
+                    android:src="@drawable/ic_done_grey" />
+            </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescription"
+            style="@style/createListingInputStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/create_listing_margin_left_right"
+            android:background="@null"
+            android:gravity="top"
+            android:textCursorDrawable="@drawable/description_cursor"
+            android:hint="@string/about_your_home"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:padding="0dp"
+            android:maxLength="2000"
+            android:text="@={model.description}"
+            android:textColorHighlight="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
+            tools:targetApi="o" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.main.publish.createlisting.CreateListingSharedViewModel" />
+    </data>
+
+
+</layout>

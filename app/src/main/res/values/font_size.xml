@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fs_default_scale_step">1sp</dimen>
+
+    <dimen name="fs_listing_item_price_max">20sp</dimen>
+    <dimen name="fs_listing_item_price_min">14sp</dimen>
+
+    <dimen name="fs_ar_tag_large_price_max">22sp</dimen>
+    <dimen name="fs_ar_tag_large_price_min">14sp</dimen>
+
+    <dimen name="fs_ar_tag_medium_price_max">18sp</dimen>
+    <dimen name="fs_ar_tag_medium_price_min">12sp</dimen>
+
+    <dimen name="fs_ar_tag_small_price_max">14sp</dimen>
+    <dimen name="fs_ar_tag_small_price_min">10sp</dimen>
+
+</resources>

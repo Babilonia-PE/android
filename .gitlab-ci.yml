@@ -1,0 +1,71 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - export ANDROID_HOME=/opt/android
+  - export FIREBASE_TOKEN=$CI_FIREBASE_TOKEN
+
+assemble:
+  stage: build
+  ## Add flavor in assemble task if you have
+  script:
+    - ./gradlew assembleStageRelease
+  tags:
+    - android
+  artifacts:
+    paths:
+      - ./app/build/outputs/apk/dev/release/app-dev-release.apk
+    when: on_success
+    expire_in: 1 week
+  except:
+      - develop
+
+cache:
+    paths:
+      - build-number
+
+deploy-dev:
+  stage: deploy
+  script:
+    - BUILD_NUMBER=$CI_PIPELINE_IID ./gradlew assembleDevQa appDistributionUploadDevQa
+  only:
+    - develop
+    - qa
+  when: manual
+  tags:
+    - android
+
+deploy-qa:
+  stage: deploy
+  script:
+    - BUILD_NUMBER=$CI_PIPELINE_IID ./gradlew assembleQaenvQa appDistributionUploadQaenvQa
+  only:
+    - develop
+    - qa
+  when: manual
+  tags:
+    - android
+
+deploy-stage:
+  stage: deploy
+  script:
+  - BUILD_NUMBER=$CI_PIPELINE_IID ./gradlew assembleStageQa appDistributionUploadStageQa
+  only:
+  - develop
+  - qa
+  when: manual
+  tags:
+  - android
+
+deploy-prod:
+  stage: deploy
+  script:
+    - BUILD_NUMBER=$CI_PIPELINE_IID ./gradlew assembleProdQa appDistributionUploadProdQa
+  only:
+    - develop
+    - qa
+    - release
+  when: manual
+  tags:
+    - android

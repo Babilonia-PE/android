@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/favorites_nav_graph"
+    app:startDestination="@id/favoritesFragment">
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.babilonia.presentation.flow.main.favorites.FavoritesFragment"
+        android:label="favorites_fragment"
+        tools:layout="@layout/favorites_fragment" />
+    <fragment
+        android:id="@+id/listingFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.ListingFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right"
+        android:label="ListingFragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <argument
+            android:name="mode"
+            app:argType="com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode" />
+        <action
+            android:id="@+id/action_listingFragment_to_aboutListingFragment"
+            app:destination="@id/aboutListingFragment"
+            app:popUpTo="@+id/listingFragment" />
+        <action
+            android:id="@+id/action_listingFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@+id/listingFragment" />
+        <action
+            android:id="@+id/action_listingFragment_to_listingFullscreenMapFragment"
+            app:destination="@id/listingFullscreenMapFragment"
+            app:popUpTo="@+id/listingFragment" >
+            <argument
+                android:name="id"
+                app:argType="long" />
+        </action>
+    </fragment>
+    <action
+        android:id="@+id/action_global_listingFragment"
+        app:destination="@id/listingFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right" />
+    <fragment
+        android:id="@+id/aboutListingFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.common.about.AboutListingFragment"
+        android:label="AboutListingFragment">
+        <argument
+            android:name="description"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.gallery.GalleryFragment"
+        android:label="GalleryFragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_galleryFragment_to_galleryPhotoFragment"
+            app:destination="@id/galleryPhotoFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@+id/galleryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryPhotoFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.gallery.photo.GalleryPhotoFragment"
+        android:label="GalleryPhotoFragment">
+        <argument
+            android:name="listing_id"
+            app:argType="long" />
+        <argument
+            android:name="image_index"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/listingFullscreenMapFragment"
+        android:name="com.babilonia.presentation.flow.main.listing.map.ListingFullscreenMapFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right"
+        android:label="listingFullscreenMapFragment" >
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
+</navigation>

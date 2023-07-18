@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Babilonia</string>
+    <string name="website">babilonia.io</string>
+    <string name="error">Error</string>
+    <string name="ok">Ok</string>
+    <string name="search">Buscar</string>
+    <string name="allow">Permitir</string>
+    <string name="deny">Denegar</string>
+    <string name="views">Vistas</string>
+    <string name="contacts">Contactos</string>
+    <string name="favorites">Favoritos</string>
+    <string name="publish">Publicar</string>
+    <string name="published">Publicado</string>
+    <string name="inbox">Inbox</string>
+    <string name="profile">Perfil</string>
+    <string name="my_listings">Mis avisos</string>
+    <string name="my_listings_empty">Aun no has agregado ningún aviso</string>
+    <string name="my_listings_empty_button">Publicar un aviso</string>
+    <string name="my_listings_empty_published">No tienes avisos publicados</string>
+    <string name="my_listings_empty_not_published">Todos tus avisos están publicados</string>
+    <string name="my_listings_empty_published_body">Puedes publicar avisos desde el borrador o   agregar uno nuevo</string>
+    <string name="add_new_listing">Publicar un aviso</string>
+    <string name="location_rationale_title">Permitir que "Babilonia" acceda a su ubicación</string>
+    <string name="location_rationale_body"> Su ubicación actual se mostrará en el mapa y se utilizará para resultados de búsqueda cercanos.</string>
+    <string name="location_unavailable_title">Active los servicios de ubicación</string>
+    <string name="location_unavailable_body"> Encienda el GPS para que podamos encontrar inmuebles cerca a usted. Es posible que el GPS tarde un poco en encontrar su ubicación.</string>
+
+    <string name="location_unavailable_go_to_settings">Configuracion</string>
+
+    <string name="location_unavailable_not_now">Ahora no</string>
+    <string name="location_not_found">Ubicación no encontrada</string>
+    <string name="recent_searches">Búsquedas recientes</string>
+    <string name="min">Mín</string>
+    <string name="max">Máx</string>
+    <string name="from">Desde</string>
+    <string name="to">Hasta</string>
+    <string name="long_dash">\u2014</string>
+    <string name="top_listings">Inmuebles Top </string>
+    <string name="listing_type">Tipo de operación</string>
+    <string name="create_new_listing">Crear un nuevo aviso</string>    <!-- TODO: Remove or change this placeholder text -->
+    <string name="property_type">Tipo de inmueble</string>
+    <string name="property_facilities">Comodidades</string>
+    <string name="sale">Venta</string>
+    <string name="rent">Alquiler</string>
+    <string name="for_sale">en Venta</string>
+    <string name="for_rent">en Alquiler</string>
+    <string name="area">Área</string>
+    <string name="area_square_meters">Área, m²</string>
+    <string name="total_area_square_meters">Área total, m²</string>
+    <string name="built_area_square_meters">Área techada, m²</string>
+    <string name="total_area_prefix">Área total:</string>
+    <string name="built_area_prefix">Área techada:</string>
+    <string name="general">General</string>
+    <string name="details">Características</string>
+    <string name="facilities">Comodidades</string>
+    <string name="advanced">Adicionales</string>
+    <string name="advanced_details">Características adicionales</string>
+    <string name="photos">Fotos</string>
+    <string name="about_your_home">Sobre tu inmueble</string>
+    <string name="continue_creating">Continuar (%d/%d)</string>
+    <string name="description">Descripción</string>
+    <string name="address">Dirección</string>
+
+    <string name="pick_selected_location">Escoger la ubicación seleccionada</string>
+    <string name="cant_find_user_location">No se pudo detectar la ubicación</string>
+    <string name="no_internet_connection">Sin conexión a internet</string>
+    <string name="pet_friendly">Pet-friendly</string>
+    <string name="price_for_sale">Precio, USD</string>
+    <string name="price_for_rent">Precio al mes, USD</string>
+    <string name="unnamed_road">Ruta sin nombre</string>
+    <string name="close">Cerrar</string>
+    <string name="MPD_action_done">OK</string>
+    <string name="MPD_action_cancel">Cerrar</string>
+    <string name="year_of_construction">Año de construcción</string>
+    <string name="lets_s_start">Comencemos</string>
+    <string name="no_facilities_hint">%1$s no tiene comodidades, así que saltémonos este paso</string>
+    <string name="no_advanced_details_hint">%1$s no tiene características adicionales, así que saltémonos este paso</string>
+    <string name="no_general_details_hint">%1$s no tiene detalles generales, así que saltémonos este paso</string>
+    <string name="preview">Vista previa</string>
+    <string name="empty_photos_hint">Elija las fotos que mejor\nrepresenten su inmueble</string>
+    <string name="upload_photos">Cargar fotos</string>
+    <string name="select_image">Seleccionar foto</string>
+    <string name="main_image">Foto principal</string>
+    <string name="upload_more_photos">Cargar más fotos (%d/%d)</string>
+    <string name="set_as_main_picture">Establecer como foto principal</string>
+    <string name="delete_picture">Eliminar foto</string>
+    <string name="camera">Cámara</string>
+    <string name="avatar_picture_format_description"> La imagen debe estar en formato .png, .jpg o   .jpeg</string>
+    <string name="gallery">Galería de fotos</string>
+    <string name="year">Año</string>
+    <string name="exit">Salir</string>
+    <string name="bedrooms">Dormitorios</string>
+    <string name="bathrooms">Baños</string>
+    <string name="parking_slots">Estacionamientos</string>
+    <string name="total_floors">Pisos totales</string>
+    <string name="floor_number">Piso de la unidad</string>
+    <string name="floor_number_numb">Piso #%d</string>
+    <string name="parking">Estacionamientos</string>
+
+    <string name="parking_for_visitors">Estacionamiento para visitas</string>
+    <string name="parking_for_visitors_short">estac para visitas</string>
+    <string name="warehouse">Almacén</string>
+    <string name="about_this_home">Sobre este inmueble</string>
+    <string name="show_more">Mostrar más</string>
+    <string name="show_details">Ver Inmueble</string>
+    <string name="park_numb">%d estacionamientos</string>
+    <string name="beds_numb_small">%d dor</string>
+    <string name="bath_numb_small">%d bñ</string>
+    <string name="area_numb">%1$s m²</string>
+    <string name="price_per_meter">$%1$s/m²</string>
+    <string name="built_in">Construido en %1$s</string>
+    <string name="property_for_sale">%1$s en %2$s</string>
+    <string name="property_for_sale_small">%1$s \nen %2$s</string>
+    <string name="uploading">Cargando</string>
+    <string name="per_month">al mes</string>
+    <string name="published_listing">Aviso publicado</string>
+    <string name="unpublished_listing">Aviso despublicado</string>
+    <string name="not_published_listing">Aviso no publicado</string>
+    <string name="about_home">Sobre este inmueble</string>
+    <string name="photo_gallery">Galería de fotos</string>
+    <string name="draft">Borrador</string>
+    <string name="unpublished">Despublicado</string>
+    <string name="not_published_tab_name">No Publicado</string>
+    <string name="not_published">Borrador completo</string>
+    <string name="expired">Expirado</string>
+    <string name="your_phone_number">Numero de teléfono</string>
+    <string name="email">Correo electrónico</string>
+    <string name="currency">Moneda</string>
+    <string name="account">Cuenta</string>
+    <string name="about">Sobre nosotros</string>
+    <string name="terms_and_conditions">Términos y condiciones</string>
+    <string name="privacy_policy">Política de privacidad</string>
+
+    <string name="email_saved">¡Correo electrónico actualizado!</string>
+    <string name="change_email">Cambiar correo electrónico</string>
+    <string name="change">Cambiar</string>
+    <string name="invalid_email">El formato de correo electrónico no es valido</string>
+    <string name="email_already_taken">El correo electrónico ya ha sido tomado</string>
+    <string name="change_name">Cambiar nombre</string>
+    <string name="first_name">Nombre</string>
+    <string name="last_name">Apellido</string>
+    <string name="save">Guardar</string>
+    <string name="photo_uploaded">¡Foto cargada correctamente!</string>
+    <string name="user_updated">¡Perfil actualizado con éxito!</string>
+    <string name="log_out">Cerrar sesión</string>
+    <string name="your_favorites_are_empty">Tu lista de favoritos esta vacía</string>
+    <string name="coming_soon">Proximamente…</string>
+    <string name="empty_favorites_subtitle">Para agregar inmuebles a tu lista, presione el icono ♡ que se encuentra en los avisos. ¡Animo! Empieza a guardar los inmuebles que maste gustan y   no los pierdas de vista. </string>
+    <string name="create_profile">Crear perfil</string>
+    <string name="upload_photo">Cargar foto</string>
+    <string name="upload_photo_progress">Actualizando foto de perfil…</string>
+    <string name="first_name_empty">Ingrese su nombre</string>
+    <string name="last_name_empty">Ingrese su apellido</string>
+    <string name="field_should_not_be_empty">Este campo no debe estar vacío</string>
+    <string name="sing_out_title">¿Desea cerrar sesión?</string>
+    <string name="sign_out_message">No podrás buscar propiedades ni recibirnotificaciones</string>
+    <string name="sign_out">Cerrar sesión</string>
+    <string name="cancel">Cancelar</string>
+    <string name="contact">Contactar</string>
+    <string name="call">Llamar</string>
+    <string name="contact_button_hint">Esta llamada puede incurrir costos adicionales</string>
+    <string name="open">Abrir</string>
+
+    <string name="edit_details">Editar detalles</string>
+    <string name="unpublish">Despublicar</string>
+    <string name="unpublish_confirmation_title">¿Desea despublicar el aviso?</string>
+    <string name="unpublish_confirmation_body">Podrá volver a publicarlo más tarde encualquier momento</string>
+    <string name="publish_confirmation_body">¿Desea publicar el aviso?</string>
+    <string name="delete_confirmation_title">"¿Desea eliminar el borrador?</string>
+    <string name="delete_confirmation_body">¿Está seguro que desea borrar esta información? La acción no se puede deshacer.</string>
+    <string name="delete_draft">Eliminar borrador</string>
+    <string name="delete">Borrar</string>
+    <string name="delete_listing_success_message">Aviso eliminado con éxito</string>
+    <string name="search_by_address">Urbanización, distrito o ciudad</string>
+    <string name="no_matching_results">¡Lo sentimos! No encontramos inmuebles como el que busca…</string>
+    <string name="try_change_your_search_criteria">Intente cambiar el criterio de búsqueda.</string>
+    <string name="edit_listing">Editar aviso</string>
+    <string name="current_location">Ubicación actual</string>
+    <string name="sort_by">Ordenar por</string>
+    <string name="date_recent_first">: Más nuevos</string>
+    <string name="sort">Ordenar</string>
+    <string name="finish_edit">¿Terminaste tu aviso?</string>
+    <string name="finish_edit_description">Puedes salir de la creación y guardaremos tu progreso para que puedas continuar más tarde.</string>
+    <string name="finish_edit_listing">Puede salir, pero se perderá el progreso de la edición</string>
+    <string name="save_and_exit"><![CDATA[Guardar & salir]]></string>
+    <string name="continute_creating">Continuar</string>
+    <string name="dont_save_and_exit"><![CDATA[No guardar & salir]]></string>
+    <string name="filters_hint">Toque el filtro para eliminarlo</string>
+    <string name="filters">Filtros</string>
+    <string name="reset">Restablecer</string>
+    <string name="apply_filters">Aplicar filtros</string>
+    <string name="apply_filters_count">%d inmuebles encontrados</string>
+    <string name="all_facilities">Todas las comodidades</string>
+    <string name="listings_found_count">Encontramos %d inmuebles</string>
+    <string name="price_range">Rango de precio:</string>
+    <string name="listing_location">Ubicación del inmueble</string>
+    <string name="realtor_constructor_alert">Para publicar como agente o constructora, por favor visite nuestra web</string>
+
+    <string name="ar_dialog_title">Busca propiedades con Realidad Aumentada</string>
+    <string name="ar_dialog_description">¿Te gusta la zona en donde estas? Explórala con nuestro AR y descubre que inmuebles están en venta o alquiler. Haga click en navegar y lo llevaremos por la ruta mas corta…</string>
+    <string name="got_it">Entendido</string>
+
+    <string-array name="status">
+        <item>General</item>
+        <item>Características</item>
+        <item>Instalaciones</item>
+        <item>Fotos</item>
+    </string-array>
+
+    <string-array name="property_types">
+        <item>Departamento</item>
+        <item>Casa</item>
+        <item>Local comercial</item>
+        <item>Oficina</item>
+        <item>Terreno</item>
+        <item>Cuarto</item>
+    </string-array>
+
+    <string-array name="property_types_for_sorting">
+        <!-- Check 'FiltersVisibility.getVisibilityByPropertyName()' when making any changes -->
+        <item>Todos</item>
+        <item>Departamento</item>
+        <item>Casa</item>
+        <item>Local comercial</item>
+        <item>Oficina</item>
+        <item>Terreno</item>
+        <item>Cuarto</item>
+    </string-array>
+
+    <string-array name="sort_types">
+        <item>Relevancia</item>
+        <item>Más nuevos</item>
+        <item>Más antiguos</item>
+        <item>Precio - Alto a bajo</item>
+        <item>Precio - Bajo a alto</item>
+        <item>Precio por m² - Alto a bajo</item>
+        <item>Precio por m² - Bajo a alto</item>
+        <item>Área – Más amplios</item>
+        <item>Área - Más pequeños</item>
+        <item>Más cercanos</item>
+        <item>Más lejanos</item>
+    </string-array>
+
+    <string name="navigate">navegar</string>
+    <string name="prefix_for">en %1$s</string>
+    <string name="meters">metros</string>
+    <string name="meter_price_template">$%1$s/m²</string>
+    <string name="price_template">$%s</string>
+    <string name="sol_price_template">S/ %s</string>
+    <string name="price_template_with_space">$ %s</string>
+    <string name="ar_screen_title_view">Vista AR</string>
+    <string name="ar_screen_title_navigation">Navegación AR</string>
+    <string name="destination_reached">¡Haz llegado a tu destino!</string>
+    <string name="chip_template_year_of_construction">%s - %s</string>
+    <string name="chip_template_area_filter">%s - %s m²</string>
+    <string name="chip_template_price_filter">$%s - $%s</string>
+    <string name="chip_prefix_area_total">Total:&#160;</string>
+    <string name="chip_prefix_area_built">Techada:&#160;</string>    <!-- publishing -->
+    <string name="publish_your_listing">Publica tu inmueble</string>
+    <string name="select_your_profile">¿Cómo desea publicar?</string>
+    <string name="owner">Dueño</string>
+    <string name="realtor">Agente o   Inmobiliaria</string>
+    <string name="construction_company">Constructor o Desarrollador</string>
+    <string name="select_profile">Seleccionar perfil</string>
+    <string name="select_plan_description">Compare y seleccione el tipo de aviso que mas le convenga.</string>
+    <string name="select_plan">Seleccionar plan</string>
+    <string name="checkout">Comprar</string>
+    <string name="check_out">Comprar</string>
+    <string name="choose_the_app">Elija el proveedor de mapas</string>
+
+    <string name="from_price">desde S/ %s</string>
+    <string name="pay_amount">Pagar S/ %s</string>
+    <string name="dollars_amount">$%s</string>
+    <string name="sol_amount">S/ %s</string>
+    <string name="card_hint_expiration_date">MM / AA</string>
+    <string name="name_on_card">Nombre en la tarjeta</string>
+    <string name="processing_payment">Procesando el pago…</string>
+    <string name="error_processing_payment">Error procesando el pago</string>
+    <string name="error_processing_payment_stripe">Pago rechazado. Por favor verifique los detalles de su tarjeta o comuníquese con su banco para mayor asistencia.</string>
+    <string name="error_processing_payment_backend">Algo salió mal. Por favor vuelva a intentarlo o comuníquese con nosotros si el problema persiste</string>
+    <string name="plan_title">Plan %s</string>
+    <string name="plan_listing">Aviso %s</string>
+    <string name="listing_published_successfully">¡Aviso publicado con éxito!</string>
+    <string name="listing_successfully_updated">Aviso actualizado con éxito</string>
+
+    <plurals name="bedrooms_plural">
+        <item quantity="one">%s dormitorio</item>
+        <item quantity="other">%s dormitorios</item>
+    </plurals>
+
+    <plurals name="bathrooms_plural">
+        <item quantity="one">%s baño</item>
+        <item quantity="other">%s baños</item>
+    </plurals>
+
+    <plurals name="floors_plural">
+        <item quantity="one">%s piso</item>
+        <item quantity="other">%s pisos</item>
+    </plurals>
+
+    <plurals name="total_floors_plural">
+        <item quantity="one">Pisos totales: %s</item>
+        <item quantity="other">Pisos totales: %s</item>
+    </plurals>
+
+    <plurals name="facilities_plural">
+        <item quantity="one">%s comodidad</item>
+        <item quantity="other">%s comodidades</item>
+    </plurals>
+
+    <plurals name="checkout_plan_duration_days_plural">
+        <item quantity="one">/ %s día</item>
+        <item quantity="other">/ %s días</item>
+    </plurals>
+
+    <plurals name="plan_duration_days_plural">
+        <item quantity="one">%s día</item>
+        <item quantity="other">%s días</item>
+    </plurals>
+
+    <plurals name="days_left_plural">
+        <item quantity="one">Le queda %s día</item>
+        <item quantity="other">Le quedan %s días</item>
+    </plurals>
+
+    <plurals name="beds_plural">
+        <item quantity="one">%s dormitorio</item>
+        <item quantity="other">%s dormitorios</item>
+    </plurals>
+
+    <plurals name="parkings_short_plural">
+        <item quantity="one">%s estac</item>
+        <item quantity="other">%s estac</item>
+    </plurals>
+
+    <plurals name="baths_plural">
+        <item quantity="one">%s baño</item>
+        <item quantity="other">%s baños</item>
+    </plurals>
+
+    <plurals name="photos_plural">
+        <item quantity="one">%d foto</item>
+        <item quantity="other">%d fotos</item>
+    </plurals>
+</resources>

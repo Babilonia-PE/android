@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/avenir_heavy"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="10sp"
+        android:textAllCaps="true"
+        android:text="@string/recent_searches"
+        android:textColor="@color/steel"
+        android:textSize="14sp" />
+</LinearLayout>

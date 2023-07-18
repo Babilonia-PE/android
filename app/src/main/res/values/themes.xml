@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.ArScreen">
+        <item name="android:textColor">@color/text_color_ar_screen_main</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/avenit_medium</item>
+        <item name="colorPrimaryDark">@color/bg_color_ar_status_bar</item>
+    </style>
+
+</resources>

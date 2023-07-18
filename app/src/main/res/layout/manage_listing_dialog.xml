@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:outlineProvider="background"
+    android:background="@drawable/bottom_bar_shape"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvOpen"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_open"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/open"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvEdit"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_edit_grey"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/edit_details"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvUnpublish"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_eye_hide"
+        android:drawablePadding="32dp"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/unpublish"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvPublish"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_publish_grey_24"
+        android:drawablePadding="32dp"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/publish"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvDelete"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_trash"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/delete_draft"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+</LinearLayout>

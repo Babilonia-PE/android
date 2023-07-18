@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.flow.ar.ArSceneFragment">
+
+        <io.fotoapparat.view.CameraView
+            android:id="@+id/cameraView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.babilonia.ar.ArScene
+            android:id="@+id/arScene"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/llToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_ar_screen_toolbar_gradient"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/ripple_borderless_primary"
+                android:clickable="true"
+                android:padding="6dp"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_back_grey" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:text="@string/ar_screen_title_view"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                app:fontFamily="@font/samsungsharpsans_bold" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/clNavigationPreview"
+            layout="@layout/layout_ar_navigation_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvBearing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="120dp"
+            android:text="GPS is loading..."
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvListSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="20dp"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glMapCenterHor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="48dp" />
+
+        <com.babilonia.presentation.view.circleview.CircleLayout
+            android:id="@+id/circleLayoutMapContainer"
+            android:layout_width="456dp"
+            android:layout_height="456dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/glMapCenterHor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/glMapCenterHor"
+            tools:visibility="visible">
+
+            <fragment
+                android:id="@+id/googleMapFragment"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivArrowDirection"
+                android:layout_width="@dimen/ar_arrow_direction_width"
+                android:layout_height="@dimen/ar_arrow_direction_height"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_arrow_navigation_direction" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="56dp"
+                android:background="@drawable/bg_ar_map_distance"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="9dp"
+                android:paddingBottom="7dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvMapDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="center_horizontal"
+                    android:minWidth="48dp"
+                    android:textColor="@color/bg_color_ar_tag_map_distance"
+                    android:textSize="20sp"
+                    tools:text="20" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:text="@string/meters"
+                    android:textColor="@color/bg_color_ar_tag_map_distance"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnGoToMap"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|end"
+                android:background="@drawable/bg_round_shape"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_map_grey_24"
+                android:layout_marginEnd="56dp"
+                android:elevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </com.babilonia.presentation.view.circleview.CircleLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clRoot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".presentation.flow.ar.ArSceneFragment">
+
+            <include
+                android:id="@+id/clBottomListing"
+                layout="@layout/ar_scene_bottom_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

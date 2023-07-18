@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.babilonia.presentation.flow.main.search.model.ListingsMetadata" />
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.main.search.ListingSearchViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ccRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        tools:context=".presentation.flow.main.search.SearchRootFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:cardElevation="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/cardViewAppbarStyle">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:elevation="6dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" >
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:src="@drawable/ic_bab_logo_32"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <ImageView
+                        android:id="@+id/ivFilters"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{()->model.onFiltersClicked()}"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_filter_black_24"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/svChips"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/logo">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/cbFilters"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:paddingEnd="16dp"
+                            android:orientation="horizontal"
+                            app:singleLine="true" />
+
+                    </HorizontalScrollView>
+
+                    <TextView
+                        android:id="@+id/tvListingsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="4dp"
+                        android:fontFamily="@font/avenir_roman"
+                        android:letterSpacing="0.02"
+                        android:text="@{@string/listings_found_count(model.listingsMetadata.listingsCount)}"
+                        android:textColor="@color/steel"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/svChips" />
+
+                    <TextView
+                        android:id="@+id/tvFiltersHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:letterSpacing="0.02"
+                        android:text="@string/filters_hint"
+                        android:fontFamily="@font/avenir_roman"
+                        android:textColor="@color/steel"
+                        android:textSize="12sp"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tvListingsCount"
+                        app:layout_constraintStart_toEndOf="@id/tvListingsCount" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/filtersGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="svChips,tvListingsCount,tvFiltersHint" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="56dp"
+            android:background="@drawable/search_drawable"
+            android:drawableStart="@drawable/ic_search_grey"
+            android:drawablePadding="15dp"
+            android:elevation="22dp"
+            android:fontFamily="@font/avenit_medium"
+            android:hint="@string/search_by_address"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:lines="1"
+            android:paddingStart="15dp"
+            android:paddingEnd="40dp"
+            android:textColorHint="@color/gunmetal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/appBar"
+            tools:text="@tools:sample/lorem/random" />
+
+        <ImageButton
+            android:id="@+id/ibClearSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:elevation="22dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_cancel_grey_24"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/etSearch"
+            app:layout_constraintEnd_toEndOf="@+id/etSearch"
+            app:layout_constraintTop_toTopOf="@+id/etSearch"
+            tools:visibility="visible" />
+
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
+            app:navGraph="@navigation/search_content_nav_graph" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

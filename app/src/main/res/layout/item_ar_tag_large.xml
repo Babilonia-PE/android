@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/ar_tag_large_width"
+    android:layout_height="@dimen/ar_tag_large_height"
+    app:cardBackgroundColor="@color/bg_ar_tag_selector"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivTagImage"
+            android:layout_width="@dimen/ar_tag_large_image_width"
+            android:layout_height="@dimen/ar_tag_large_image_height"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ar_tag_image" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagCost"
+            style="@style/ArTag.PriceStyle.Large"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="6dp"
+            android:gravity="center_vertical"
+            app:autoSizeMaxTextSize="@dimen/fs_ar_tag_large_price_max"
+            app:autoSizeMinTextSize="@dimen/fs_ar_tag_large_price_min"
+            app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+            app:autoSizeTextType="uniform"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/tvTagType"
+            app:layout_constraintEnd_toStartOf="@+id/viewVerticalDivider"
+            app:layout_constraintStart_toEndOf="@+id/ivTagImage"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$750,900" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            app:layout_constraintBottom_toTopOf="@+id/llCounters"
+            app:layout_constraintStart_toEndOf="@+id/ivTagImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagCost"
+            tools:text="Apartments" />
+
+        <LinearLayout
+            android:id="@+id/llCounters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivTagImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagType" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvBedroomCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_heavy"
+                app:fontFamily="@font/avenir_heavy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivTagImage"
+                app:layout_constraintTop_toBottomOf="@+id/tvTagType"
+                tools:text="3 bd" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivDivider"
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_gravity="center_vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/tvBedroomCount"
+                app:layout_constraintStart_toEndOf="@+id/tvBedroomCount"
+                app:layout_constraintTop_toTopOf="@+id/tvBedroomCount"
+                app:srcCompat="@drawable/circle_divider" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvBathroomCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_heavy"
+                app:fontFamily="@font/avenir_heavy"
+                app:layout_constraintBottom_toBottomOf="@+id/tvBedroomCount"
+                app:layout_constraintStart_toEndOf="@+id/ivDivider"
+                app:layout_constraintTop_toTopOf="@+id/tvBedroomCount"
+                tools:text="2 ba" />
+
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/viewVerticalDivider"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/bg_color_ar_tag_vertical_divider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagDistanceCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvTagDistanceUnit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/viewVerticalDivider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="99" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagDistanceUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/viewVerticalDivider"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagDistanceCount"
+            tools:text="meters" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

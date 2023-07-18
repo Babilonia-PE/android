@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_nav_graph"
+    app:startDestination="@id/profileFragment">
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.babilonia.presentation.flow.main.profile.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment">
+        <action
+            android:id="@+id/action_profileFragment_to_profileEmailFragment"
+            app:destination="@id/profileEmailFragment"
+            app:popUpTo="@+id/profileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_userNameProfileFragment"
+
+            app:popUpTo="@+id/profileFragment"
+            app:destination="@id/userNameProfileFragment" />
+
+        <action
+            android:id="@+id/action_profileFragment_to_accountFragment"
+            app:popUpTo="@+id/profileFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_privacyFragment"
+            app:popUpTo="@+id/profileFragment"
+            app:destination="@id/privacyFragment" >
+            <argument android:name="contentType"
+                app:argType="com.babilonia.presentation.flow.main.common.PrivacyContentType" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/profileEmailFragment"
+        android:name="com.babilonia.presentation.flow.main.profile.email.ProfileEmailFragment"
+        android:label="ProfileEmailFragment" />
+    <fragment
+        android:id="@+id/userNameProfileFragment"
+        android:name="com.babilonia.presentation.flow.main.profile.username.UserNameProfileFragment"
+        android:label="UserNameProfileFragment" />
+    <fragment
+        android:id="@+id/privacyFragment"
+        android:name="com.babilonia.presentation.flow.main.privacy.PrivacyFragment"
+        android:label="PrivacyFragment" >
+        <argument android:name="contentType"
+            app:argType="com.babilonia.presentation.flow.main.common.PrivacyContentType" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.babilonia.presentation.flow.main.profile.account.AccountFragment"
+        android:label="AccountFragment" >
+        <action
+            android:id="@+id/action_accountFragment_to_authActivity"
+            app:destination="@id/authActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/authActivity"
+        android:name="com.babilonia.presentation.flow.auth.AuthActivity"
+        android:label="AuthActivity" >
+
+    </activity>
+</navigation>

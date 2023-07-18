@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_color_ar_screen_main">@color/gunmetal</color>
+    <color name="text_color_ar_screen_btn_show_details">@color/dark_blue_grey</color>
+    <color name="bg_color_ar_tag">@color/white_80</color>
+    <color name="bg_color_ar_tag_selected">@android:color/white</color>
+    <color name="bg_color_ar_tag_map_distance">@color/dark_blue_grey</color>
+    <color name="bg_color_ar_tag_vertical_divider">@color/silver</color>
+    <color name="bg_color_ar_tag_circle_divider">@color/silver_sand</color>
+    <color name="bg_color_ar_action_bar_gradient_start">@color/dark_blue_grey_80</color>
+    <color name="bg_color_ar_action_bar_gradient_end">@color/transparent</color>
+    <color name="bg_color_ar_status_bar">@color/bg_color_ar_action_bar_gradient_start</color>
+
+    <color name="bg_color_listing_type">@color/colorPrimary</color>
+    <color name="bg_color_listing_images_count">@color/dark_blue_grey_50</color>
+    <color name="text_color_listing_type">@android:color/white</color>
+    <color name="text_color_listing_images_count">@android:color/white</color>
+    <color name="text_color_listing_price">@color/dark_blue_grey</color>
+    <color name="text_color_listing_sub_price">@color/steel</color>
+</resources>

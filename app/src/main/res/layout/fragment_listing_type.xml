@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="Deprecated">
+
+    <data>
+
+        <import type="com.babilonia.Constants" />
+
+        <variable
+            name="mode"
+            type="com.babilonia.presentation.flow.main.publish.mylistings.common.NewListingOpenMode" />
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.main.publish.createlisting.CreateListingSharedViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".presentation.flow.main.publish.listingtype.ListingTypeFragment">
+
+            <TextView
+                android:id="@+id/tvListingTypeTitle"
+                style="@style/createListingHintStyle.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:text="@string/listing_type"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btSale"
+                style="@style/createListingToggleStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_left_right"
+                android:layout_marginEnd="4dp"
+                android:checked="@{model.listing==Constants.SALE}"
+                android:enabled="@{model.listing!=Constants.SALE}"
+                android:text="@string/sale"
+                app:layout_constraintEnd_toStartOf="@+id/btRent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvListingTypeTitle" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btRent"
+                style="@style/createListingToggleStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="@dimen/create_listing_margin_left_right"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:checked="@{model.listing==Constants.RENT}"
+                android:enabled="@{model.listing!=Constants.RENT}"
+                android:text="@string/rent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btSale"
+                app:layout_constraintTop_toBottomOf="@id/tvListingTypeTitle" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiPropertyType"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/property_type"
+                app:endIconDrawable="@drawable/ic_dropdown"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/text_color_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btSale">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPropertyType"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:focusable="false"
+                    tools:ignore="Deprecated"
+                    tools:text="test" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiAddress"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/address"
+                app:endIconDrawable="@drawable/ic_place"
+                app:endIconMode="custom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiPropertyType">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAddress"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:text="@{model.location.address}"
+                    tools:ignore="Deprecated"
+                    tools:text="asguiasgi" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiDescription"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/description"
+                app:boxBackgroundMode="outline"
+                app:counterEnabled="true"
+                app:counterMaxLength="2000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiAddress">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDescription"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:maxLength="2000"
+                    android:text="@{model.description}"
+                    tools:text="astas   " />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tyPrice"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiDescription">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPrice"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:imeOptions="actionDone"
+                    android:maxLength="11"
+                    android:text="@={model.price}"
+                    tools:text="test" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiArea"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/total_area_square_meters"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tyPrice">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etArea"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="11"
+                    android:text="@={model.area}"
+                    tools:text="test" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiBuiltArea"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/built_area_square_meters"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiArea">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBuiltArea"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="11"
+                    android:text="@={model.builtArea}"
+                    tools:text="test" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiYear"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/year_of_construction"
+                app:endIconDrawable="@drawable/ic_dropdown"
+                app:endIconMode="custom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiBuiltArea">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etYear"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:text="@={model.year}"
+                    android:inputType="number"
+                    tools:ignore="Deprecated"
+                    tools:text="test" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</layout>

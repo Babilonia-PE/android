@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.auth.createprofile.CreateProfileViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        tools:context=".presentation.flow.auth.createprofile.CreateProfileFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/appBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:cardElevation="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/cardViewAppbarStyle">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/toolbarTheme"
+                app:elevation="6dp"
+                app:title="@string/create_profile" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfileAvatar"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/ic_profile_placeholder"
+            app:layout_constraintBottom_toTopOf="@+id/btUploadPhoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
+            tools:src="@drawable/ic_profile_placeholder" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btUploadPhoto"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:text="@string/upload_photo"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/tyFirstName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivProfileAvatar" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tyFirstName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+
+            android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+            android:hint="@string/first_name"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/tyLastName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btUploadPhoto">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFirstName"
+                style="@style/createListingInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLength="20"
+                android:text="@={model.userLiveData.firstName}"
+                tools:text="test@test.com" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tyLastName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+            android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+            android:hint="@string/last_name"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/tyEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tyFirstName">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLastName"
+                style="@style/createListingInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapSentences"
+                android:maxLength="20"
+                android:text="@={model.userLiveData.lastName}"
+                tools:text="test@test.com" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tyEmail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+            android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+            android:hint="@string/email"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/btChange"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tyLastName">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                style="@style/createListingInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:text="@={model.userLiveData.email}"
+                tools:text="test@test.com" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btChange"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/create_listing_margin_left_right"
+            android:alpha="@{model.updateCreateProfileValidator ? 1f : 0.5f}"
+            android:enabled="@{model.updateCreateProfileValidator}"
+            android:onClick="@{()-> model.updateUser(context)}"
+            android:text="@string/save"
+            app:backgroundTint="@color/colorAccent"
+            app:cornerRadius="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/llSorting"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:gravity="end"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="12sp"
+            android:text="@string/sort_by"
+            android:textColor="@color/steel"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvSortBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
+            android:drawableEnd="@drawable/ic_arrow_down_grey_16"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:letterSpacing="0.04"
+            android:lineSpacingExtra="4sp"
+            android:text="@string/date_recent_first"
+            android:textColor="@color/gunmetal"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.babilonia.domain.model.Listing" />
+
+        <import type="java.util.Locale" />
+
+        <import type="java.text.NumberFormat" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/previewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+
+        android:paddingStart="@dimen/create_listing_margin_left_right"
+        android:paddingEnd="@dimen/create_listing_margin_left_right"
+        android:paddingBottom="30dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivCollaps"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:paddingStart="96dp"
+            android:paddingEnd="96dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_arrow_hide_down_silver_16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpImages"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivCollaps" />
+
+        <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+            android:id="@+id/pagerIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/create_listing_margin_left_right"
+            app:layout_constraintBottom_toBottomOf="@id/vpImages"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:spi_dotColor="@color/pager_dot_color"
+            app:spi_dotSelectedColor="@android:color/white" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/ivFavorite"
+            android:theme="@style/CheckboxCustomStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:button="@drawable/favourite_checkbox"
+            android:checked="@={model.favourite}"
+            app:layout_constraintEnd_toEndOf="@+id/vpImages"
+            app:layout_constraintTop_toTopOf="@+id/vpImages"
+            app:srcCompat="@drawable/ic_heart_24dp" />
+
+        <TextView
+            android:id="@+id/clListingTypeContainer"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/listing_for_rent_shape"
+            android:drawableStart="@drawable/ic_apartment_small"
+            android:drawablePadding="6dp"
+            android:drawableTint="@android:color/white"
+            android:gravity="start|center_vertical"
+            android:letterSpacing="0.01"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@+id/vpImages"
+            app:layout_constraintTop_toTopOf="@+id/vpImages"
+            tools:ignore="TextViewEdits"
+            tools:text="Apartments \nfor sale" />
+
+        <LinearLayout
+            android:id="@+id/llListingImagesCountContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/listing_images_shape"
+            android:gravity="center"
+            android:minWidth="48dp"
+            android:minHeight="24dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/vpImages"
+            app:layout_constraintEnd_toEndOf="@+id/vpImages">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivImagesCount"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="2dp"
+                app:srcCompat="@drawable/ic_camera_small" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvImagesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="1dp"
+                android:fontFamily="@font/avenir_heavy"
+                android:maxLines="1"
+                android:textColor="@color/text_color_listing_images_count"
+                app:fontFamily="@font/avenir_heavy"
+                tools:text="12" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPrice"
+            style="@style/PriceStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:text="@{'$'+NumberFormat.getInstance(Locale.US).format(model.price)}"
+            app:autoSizeMaxTextSize="@dimen/fs_listing_item_price_max"
+            app:autoSizeMinTextSize="@dimen/fs_listing_item_price_min"
+            app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+            app:autoSizeTextType="uniform"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/tvSubPrice"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vpImages"
+            tools:text="$100,100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSubPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_color_listing_sub_price"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPrice"
+            app:layout_constraintEnd_toStartOf="@+id/tvListingBeds"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/tvPrice"
+            app:layout_constraintTop_toTopOf="@+id/tvPrice"
+            tools:text="$570/m2" />
+
+
+        <TextView
+            android:id="@+id/tvListingBeds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:drawableEnd="@drawable/gray_circle"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/beds_numb_small(model.bedroomsCount)}"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSubPrice"
+            app:layout_constraintEnd_toStartOf="@+id/tvListingBath"
+            app:layout_constraintTop_toTopOf="@+id/tvSubPrice"
+            tools:text="3 beds"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvListingBath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:drawableEnd="@drawable/gray_circle"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/bath_numb_small(model.bathroomsCount)}"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvListingBeds"
+            app:layout_constraintEnd_toStartOf="@+id/tvListingArea"
+            app:layout_constraintTop_toTopOf="@+id/tvListingBeds"
+            tools:text="3 beds"
+            tools:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/tvListingArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:gravity="end"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/area_numb(NumberFormat.getInstance(Locale.US).format(model.area))}"
+            android:textColor="@color/description_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvListingBath"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvListingBath"
+            tools:text="3 beds" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingBottom="4dp"
+            android:fontFamily="@font/avenit_medium"
+            android:lineSpacingExtra="6sp"
+            android:text="@{model.locationAttributes.address}"
+            android:textColor="@color/gunmetal"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/ivPlanIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPrice"
+            tools:text="83 Swainawski Ranch Apt. 234" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPlanIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvAddress" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

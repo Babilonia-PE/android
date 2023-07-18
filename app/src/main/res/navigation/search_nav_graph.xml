@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_nav_graph"
+    app:startDestination="@id/searchRootFragment"
+    tools:ignore="UnusedNavigation">
+    <fragment
+        tools:layout="@layout/search_root_fragment"
+        android:id="@+id/searchRootFragment"
+        android:name="com.babilonia.presentation.flow.main.search.SearchRootFragment"
+        android:label="SearchRootFragment" >
+        <action
+            android:id="@+id/action_searchRootFragment_to_listingFiltersFragment"
+            app:destination="@id/listingFiltersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listingFiltersFragment"
+        android:name="com.babilonia.presentation.flow.main.search.filters.ListingFiltersFragment"
+        android:label="ListingFiltersFragment" />
+</navigation>

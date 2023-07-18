@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.babilonia.presentation.flow.main.search.model.ListingsMetadata" />
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.main.search.ListingSearchViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.flow.main.search.filters.ListingFiltersFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/appBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:cardElevation="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/cardViewAppbarStyle">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/toolbarTheme"
+                app:elevation="6dp"
+                app:title="@string/filters" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tvReset"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:fontFamily="@font/avenir_heavy"
+                android:gravity="center"
+                android:letterSpacing="0"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/reset"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@id/btApplyFilters"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
+
+                <com.babilonia.presentation.view.filter.GeneralFiltersView
+                    android:id="@+id/filterGeneral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/create_listing_margin_top_bottom" />
+
+                <com.babilonia.presentation.view.filter.QualityFiltersView
+                    android:id="@+id/filterQuality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tvFacilitiesTitle"
+                    style="@style/createListingHintStyle.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                    android:text="@string/property_facilities"
+                    android:textAlignment="viewStart"
+                    android:visibility="visible" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvFacilities"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/btApplyFilters"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/rounded_corners_shape_4dp"
+            android:backgroundTint="@color/colorAccent"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:onClick="@{()->model.applyFiltersAndBack(context)}"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.06"
+                android:text="@string/apply_filters"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvFiltersCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenit_medium"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.06"
+                android:text="@{@string/apply_filters_count(model.listingsMetadata.listingsCount)}"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.babilonia.domain.model.Listing" />
+
+        <import type="java.util.Locale" />
+
+        <import type="java.text.NumberFormat" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/previewContainer"
+        android:layout_width="208dp"
+        android:layout_height="256dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivTopListingImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivGradient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_top_listing_gradient" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/ivFavorite"
+            android:theme="@style/CheckboxCustomStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:button="@drawable/favourite_checkbox"
+            android:checked="@={model.favourite}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_heart_24dp" />
+
+        <TextView
+            android:id="@+id/clListingTypeContainer"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/listing_for_rent_shape"
+            android:drawableStart="@drawable/ic_apartment_small"
+            android:drawablePadding="6dp"
+            android:drawableTint="@android:color/white"
+            android:gravity="start|center_vertical"
+            android:letterSpacing="0.01"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextViewEdits"
+            tools:text="Apartments \nfor sale" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPrice"
+            style="@style/PriceStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:text="@{@string/price_template_with_space(NumberFormat.getInstance(Locale.US).format(model.price))}"
+            app:autoSizeMaxTextSize="@dimen/fs_listing_item_price_max"
+            app:autoSizeMinTextSize="@dimen/fs_listing_item_price_min"
+            app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tvSubPrice"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvAddress"
+            tools:text="$100,100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSubPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPrice"
+            app:layout_constraintEnd_toStartOf="@+id/tvListingBeds"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/tvPrice"
+            app:layout_constraintTop_toTopOf="@+id/tvPrice"
+            tools:text="$570/m2" />
+
+        <TextView
+            android:id="@+id/tvListingBeds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:drawableEnd="@drawable/gray_circle"
+            android:drawableTint="@color/white"
+            android:drawablePadding="8dp"
+            android:paddingEnd="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/beds_numb_small(model.bedroomsCount)}"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvAddress"
+            tools:text="3 beds" />
+
+        <TextView
+            android:id="@+id/tvListingBath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:drawableEnd="@drawable/gray_circle"
+            android:drawableTint="@color/white"
+            android:paddingEnd="8dp"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/avenir_heavy"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/bath_numb_small(model.bathroomsCount)}"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvListingBeds"
+            tools:text="3 beds" />
+
+
+        <TextView
+            android:id="@+id/tvListingArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:lineSpacingExtra="8sp"
+            android:text="@{@string/area_numb(NumberFormat.getInstance(Locale.US).format(model.area))}"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvListingBath"
+            tools:text="3 beds" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="tvListingBeds,tvListingBath,tvListingArea" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="6dp"
+            android:fontFamily="@font/avenit_medium"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@{model.locationAttributes.address}"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/barrierBottom"
+            tools:text="83 Swainawski Ranch Apt. 234" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPlanIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clListingTypeContainer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="no_margin">0dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="search_bar_margin">56dp</dimen>
+    <dimen name="stpi_default_circle_radius">6dp</dimen>
+    <dimen name="stpi_default_circle_stroke_width">1dp</dimen>
+    <dimen name="stpi_default_indicator_radius">3dp</dimen>
+    <dimen name="stpi_default_line_stroke_width">2dp</dimen>
+    <dimen name="stpi_default_line_margin">5dp</dimen>
+
+    <dimen name="stpi_default_text_size">12sp</dimen>
+
+    <dimen name="stpi_default_bottom_indicator_height">3dp</dimen>
+    <dimen name="stpi_default_bottom_indicator_width">50dp</dimen>
+    <dimen name="stpi_default_bottom_indicator_margin_top">10dp</dimen>
+
+    <dimen name="stpi_default_label_size">12sp</dimen>
+    <dimen name="stpi_default_label_margin_top">2dp</dimen>
+
+    <dimen name="stpi_two_dp">2dp</dimen>
+    <dimen name="stpi_done_icon_size">18dp</dimen>
+
+    <dimen name="create_listing_margin_left_right">16dp</dimen>
+    <dimen name="create_listing_margin_top_bottom">16dp</dimen>
+    <dimen name="hint_text_size_listing">12sp</dimen>
+    <dimen name="header_text_size">20sp</dimen>
+    <dimen name="create_listing_input_height">56dp</dimen>
+    <dimen name="create_listing_hint_margin_top">8dp</dimen>
+    <dimen name="create_listing_top_padding">24dp</dimen>
+    <dimen name="image_size">32dp</dimen>
+
+    <dimen name="MPD_items_height">45dp</dimen>
+    <dimen name="MPD_items_width">80dp</dimen>
+    <dimen name="MPD_top_bar_height">80dp</dimen>
+    <dimen name="dialog_corner_radius">5dp</dimen>
+    <dimen name="listing_image_height">168dp</dimen>
+
+    <dimen name="default_corner_radii">56dp</dimen>
+    <dimen name="default_badge_corner_radii">16dp</dimen>
+    <dimen name="default_nav_item_padding">12dp</dimen>
+    <dimen name="default_nav_item_text_size">12sp</dimen>
+    <dimen name="default_nav_item_text_padding">8dp</dimen>
+    <dimen name="default_nav_item_title_max_width">80dp</dimen>
+    <dimen name="default_icon_size">24dp</dimen>
+    <dimen name="default_nav_item_badge_padding">2dp</dimen>
+    <dimen name="default_nav_item_badge_text_size">7sp</dimen>
+    <dimen name="avatar_size">40dp</dimen>
+
+    <dimen name="ar_tag_large_height">80dp</dimen>
+    <dimen name="ar_tag_large_width">256dp</dimen>
+    <dimen name="ar_tag_large_image_height">64dp</dimen>
+    <dimen name="ar_tag_large_image_width">64dp</dimen>
+    <dimen name="ar_tag_large_image_corner_radius">4dp</dimen>
+
+    <dimen name="ar_tag_medium_height">56dp</dimen>
+    <dimen name="ar_tag_medium_width">196dp</dimen>
+    <dimen name="ar_tag_medium_image_height">48dp</dimen>
+    <dimen name="ar_tag_medium_image_width">48dp</dimen>
+    <dimen name="ar_tag_medium_image_corner_radius">4dp</dimen>
+
+    <dimen name="ar_tag_small_height">40dp</dimen>
+    <dimen name="ar_tag_small_width">120dp</dimen>
+    <dimen name="ar_tag_small_image_height">32dp</dimen>
+    <dimen name="ar_tag_small_image_width">32dp</dimen>
+    <dimen name="ar_tag_small_image_corner_radius">2dp</dimen>
+
+    <dimen name="ar_tag_destination_height">54dp</dimen>
+    <dimen name="ar_tag_destination_width">54dp</dimen>
+
+    <dimen name="ar_tag_horizontal_indent">4dp</dimen>
+    <dimen name="ar_tag_vertical_indent">4dp</dimen>
+
+    <dimen name="ar_map_pin_height">27dp</dimen>
+    <dimen name="ar_map_pin_width">24dp</dimen>
+
+    <dimen name="ar_arrow_direction_height">40dp</dimen>
+    <dimen name="ar_arrow_direction_width">40dp</dimen>
+
+    <dimen name="custom_type_face_small">10sp</dimen>
+    <dimen name="custom_type_face_medium">12sp</dimen>
+
+    <dimen name="default_active_tick_radius">5dp</dimen>
+    <dimen name="custom_active_tick_radius">3dp</dimen>
+
+    <dimen name="fullscreen_map_camera_padding">48dp</dimen>
+
+    <dimen name="payment_plan_vh_width">256dp</dimen>
+
+    <dimen name="gallery_item_height_small">168dp</dimen>
+    <dimen name="gallery_item_height_large">208dp</dimen>
+</resources>

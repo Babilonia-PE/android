@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.babilonia.presentation.view.filter.TwoSideFilter
+        android:id="@+id/filterTotalArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+        android:layout_marginBottom="@dimen/create_listing_margin_top_bottom" />
+
+    <com.babilonia.presentation.view.filter.TwoSideFilter
+        android:id="@+id/filterBuiltArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+        android:layout_marginBottom="@dimen/create_listing_margin_top_bottom" />
+
+    <com.babilonia.presentation.view.filter.TwoSideFilter
+        android:id="@+id/filterYearOfConstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+        android:layout_marginBottom="@dimen/create_listing_margin_top_bottom" />
+
+    <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+        android:id="@+id/pickerBedrooms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/bedrooms" />
+
+    <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+        android:id="@+id/pickerBathrooms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/bathrooms" />
+
+    <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+        android:id="@+id/pickerFloors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/total_floors" />
+
+    <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+        android:id="@+id/pickerFloorNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/floor_number" />
+
+    <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+        android:id="@+id/pickerParkingSlots"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/parking_slots" />
+
+    <com.babilonia.presentation.view.filter.CheckFilter
+        android:id="@+id/filterParkingForVisitors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:filter_name="@string/parking_for_visitors"
+        app:filter_icon="@drawable/ic_parking_for_visitors_24"/>
+
+    <com.babilonia.presentation.view.filter.CheckFilter
+        android:id="@+id/filterWarehouse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:filter_name="@string/warehouse"
+        app:filter_icon="@drawable/ic_warehouse_24"/>
+</LinearLayout>

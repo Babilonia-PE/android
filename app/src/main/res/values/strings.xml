@@ -1,0 +1,389 @@
+<resources>
+
+    <string name="app_name">Babilonia</string>
+    <string name="website">babilonia.io</string>
+    <string name="error">Error</string>
+    <string name="ok">Ok</string>
+    <string name="search">Search</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Don\'t Allow</string>
+    <string name="views">Views</string>
+    <string name="contacts">Contacts</string>
+    <string name="favorites">Favorites</string>
+    <string name="publish">Publish</string>
+    <string name="published">Published</string>
+    <string name="inbox">Inbox</string>
+    <string name="profile">Profile</string>
+    <string name="my_listings">My Listings</string>
+    <string name="my_listings_empty">You have not added any\nlistings yet</string>
+    <string name="my_listings_empty_button">Add new listing</string>
+    <string name="my_listings_empty_published">You have no published listings</string>
+    <string name="my_listings_empty_not_published">All your listings are published</string>
+    <string name="my_listings_empty_published_body">You can publish listings from draft or add a new one</string>
+    <string name="add_new_listing">Add new listing</string>
+    <string name="location_rationale_title">Allow "Babilonia" to access your location?</string>
+    <string name="location_rationale_body">Your current location will be displayed on the map and used for nearby search results.</string>
+    <string name="location_unavailable_title">Turn on location services</string>
+    <string name="location_unavailable_body">Please, turn on GPS so we can find listings near you. It may take some time for GPS to find your location.</string>
+    <string name="location_unavailable_go_to_settings">Settings</string>
+    <string name="location_unavailable_not_now">Not now</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="recent_searches">Recent searches</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="long_dash">\u2014</string>
+
+    <string name="top_listings">Top Listings</string>
+    <string name="listing_type">Listing type</string>
+    <string name="create_new_listing">Create new listing</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="property_type">Property type</string>
+    <string name="property_facilities">Property facilities</string>
+    <string name="sale">Sale</string>
+    <string name="rent">Rent</string>
+    <string name="for_sale">for Sale</string>
+    <string name="for_rent">for Rent</string>
+    <string name="area">Area</string>
+    <string name="area_square_meters">Area, m²</string>
+    <string name="total_area_square_meters">Total area, m²</string>
+    <string name="built_area_square_meters">Covered area, m²</string>
+    <string name="total_area_prefix">Total area:</string>
+    <string name="built_area_prefix">Covered area:</string>
+    <string name="general">General</string>
+    <string name="details">Details</string>
+    <string name="facilities">Facilities</string>
+    <string name="advanced">Advanced</string>
+    <string name="advanced_details">Advanced Details</string>
+    <string name="photos">Photos</string>
+    <string name="about_your_home">About your place</string>
+    <string name="continue_creating">Continue (%d/%d)</string>
+    <string name="description">Description</string>
+    <string name="address">Address</string>
+    <string name="pick_selected_location">Pick selected location</string>
+    <string name="cant_find_user_location">Can not detect user location</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="pet_friendly">Pet friendly</string>
+    <string name="price_for_sale">Price, USD</string>
+    <string name="price_for_rent">Price per month, USD</string>
+    <string name="unnamed_road">Unnamed Road</string>
+    <string name="close">Close</string>
+    <string name="MPD_action_done">OK</string>
+    <string name="MPD_action_cancel">Close</string>
+    <string name="year_of_construction">Year of construction</string>
+    <string name="lets_s_start">Let\'s start</string>
+    <string name="no_facilities_hint">%1$s has no facilities, so let\'s skip this step</string>
+    <string name="no_advanced_details_hint">%1$s has no advanced details, so let\'s skip this step</string>
+    <string name="no_general_details_hint">%1$s has no general details, so let\'s skip this step</string>
+    <string name="preview">Preview</string>
+    <string name="empty_photos_hint">Choose photos that best\nrepresent your property</string>
+    <string name="upload_photos">Upload photos</string>
+    <string name="select_image">Select Image</string>
+    <string name="main_image">Main image</string>
+    <string name="upload_more_photos">Upload more photos (%d/%d)</string>
+    <string name="set_as_main_picture">Set as main picture</string>
+    <string name="delete_picture">Delete picture</string>
+    <string name="camera">Camera</string>
+    <string name="avatar_picture_format_description">The picture must be in png, jpg or jpeg format.</string>
+    <string name="gallery">Gallery</string>
+    <string name="year">Year</string>
+    <string name="exit">Exit</string>
+    <string name="bedrooms">Bedrooms</string>
+    <string name="bathrooms">Bathrooms</string>
+    <string name="parking_slots">Parking slots</string>
+    <string name="total_floors">Total floors</string>
+    <string name="floor_number">Floor number</string>
+    <string name="floor_number_numb">Floor #%d</string>
+    <string name="parking">Parking</string>
+    <string name="parking_for_visitors">Parking for visitors</string>
+    <string name="parking_for_visitors_short">prk for visitors</string>
+    <string name="warehouse">Warehouse</string>
+    <string name="about_this_home">About This Place</string>
+    <string name="show_more">Show More</string>
+    <string name="show_details">Show details</string>
+    <string name="park_numb">%d prk slots</string>
+    <string name="beds_numb_small">%d bd</string>
+    <string name="bath_numb_small">%d ba</string>
+    <string name="area_numb">%1$s m²</string>
+    <string name="price_per_meter">$%1$s/m²</string>
+    <string name="built_in">Built in %1$s</string>
+    <string name="property_for_sale">%1$s for %2$s</string>
+    <string name="property_for_sale_small">%1$s \nfor %2$s</string>
+    <string name="uploading">Uploading</string>
+    <string name="per_month">per month</string>
+    <string name="published_listing">Published listing</string>
+    <string name="unpublished_listing">Unpublished listing</string>
+    <string name="not_published_listing">Not published listing</string>
+    <string name="about_home">About place</string>
+    <string name="photo_gallery">Photo Gallery</string>
+    <string name="draft">In Draft</string>
+    <string name="unpublished">Unpublished</string>
+    <string name="not_published_tab_name">Not Published</string>
+    <string name="not_published">Not Published</string>
+    <string name="expired">Expired</string>
+    <string name="your_phone_number">Your phone number</string>
+    <string name="email">Email</string>
+    <string name="currency">Currency</string>
+    <string name="account">Account</string>
+    <string name="about">About</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="email_saved">Email saved!</string>
+    <string name="change_email">Change Email</string>
+    <string name="change">Change</string>
+    <string name="invalid_email">Email format is invalid</string>
+    <string name="email_already_taken">Email has already been taken</string>
+    <string name="change_name">Change name</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="save">Save</string>
+    <string name="photo_uploaded">Photo successfully uploaded!</string>
+    <string name="user_updated">User updated!</string>
+    <string name="log_out">Sign out</string>
+    <string name="your_favorites_are_empty">Your favorites are empty</string>
+    <string name="coming_soon">Coming soon…</string>
+    <string name="empty_favorites_subtitle">For adding Listing to list press ♡ icon on preview. You also will receive updates about new photos and price changing</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="upload_photo_progress">Setting Profile Photo…</string>
+    <string name="first_name_empty">First name is empty</string>
+    <string name="last_name_empty">Last name is empty</string>
+    <string name="field_should_not_be_empty">The field shouldn\'t be empty</string>
+    <string name="sing_out_title">Sign out?</string>
+    <string name="sign_out_message">You will not be able to search properties and receive any notifications</string>
+    <string name="sign_out">Sign out</string>
+    <string name="cancel">Cancel</string>
+    <string name="contact">Contact</string>
+    <string name="call">Call</string>
+    <string name="contact_button_hint">This call may incur additional costs</string>
+    <string name="open">Open</string>
+    <string name="edit_details">Edit details</string>
+    <string name="unpublish">Unpublish</string>
+    <string name="unpublish_confirmation_title">Unpublish listing?</string>
+    <string name="unpublish_confirmation_body">You can publish it again later at anytime</string>
+    <string name="publish_confirmation_body">Are you sure you want to publish the listing?</string>
+    <string name="delete_confirmation_title">Delete listing?</string>
+    <string name="delete_confirmation_body">Are you sure you want to delete this information? The action can not be undone.</string>
+    <string name="delete_draft">Delete draft</string>
+    <string name="delete">Delete</string>
+    <string name="delete_listing_success_message">Listing deleted successfully!</string>
+    <string name="search_by_address">Search by address</string>
+    <string name="no_matching_results">No matching results…</string>
+    <string name="try_change_your_search_criteria">Try changing your search criteria.</string>
+    <string name="edit_listing">Edit Listing</string>
+    <string name="current_location">Current location</string>
+    <string name="sort_by">Sort by</string>
+    <string name="date_recent_first">: Closest to farthest</string>
+    <string name="sort">Sort</string>
+    <string name="finish_edit">Finish editing?</string>
+    <string name="finish_edit_description">You can exit editing and we will save your progress so you can continue later</string>
+    <string name="finish_edit_listing">You can exit editing and we will save your progress so you can continue later</string>
+    <string name="save_and_exit"><![CDATA[Save & exit]]></string>
+    <string name="continute_creating">Continue creating</string>
+    <string name="dont_save_and_exit"><![CDATA[Don’t save & exit]]></string>
+    <string name="filters_hint">Tap on filter to remove</string>
+    <string name="filters">Filters</string>
+    <string name="reset">Reset</string>
+    <string name="apply_filters">Apply filters</string>
+    <string name="apply_filters_count">%d properties found</string>
+    <string name="all_facilities">All facilities</string>
+    <string name="listing_location">Listing location</string>
+
+    <string name="ar_dialog_title">Search for Properties using AR</string>
+    <string name="ar_dialog_description">Are you interested in the area where you are? Explore it with our AR and discover which properties are for sale or rent. Click on navigate and we will take you by the shortest route…</string>
+    <string name="got_it">Got it</string>
+
+    <string name="listings_found_count">Found %d Listings</string>
+    <string name="price_range">Price range:</string>
+    <string-array name="status">
+        <item>General</item>
+        <item>Details</item>
+        <item>Facilities</item>
+        <item>Photos</item>
+    </string-array>
+    <string-array name="property_types">
+        <item>Apartment</item>
+        <item>House</item>
+        <item>Commercial</item>
+        <item>Office</item>
+        <item>Land</item>
+        <item>Room</item>
+    </string-array>
+    <string-array name="property_types_for_sorting">
+        <!-- Check 'FiltersVisibility.getVisibilityByPropertyName()' when making any changes -->
+        <item>Any</item>
+        <item>Apartment</item>
+        <item>House</item>
+        <item>Commercial</item>
+        <item>Office</item>
+        <item>Land</item>
+        <item>Room</item>
+    </string-array>
+    <string-array name="sort_types">
+        <item>Most Relevant</item>
+        <item>Newest to Oldest</item>
+        <item>Oldest to Newest</item>
+        <item>Price - Highest to Lowest</item>
+        <item>Price - Lowest to Highest</item>
+        <item>m² Price - Highest to Lowest</item>
+        <item>m² Price - Lowest to Highest</item>
+        <item>Area - Highest to Lowest</item>
+        <item>Area - Lowest to Highest</item>
+        <item>Closest to Farthest</item>
+        <item>Farthest to Closest</item>
+    </string-array>
+
+    <string name="navigate">navigate</string>
+    <string name="prefix_for">for %1$s</string>
+    <string name="meters">meters</string>
+    <string name="meter_price_template">$%1$s/m²</string>
+    <string name="price_template">$%s</string>
+    <string name="sol_price_template">S/ %s</string>
+    <string name="price_template_with_space">$ %s</string>
+    <string name="ar_screen_title_view">AR View</string>
+    <string name="ar_screen_title_navigation">AR Navigation</string>
+    <string name="destination_reached">You have reached the destination!</string>
+    <string name="choose_the_app">Choose the app</string>
+
+    <string name="chip_template_year_of_construction">%s - %s</string>
+    <string name="chip_template_area_filter">%s - %s m²</string>
+    <string name="chip_template_price_filter">$%s - $%s</string>
+    <string name="chip_prefix_area_total">Total:&#160;</string>
+    <string name="chip_prefix_area_built">Covered:&#160;</string>
+
+    <!-- publishing -->
+    <string name="publish_your_listing">Publish your listing</string>
+    <string name="select_your_profile">Select your profile</string>
+    <string name="owner">Owner</string>
+    <string name="realtor">Realtor</string>
+    <string name="construction_company">Construction company</string>
+    <string name="select_profile">Select profile</string>
+    <string name="realtor_constructor_alert">Realtor and Construction company functionality is available on the website. Please visit</string>
+    <string name="select_plan_description">Compare and select the type of ad that suits you the most.</string>
+    <string name="select_plan">Select plan</string>
+    <string name="checkout">Checkout</string>
+    <string name="check_out">Check out</string>
+    <string name="from_price">from S/ %s</string>
+    <string name="pay_amount">Pay S/ %s</string>
+    <string name="dollars_amount">$%s</string>
+    <string name="sol_amount">S/ %s</string>
+    <string name="card_hint_expiration_date">MM / YY</string>
+    <string name="name_on_card">Name on card</string>
+    <string name="processing_payment">Payment is proceeding…</string>
+    <string name="error_processing_payment">Error processing payment</string>
+    <string name="error_processing_payment_stripe">Payment declined. Please check your credit card details or contact your bank for support.</string>
+    <string name="error_processing_payment_backend">Something went wrong. Please try again or contact us if the issue will still remain</string>
+    <string name="plan_title">%s plan</string>
+    <string name="plan_listing">%s Listing</string>
+    <string name="listing_published_successfully">Listing published successfully!</string>
+    <string name="listing_successfully_updated">Listing has been successfully updated</string>
+
+    <plurals name="bedrooms_plural">
+        <item quantity="zero">%s bedrooms</item>
+        <item quantity="one">%s bedroom</item>
+        <item quantity="two">%s bedrooms</item>
+        <item quantity="few">%s bedrooms</item>
+        <item quantity="many">%s bedrooms</item>
+        <item quantity="other">%s bedrooms</item>
+    </plurals>
+
+    <plurals name="bathrooms_plural">
+        <item quantity="zero">%s bathrooms</item>
+        <item quantity="one">%s bathroom</item>
+        <item quantity="two">%s bathrooms</item>
+        <item quantity="few">%s bathrooms</item>
+        <item quantity="many">%s bathrooms</item>
+        <item quantity="other">%s bathrooms</item>
+    </plurals>
+
+    <plurals name="floors_plural">
+        <item quantity="zero">%s floors</item>
+        <item quantity="one">%s floor</item>
+        <item quantity="two">%s floors</item>
+        <item quantity="few">%s floors</item>
+        <item quantity="many">%s floors</item>
+        <item quantity="other">%s floors</item>
+    </plurals>
+
+    <plurals name="total_floors_plural">
+        <item quantity="zero">%s total floors</item>
+        <item quantity="one">%s total floor</item>
+        <item quantity="two">%s total floors</item>
+        <item quantity="few">%s total floors</item>
+        <item quantity="many">%s total floors</item>
+        <item quantity="other">%s total floors</item>
+    </plurals>
+
+    <plurals name="facilities_plural">
+        <item quantity="zero">%s facilities</item>
+        <item quantity="one">%s facility</item>
+        <item quantity="two">%s facilities</item>
+        <item quantity="few">%s facilities</item>
+        <item quantity="many">%s facilities</item>
+        <item quantity="other">%s facilities</item>
+    </plurals>
+
+    <plurals name="checkout_plan_duration_days_plural">
+        <item quantity="zero">/ %s days</item>
+        <item quantity="one">/ %s day</item>
+        <item quantity="two">/ %s days</item>
+        <item quantity="few">/ %s days</item>
+        <item quantity="many">/ %s days</item>
+        <item quantity="other">/ %s days</item>
+    </plurals>
+
+    <plurals name="plan_duration_days_plural">
+        <item quantity="zero">%s days</item>
+        <item quantity="one">%s day</item>
+        <item quantity="two">%s days</item>
+        <item quantity="few">%s days</item>
+        <item quantity="many">%s days</item>
+        <item quantity="other">%s days</item>
+    </plurals>
+
+    <plurals name="days_left_plural">
+        <item quantity="zero">%s days left</item>
+        <item quantity="one">%s day left</item>
+        <item quantity="two">%s days left</item>
+        <item quantity="few">%s days left</item>
+        <item quantity="many">%s days left</item>
+        <item quantity="other">%s days left</item>
+    </plurals>
+
+    <plurals name="beds_plural">
+        <item quantity="zero">%s beds</item>
+        <item quantity="one">%s bed</item>
+        <item quantity="two">%s beds</item>
+        <item quantity="few">%s beds</item>
+        <item quantity="many">%s beds</item>
+        <item quantity="other">%s beds</item>
+    </plurals>
+
+    <plurals name="baths_plural">
+        <item quantity="zero">%s baths</item>
+        <item quantity="one">%s bath</item>
+        <item quantity="two">%s baths</item>
+        <item quantity="few">%s baths</item>
+        <item quantity="many">%s baths</item>
+        <item quantity="other">%s baths</item>
+    </plurals>
+
+    <plurals name="parkings_short_plural">
+        <item quantity="zero">%s prk slots</item>
+        <item quantity="one">%s prk slot</item>
+        <item quantity="two">%s prk slots</item>
+        <item quantity="few">%s prk slots</item>
+        <item quantity="many">%s prk slots</item>
+        <item quantity="other">%s prk slots</item>
+    </plurals>
+
+    <plurals name="photos_plural">
+        <item quantity="zero">%d photos</item>
+        <item quantity="one">%d photo</item>
+        <item quantity="two">%d photos</item>
+        <item quantity="few">%d photos</item>
+        <item quantity="many">%d photos</item>
+        <item quantity="other">%d photos</item>
+    </plurals>
+</resources>

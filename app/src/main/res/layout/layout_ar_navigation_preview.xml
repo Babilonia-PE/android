@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivPreviewPhoto"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_listing_placeholder" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPreviewPrice"
+        style="@style/PriceStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:gravity="center_vertical"
+        app:autoSizeMaxTextSize="@dimen/fs_listing_item_price_max"
+        app:autoSizeMinTextSize="@dimen/fs_listing_item_price_min"
+        app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+        app:autoSizeTextType="uniform"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toEndOf="@id/ivPreviewPhoto"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="$100,100" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPreviewPropertyType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:maxLines="1"
+        android:textColor="@color/steel"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/llPreviewListingContentsContainer"
+        app:layout_constraintStart_toEndOf="@+id/ivPreviewPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/tvPreviewPrice"
+        tools:text="Apartments" />
+
+
+    <LinearLayout
+        android:id="@+id/llPreviewListingContentsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:gravity="center_vertical|start"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/tvPreviewAddress"
+        app:layout_constraintTop_toBottomOf="@id/tvPreviewPropertyType"
+        app:layout_constraintEnd_toStartOf="@id/btnExitPreview"
+        app:layout_constraintStart_toEndOf="@id/ivPreviewPhoto" >
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPreviewCountBedroom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            android:textStyle="bold"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="3 bd" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPreviewFirstDivider"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/circle_divider" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPreviewCountBathroom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            android:textStyle="bold"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="3 ba" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPreviewSecondDivider"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/circle_divider" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPreviewTotalArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            android:textStyle="bold"
+            app:fontFamily="@font/avenir_heavy"
+            tools:text="1,456 m2" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPreviewAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/avenir_heavy"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        app:fontFamily="@font/avenir_heavy"
+        app:layout_constraintStart_toEndOf="@id/ivPreviewPhoto"
+        app:layout_constraintTop_toBottomOf="@id/llPreviewListingContentsContainer"
+        app:layout_constraintBottom_toBottomOf="@id/ivPreviewPhoto"
+        app:layout_constraintEnd_toStartOf="@id/btnExitPreview"
+        tools:text="Listing address text" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnExitPreview"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/exit"
+        android:textColor="@color/text_color_ar_screen_btn_show_details"
+        app:fontFamily="@font/samsungsharpsans_bold"
+        app:layout_constraintBottom_toBottomOf="@id/llPreviewListingContentsContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivPreviewPhoto" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

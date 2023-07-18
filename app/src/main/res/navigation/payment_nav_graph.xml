@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/payment_nav_graph"
+    app:startDestination="@id/paymentProfileFragment">
+
+    <fragment
+        android:id="@+id/paymentProfileFragment"
+        android:name="com.babilonia.presentation.flow.main.payment.profile.SelectPaymentProfileFragment"
+        android:label="SelectPaymentProfileFragment"
+        tools:layout="@layout/fragment_payment_select_profile" >
+
+        <argument
+            android:name="listing_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+        <action
+            android:id="@+id/action_paymentProfileFragment_to_paymentPlanFragment"
+            app:destination="@id/paymentPlanFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/paymentPlanFragment"
+        android:name="com.babilonia.presentation.flow.main.payment.plan.SelectPaymentPlanFragment"
+        android:label="SelectPaymentPlanFragment"
+        tools:layout="@layout/fragment_payment_select_plan" >
+
+        <action
+            android:id="@+id/action_paymentPlanFragment_to_paymentPeriodFragment"
+            app:destination="@id/paymentPeriodFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paymentPeriodFragment"
+        android:name="com.babilonia.presentation.flow.main.payment.period.SelectPaymentPeriodFragment"
+        android:label="SelectPaymentPeriodFragment"
+        tools:layout="@layout/fragment_payment_select_period" >
+        <action
+            android:id="@+id/action_paymentPeriodFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.babilonia.presentation.flow.main.payment.checkout.CheckoutFragment"
+        android:label="CheckoutFragment"
+        tools:layout="@layout/fragment_checkout" >
+    </fragment>
+</navigation>

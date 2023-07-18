@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/ar_tag_medium_width"
+    android:layout_height="@dimen/ar_tag_medium_height"
+    app:cardBackgroundColor="@color/bg_ar_tag_selector"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivTagImage"
+            android:layout_width="@dimen/ar_tag_medium_image_width"
+            android:layout_height="@dimen/ar_tag_medium_image_height"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ar_tag_image" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagCost"
+            style="@style/ArTag.PriceStyle.Medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center_vertical"
+            app:autoSizeMaxTextSize="@dimen/fs_ar_tag_medium_price_max"
+            app:autoSizeMinTextSize="@dimen/fs_ar_tag_medium_price_min"
+            app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+            app:autoSizeTextType="uniform"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/viewVerticalDivider"
+            app:layout_constraintStart_toEndOf="@+id/ivTagImage"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$750,900" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivTagImage"
+            app:layout_constraintStart_toEndOf="@+id/ivTagImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagCost"
+            tools:text="Office" />
+
+        <View
+            android:id="@+id/viewVerticalDivider"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/bg_color_ar_tag_vertical_divider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagDistanceCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_heavy"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvTagDistanceUnit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/viewVerticalDivider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="99" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTagDistanceUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/viewVerticalDivider"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagDistanceCount"
+            tools:text="meters" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

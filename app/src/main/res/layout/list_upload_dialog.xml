@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_bar_shape"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/avenir_roman"
+        android:text="@string/avatar_picture_format_description"
+        android:textColor="@color/steel"
+        android:textSize="12sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:id="@+id/tvCamera"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_camera"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/camera"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/tvGallery"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_gallery"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/gallery"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+</LinearLayout>

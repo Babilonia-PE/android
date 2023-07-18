@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+                android:id="@+id/pickBedrooms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:title="@string/bedrooms"
+             />
+
+            <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+                android:id="@+id/pickBathrooms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickBedrooms"
+                app:title="@string/bathrooms"
+                />
+
+            <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+                android:id="@+id/pickTotalFloors"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickBathrooms"
+                app:title="@string/total_floors"
+                />
+
+            <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+                android:id="@+id/pickFloorNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickTotalFloors"
+                app:title="@string/floor_number"
+                />
+
+            <com.babilonia.presentation.view.numberpicker.ClickNumberPickerView
+                android:id="@+id/pickParkingSlots"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickFloorNumber"
+                app:title="@string/parking_slots" />
+
+            <com.babilonia.presentation.view.filter.CheckFilter
+                android:id="@+id/cfParkingForVisitors"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:filter_name="@string/parking_for_visitors"
+                app:filter_icon="@drawable/ic_parking_for_visitors_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickParkingSlots"/>
+
+
+            <com.babilonia.presentation.view.filter.CheckFilter
+                android:id="@+id/cfPetFriendly"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:filter_name="@string/pet_friendly"
+                app:filter_icon="@drawable/ic_pet"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cfParkingForVisitors"/>
+
+            <TextView
+                android:id="@+id/tvEmptyState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:text="@string/no_general_details_hint"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="4dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextViewEdits" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <data>
+
+        <import type="com.babilonia.presentation.extension.ViewKt" />
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.main.publish.createlisting.CreateListingSharedViewModel" />
+    </data>
+
+</layout>

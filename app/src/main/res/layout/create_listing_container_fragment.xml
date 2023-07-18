@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.flow.main.publish.createlisting.CreateListingContainerFragment">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpCreateListingContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/appBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:cardElevation="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/cardViewAppbarStyle">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/toolbarTheme"
+                app:elevation="6dp"
+                app:title="@string/create_new_listing">
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+            <TextView
+                android:id="@+id/tvExit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:fontFamily="@font/avenir_heavy"
+                android:gravity="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/exit"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardElevation="6dp"
+
+            app:cardPreventCornerOverlap="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/cardViewBottomBarStyle">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:outlineProvider="background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <com.babilonia.presentation.view.bubblebottombar.BubbleNavigationConstraintView
+                    android:id="@+id/statusView"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="@dimen/create_listing_margin_left_right"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:focusable="false"
+                    app:bnc_mode="spread"
+                    app:layout_constraintBottom_toTopOf="@id/btContinue"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:background="@color/black">
+
+                    <com.babilonia.presentation.view.bubblebottombar.BubbleToggleView
+                        android:id="@+id/cCommon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:clickable="false"
+                        app:bt_active="true"
+                        app:bt_colorActive="@android:color/white"
+                        app:bt_colorInactive="@color/toggle_gray"
+                        app:bt_icon="@drawable/ic_listing_common"
+                        app:bt_padding="16dp"
+                        app:bt_shape="@drawable/transition_background_drawable"
+                        app:bt_title="@string/general"
+                        app:bt_titlePadding="4dp" />
+
+                    <com.babilonia.presentation.view.bubblebottombar.BubbleToggleView
+                        android:id="@+id/cDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:clickable="false"
+                        app:bt_active="false"
+                        app:bt_colorActive="@android:color/white"
+                        app:bt_colorInactive="@color/toggle_gray"
+                        app:bt_icon="@drawable/ic_listing_details"
+                        app:bt_padding="16dp"
+                        app:bt_shape="@drawable/transition_background_drawable"
+                        app:bt_title="@string/details"
+                        app:bt_titlePadding="4dp" />
+
+                    <com.babilonia.presentation.view.bubblebottombar.BubbleToggleView
+                        android:id="@+id/cFacilities"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:clickable="false"
+                        app:bt_active="false"
+                        app:bt_colorActive="@android:color/white"
+                        app:bt_colorInactive="@color/toggle_gray"
+                        app:bt_icon="@drawable/ic_listing_facilities"
+                        app:bt_padding="16dp"
+                        app:bt_shape="@drawable/transition_background_drawable"
+                        app:bt_title="@string/facilities" />
+
+                    <com.babilonia.presentation.view.bubblebottombar.BubbleToggleView
+                        android:id="@+id/cAdvancedDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:clickable="false"
+                        app:bt_active="false"
+                        app:bt_colorActive="@android:color/white"
+                        app:bt_colorInactive="@color/toggle_gray"
+                        app:bt_icon="@drawable/ic_advanced_details_white_24"
+                        app:bt_padding="16dp"
+                        app:bt_shape="@drawable/transition_background_drawable"
+                        app:bt_title="@string/advanced" />
+
+                    <com.babilonia.presentation.view.bubblebottombar.BubbleToggleView
+                        android:id="@+id/cPhotos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:clickable="false"
+                        app:bt_active="true"
+                        app:bt_colorActive="@android:color/white"
+                        app:bt_colorInactive="@color/toggle_gray"
+                        app:bt_icon="@drawable/ic_listing_photos"
+                        app:bt_padding="16dp"
+                        app:bt_shape="@drawable/transition_background_drawable"
+                        app:bt_title="@string/photos"
+                        tools:bt_title="@string/facilities" />
+                </com.babilonia.presentation.view.bubblebottombar.BubbleNavigationConstraintView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btContinue"
+                    style="@style/MaterialButtonAccentStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="@dimen/create_listing_margin_left_right"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="@dimen/create_listing_margin_left_right"
+                    android:alpha="@{model.getShouldEnableContinueButton()?1f:0.5f}"
+                    android:background="@color/black"
+                    android:backgroundTint="@color/colorAccent"
+                    android:enabled="@{model.getShouldEnableContinueButton()}"
+                    android:textColor="@android:color/white"
+                    app:cornerRadius="6dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.babilonia.presentation.flow.main.publish.createlisting.CreateListingSharedViewModel" />
+    </data>
+</layout>

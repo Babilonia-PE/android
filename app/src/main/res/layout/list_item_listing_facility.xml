@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical|start"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/ivFacility"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right" />
+
+        <TextView
+            android:id="@+id/tvFacility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+            android:fontFamily="@font/avenit_medium"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="6sp"
+            tools:text="Swimming pool" />
+    </LinearLayout>
+</layout>

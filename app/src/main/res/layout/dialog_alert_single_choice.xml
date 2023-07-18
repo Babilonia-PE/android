@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AlertDialogLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentPanel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/dirty_white"
+    android:gravity="start|top"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/MPD_top_bar_height"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="2dp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/materialDialogStyle.Button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:ellipsize="none"
+            android:gravity="center_vertical"
+            android:maxLines="3"
+            android:singleLine="false"
+            tools:text="Title" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <RadioGroup
+        android:id="@+id/rgItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical" />
+
+    <View
+        android:id="@+id/dividerHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/toggle_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNegative"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:gravity="center"
+            android:text="@string/MPD_action_cancel"
+            android:textAllCaps="true"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:cornerRadius="0dp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/toggle_gray" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPositive"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/samsungsharpsans_bold"
+            android:gravity="center"
+            android:text="@string/sort"
+            android:textAllCaps="true"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:cornerRadius="0dp" />
+    </LinearLayout>
+
+</androidx.appcompat.widget.AlertDialogLayout>

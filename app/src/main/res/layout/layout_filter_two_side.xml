@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/createListingHintStyle.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:textAllCaps="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="total area, m2" />
+
+    <com.babilonia.presentation.view.priceview.SimpleRangeView
+        android:id="@+id/rangeBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:minDistance="1"
+        app:movable="false"
+        app:showTicks="false"
+        app:tickRadius="0dp"
+        app:activeLineColor="@color/colorRangeSelected"
+        app:lineColor="@color/colorChartUnselectedLine"
+        app:fixedThumbColor="@color/colorRangeSelected"
+        app:activeThumbColor="@color/colorRangeSelected"
+        app:activeTickRadius="5dp"
+        app:activeThumbRadius="10dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiFrom"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:hint="@string/min"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintEnd_toStartOf="@id/tvDash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rangeBar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFrom"
+            style="@style/createListingInputStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="11"
+            tools:text="test" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvDash"
+        style="@style/createListingHintStyle.Bold"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:text="@string/long_dash"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/tiFrom"
+        app:layout_constraintEnd_toStartOf="@id/tiTo"
+        app:layout_constraintTop_toTopOf="@id/tiFrom"
+        app:layout_constraintBottom_toBottomOf="@id/tiFrom"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiTo"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:hint="@string/max"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvDash"
+        app:layout_constraintTop_toBottomOf="@+id/rangeBar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTo"
+            style="@style/createListingInputStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="11"
+            tools:text="test" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

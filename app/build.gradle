@@ -1,0 +1,249 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'realm-android'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.appdistribution'
+
+def versionMajor = 0
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 1
+
+
+android {
+    ndkVersion  "19.2.5345600"
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.babilonia"
+        minSdkVersion 22
+        targetSdkVersion 28
+
+        buildConfigField "String", "DIRECTIONS_KEY", '"AIzaSyDIRJuwwZhZVG0Q3rgIFjG_tWi_zbz36Ws"'
+
+        def branchSuffix = ""
+        def branchName = System.getenv("CI_BUILD_REF_NAME")
+        if (branchName != null) {
+            branchSuffix = "-${branchName}-"
+        }
+
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}${branchSuffix}"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+    }
+    signingConfigs {
+        release {
+            storeFile file("../keystore/babilonia_keystore.jks")
+            storePassword "ajom8102"
+            keyAlias "babilonia"
+            keyPassword "ajom8102"
+        }
+    }
+
+    buildTypes {
+
+        release {
+            signingConfig signingConfigs.release
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ext.enableCrashlytics = true
+            ext.betaDistributionReleaseNotes = getDate()
+            ext.betaDistributionEmails = "empty"
+        }
+        debug {
+            minifyEnabled false
+            ext.enableCrashlytics = true
+        }
+        qa {
+            signingConfig signingConfigs.release
+            debuggable true
+            //Need it here to restrict traffic sniffing through Charles for android versions > Nougat for only debuggable builds
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            minifyEnabled false
+            ext.enableCrashlytics = true
+            ext.betaDistributionReleaseNotes = getDate()
+            ext.betaDistributionEmails = "empty"
+        }
+        flavorDimensions "hostname"
+        productFlavors {
+            def babiloniaAppId = '1:355558484550:android:c0d520226f18dd866cb847'
+
+            buildTypes.each {
+                it.buildConfigField "String", "PLACES_API_KEY", '"AIzaSyCpGfIjj1B1wxgOkjdog6Da_1xetzn9OnI"'
+            }
+            dev {
+                dimension "hostname"
+                versionName = android.defaultConfig.versionName + "-dev"
+                buildConfigField "String", "BASE_URL", '"https://dev.babilonia.io/"'
+                buildConfigField "String", "ENV", '"dev/"'
+                buildConfigField "String", "CONFIG_PREFIX", '"api/"'
+                buildConfigField "String", "STRIPE_KEY", '"pk_test_51HrMuRDyWNiuGg9AxZc3aKekn3QHv1ceijFPXt3gpge5DdnC239sVKF4WwZTUNy7BxFWtjmLP9sa9oYB0P0NFjhH00xDJBM2Ky"'
+                manifestPlaceholders.deeplinkHost = "babiloniadev.page.link"
+
+                firebaseAppDistribution {
+                    appId = babiloniaAppId
+                    groups = "QA"
+                    releaseNotes = getDate()
+                }
+            }
+            qaenv {
+                dimension "hostname"
+                versionName = android.defaultConfig.versionName + "-qa"
+                buildConfigField "String", "BASE_URL", '"https://qa.babilonia.io/"'
+                buildConfigField "String", "ENV", '"qa/"'
+                buildConfigField "String", "CONFIG_PREFIX", '"qa/"'
+                buildConfigField "String", "STRIPE_KEY", '"pk_test_51HrWElClCN3bUtFD6El0FXkaZa2TLsmQXFNKZ7LJW720vViwW8HfmyU1i1BARpvMctZJhJZ118CfSPGmcnyn2Hd400ef2nm5aL"'
+                manifestPlaceholders.deeplinkHost = "babiloniaqa.page.link"
+
+                firebaseAppDistribution {
+                    appId = babiloniaAppId
+                    groups = "QA"
+                    releaseNotes = getDate()
+                }
+            }
+            stage {
+                dimension "hostname"
+                versionName = android.defaultConfig.versionName + "-stage"
+                buildConfigField "String", "BASE_URL", '"https://staging.babilonia.io/"'
+                buildConfigField "String", "ENV", '"stage/"'
+                buildConfigField "String", "CONFIG_PREFIX", '"stage/"'
+                buildConfigField "String", "STRIPE_KEY", '"pk_test_pPgEHIL7exBW7FH1KV1f7BJ300s32eWoNc"'
+                manifestPlaceholders.deeplinkHost = "babiloniastage.page.link"
+
+                firebaseAppDistribution {
+                    appId = babiloniaAppId
+                    groups = "QA"
+                    releaseNotes = getDate()
+                }
+            }
+
+            prod {
+                dimension "hostname"
+                versionName = android.defaultConfig.versionName + "-prod"
+                buildConfigField "String", "BASE_URL", '"https://api.babilonia.io/"'
+                buildConfigField "String", "ENV", '"prod/"'
+                buildConfigField "String", "CONFIG_PREFIX", '"prod/"'
+                buildConfigField "String", "STRIPE_KEY", '"pk_test_pPgEHIL7exBW7FH1KV1f7BJ300s32eWoNc"'
+                manifestPlaceholders.deeplinkHost = "babiloniaprod.page.link"
+
+                firebaseAppDistribution {
+                    appId = babiloniaAppId
+                    groups = "QA"
+                    releaseNotes = getDate()
+                }
+            }
+        }
+
+    }
+    dataBinding {
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation "com.google.android.material:material:1.2.0-alpha05"
+    implementation 'com.google.maps.android:android-maps-utils:2.0.3'
+    //Android Architecture Components
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation 'com.github.dhabensky:scoped-vm:1.0'
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'android.arch.paging:runtime:1.0.1'
+
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+
+    // REST
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.6.2"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // Rx
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.13"
+
+    // Logging and Crash-reporting
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+    // SVG support
+    implementation 'com.caverock:androidsvg-aar:1.4'
+
+    // Dagger 2
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
+
+    //Custom View
+    implementation 'com.whiteelephant:monthandyearpicker:1.3.0'
+    implementation 'com.github.marchinram:RxGallery:0.6.6'
+    implementation 'com.github.razir.progressbutton:progressbutton:1.0.3'
+    implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.6"
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.github.yalantis:ucrop:2.2.3'
+    implementation 'com.github.Ilhasoft:data-binding-validator:2.0.0'
+
+    //Google
+    implementation 'com.google.android.libraries.places:places:2.4.0'
+    implementation "com.google.android.gms:play-services-maps:17.0.0"
+    implementation "com.google.android.gms:play-services-base:17.5.0"
+    implementation "com.google.android.gms:play-services-location:17.1.0"
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:18.0.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.google.firebase:firebase-analytics:18.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'com.google.firebase:firebase-dynamic-links:19.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+
+    // RxPermission
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+
+    // Camera - Fotoapparat
+    implementation 'io.fotoapparat:fotoapparat:2.7.0'
+
+    //Graphs
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Payments
+    implementation 'com.stripe:stripe-android:16.1.1'
+
+    // Time
+    api "net.danlew:android.joda:2.10.6"
+}
+
+static def getDate() {
+    return new Date().format('dd/MM/yyyy HH:mm')
+}

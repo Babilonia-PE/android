@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clDestinationDetailsContainer"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:background="@android:color/white"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivDestinationImage"
+        android:layout_width="@dimen/ar_tag_large_image_width"
+        android:layout_height="@dimen/ar_tag_large_image_height"
+        android:layout_marginStart="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ar_tag_image" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDestinationCost"
+        style="@style/ArTag.PriceStyle.Large"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="6dp"
+        android:gravity="center_vertical"
+        app:autoSizeMaxTextSize="@dimen/fs_ar_tag_large_price_max"
+        app:autoSizeMinTextSize="@dimen/fs_ar_tag_large_price_min"
+        app:autoSizeStepGranularity="@dimen/fs_default_scale_step"
+        app:autoSizeTextType="uniform"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/btnExit"
+        app:layout_constraintStart_toEndOf="@+id/ivDestinationImage"
+        app:layout_constraintTop_toTopOf="@+id/ivDestinationImage"
+        tools:text="$750,900" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDestinationType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@+id/ivDestinationImage"
+        app:layout_constraintTop_toBottomOf="@+id/tvDestinationCost"
+        tools:text="Apartments" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDestinationBedroomCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/avenir_heavy"
+        app:fontFamily="@font/avenir_heavy"
+        app:layout_constraintStart_toEndOf="@+id/ivDestinationImage"
+        app:layout_constraintTop_toBottomOf="@+id/tvDestinationType"
+        tools:text="3 bd" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivDestinationDivider"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDestinationBedroomCount"
+        app:layout_constraintStart_toEndOf="@+id/tvDestinationBedroomCount"
+        app:layout_constraintTop_toTopOf="@+id/tvDestinationBedroomCount"
+        app:srcCompat="@drawable/circle_divider" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDestinationBathroomCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="@font/avenir_heavy"
+        app:fontFamily="@font/avenir_heavy"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDestinationBedroomCount"
+        app:layout_constraintStart_toEndOf="@+id/ivDestinationDivider"
+        app:layout_constraintTop_toTopOf="@+id/tvDestinationBedroomCount"
+        tools:text="2 ba" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnExit"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:minWidth="96dp"
+        android:minHeight="56dp"
+        android:text="@string/exit"
+        android:textColor="@color/text_color_ar_screen_btn_show_details"
+        app:fontFamily="@font/samsungsharpsans_bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

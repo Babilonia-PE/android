@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="java.text.NumberFormat" />
+
+        <import type="java.util.Locale" />
+
+        <import type="android.view.View" />
+
+        <import type="com.babilonia.Constants" />
+
+        <import type="com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode" />
+
+        <variable
+            name="viewModel"
+            type="com.babilonia.presentation.flow.main.listing.ListingViewModel" />
+
+        <variable
+            name="mode"
+            type="com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                tools:context=".presentation.flow.main.listing.ListingFragment">
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vpListingImages"
+                    android:layout_width="0dp"
+                    android:layout_height="240dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:background="@color/light_gray" />
+
+                <View
+                    android:id="@+id/imageGradient"
+                    android:layout_width="0dp"
+                    android:layout_height="94dp"
+                    android:background="@drawable/listing_image_gradient"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/vpListingImages" />
+
+
+                <ImageView
+                    android:id="@+id/tvListingMap"
+                    android:layout_width="0dp"
+                    android:layout_height="96dp"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                    android:src="@color/silver"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvListingAddress" />
+
+                <include
+                    android:id="@+id/pin"
+                    layout="@layout/map_pin"
+                    android:layout_width="34dp"
+                    android:layout_height="36dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvListingMap"
+                    app:layout_constraintEnd_toEndOf="@+id/tvListingMap"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingMap"
+                    app:layout_constraintTop_toTopOf="@+id/tvListingMap" />
+
+                <TextView
+                    android:id="@+id/tvListingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:letterSpacing="0.06"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@id/btnBack"
+                    app:layout_constraintTop_toTopOf="@id/btnBack"
+                    app:layout_constraintBottom_toTopOf="@id/tvListingSubtitle"
+                    tools:text="Preview" />
+
+                <TextView
+                    android:id="@+id/tvListingSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_roman"
+                    android:letterSpacing="0.06"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingTitle"
+                    app:layout_constraintBottom_toBottomOf="@id/btnBack"
+                    tools:text="Unpublished listing" />
+
+                <TextView
+                    android:id="@+id/tvListingImagesCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                    android:layout_marginBottom="9dp"
+                    android:background="@drawable/listing_images_shape"
+                    android:drawableStart="@drawable/ic_camera_small"
+                    android:drawablePadding="4dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="center"
+                    android:letterSpacing="0.01"
+                    android:lineSpacingExtra="10sp"
+                    android:padding="4dp"
+                    android:text="@{Integer.toString(viewModel.listingLiveData.images.size())}"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/vpListingImages"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="2" />
+
+                <TextView
+                    android:id="@+id/tvDaysLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:textColor="@color/steel"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/vpListingImages"
+                    tools:text="25 days left" />
+
+                <TextView
+                    android:id="@+id/tvPublishDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:textColor="@color/steel"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@id/tvDaysLeft"
+                    app:layout_constraintTop_toBottomOf="@+id/vpListingImages"
+                    tools:text="20 Oct 2020" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivPlanIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/transparent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvPlanName"
+                    app:layout_constraintBottom_toBottomOf="@id/tvPlanName"/>
+
+                <TextView
+                    android:id="@+id/tvPlanName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:textColor="@color/steel"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@id/ivPlanIcon"
+                    app:layout_constraintTop_toBottomOf="@+id/vpListingImages"
+                    tools:text="Premium Listing" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierPublishInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="ivPlanIcon,tvDaysLeft"/>
+
+                <TextView
+                    android:id="@+id/tvListingPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:letterSpacing="0.03"
+                    android:lines="1"
+                    android:maxLength="15"
+                    android:text="@{'$'+ NumberFormat.getInstance(Locale.US).format(viewModel.listingLiveData.price)}"
+                    android:textColor="@color/black"
+                    android:textSize="26sp"
+                    app:autoSizeMaxTextSize="26sp"
+                    app:autoSizeMinTextSize="16sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintEnd_toStartOf="@id/tvListingPriceMeter"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/barrierPublishInfo"
+                    tools:text="$ 730,900,9585988989894984984984984995,9" />
+
+                <TextView
+                    android:id="@+id/tvListingPriceMeter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_roman"
+                    android:letterSpacing="0.01"
+                    android:lineSpacingExtra="10sp"
+                    android:lines="1"
+                    android:textColor="@color/listing_bottombar_gray"
+                    android:textSize="14sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tvListingPrice"
+                    app:layout_constraintEnd_toStartOf="@+id/tvListingAvatar"
+                    app:layout_constraintStart_toEndOf="@+id/tvListingPrice"
+                    tools:text="$ 5450                                            /m2" />
+
+                <TextView
+                    android:id="@+id/tvListingUserName"
+                    android:layout_width="84dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="0.03"
+                    android:maxLines="2"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/tvListingAvatar"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingAvatar"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingAvatar"
+                    tools:text="Abdul H." />
+
+                <TextView
+                    android:id="@+id/tvListingType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="9dp"
+                    android:drawableStart="@drawable/ic_apartment_small"
+                    android:drawablePadding="6dp"
+                    android:drawableTint="@android:color/white"
+                    android:gravity="center"
+                    android:letterSpacing="0.01"
+                    android:lineSpacingExtra="8sp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingPrice"
+                    tools:background="@color/sale_color"
+                    tools:ignore="TextViewEdits"
+                    tools:text="Apartments for sale" />
+
+                <Space
+                    android:id="@+id/spaceBelowListingType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="8dp"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingType"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingType" />
+
+                <TextView
+                    android:id="@+id/tvPetFriendly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/pet_friendly_shape"
+                    android:drawableStart="@drawable/ic_pet_friendly"
+                    android:drawablePadding="6dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="center"
+                    android:letterSpacing="0.01"
+                    android:padding="4dp"
+                    android:text="@string/pet_friendly"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="10sp"
+                    app:layout_constraintTop_toTopOf="@id/tvListingType"
+                    app:layout_constraintBottom_toBottomOf="@id/tvListingType"
+                    app:layout_constraintStart_toEndOf="@+id/tvListingType" />
+
+                <TextView
+                    android:id="@+id/tvListingBeds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="end"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@{@plurals/beds_plural(viewModel.listingLiveData.bedroomsCount != null ? viewModel.listingLiveData.bedroomsCount : 0, viewModel.listingLiveData.bedroomsCount)}"
+                    android:textColor="@color/description_color"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/tvListingBath"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingType"
+                    app:layout_constraintTop_toBottomOf="@+id/spaceBelowListingType"
+                    app:layout_goneMarginTop="20dp"
+                    tools:text="3 beds"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tvListingBath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="end"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@{@plurals/baths_plural(viewModel.listingLiveData.bathroomsCount != null ? viewModel.listingLiveData.bathroomsCount : 0, viewModel.listingLiveData.bathroomsCount)}"
+                    android:textColor="@color/description_color"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/tvListingParking"
+                    app:layout_constraintStart_toEndOf="@+id/tvListingBeds"
+                    app:layout_constraintTop_toBottomOf="@+id/spaceBelowListingType"
+                    app:layout_goneMarginTop="20dp"
+                    tools:text="3 beds"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tvListingParking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:gravity="end"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@{@plurals/parkings_short_plural(viewModel.listingLiveData.parkingSlotsCount != null ? viewModel.listingLiveData.parkingSlotsCount : 0, viewModel.listingLiveData.parkingSlotsCount.toString())}"
+                    android:textColor="@color/description_color"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@id/tvListingParkingForVisitors"
+                    app:layout_constraintStart_toEndOf="@+id/tvListingBath"
+                    app:layout_constraintTop_toBottomOf="@+id/spaceBelowListingType"
+                    tools:text="3 beds" />
+
+                <TextView
+                    android:id="@+id/tvListingParkingForVisitors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:drawablePadding="8dp"
+                    android:gravity="end"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/parking_for_visitors_short"
+                    android:textColor="@color/description_color"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvListingParking"
+                    app:layout_constraintTop_toBottomOf="@+id/spaceBelowListingType"
+                    tools:text="3 beds" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="tvListingBath,tvListingBeds,tvListingParking"/>
+
+                <TextView
+                    android:id="@+id/tvTotalAreaPrefix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_roman"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/total_area_prefix"
+                    android:textColor="@color/steel"
+                    android:textSize="14sp"
+                    android:visibility="@{viewModel.listingLiveData.area == 0 ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/barrierDetails"
+                    tools:text="3 beds" />
+
+                <TextView
+                    android:id="@+id/tvTotalArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:layout_marginStart="2dp"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@{@string/area_numb(NumberFormat.getInstance(Locale.US).format(viewModel.listingLiveData.area))}"
+                    android:textColor="@color/description_color"
+                    android:textSize="12sp"
+                    android:visibility="@{viewModel.listingLiveData.area == 0 ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toEndOf="@id/tvTotalAreaPrefix"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tvTotalAreaPrefix"
+                    tools:text="3 beds" />
+
+                <TextView
+                    android:id="@+id/tvCoveredAreaPrefix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_roman"
+                    android:drawablePadding="8dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="8dp"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/built_area_prefix"
+                    android:textColor="@color/steel"
+                    android:textSize="14sp"
+                    android:visibility="@{viewModel.listingLiveData.builtArea == 0 ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toEndOf="@id/tvTotalArea"
+                    app:layout_constraintTop_toBottomOf="@+id/barrierDetails"
+                    tools:text="3 beds"
+                    app:drawableStartCompat="@drawable/gray_circle" />
+
+                <TextView
+                    android:id="@+id/tvCoveredArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:layout_marginStart="2dp"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@{@string/area_numb(NumberFormat.getInstance(Locale.US).format(viewModel.listingLiveData.builtArea))}"
+                    android:textColor="@color/description_color"
+                    android:textSize="12sp"
+                    android:visibility="@{viewModel.listingLiveData.builtArea == 0 ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toEndOf="@id/tvCoveredAreaPrefix"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tvCoveredAreaPrefix"
+                    tools:text="3 beds" />
+
+                <TextView
+                    android:id="@+id/tvListingAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                    android:drawableStart="@drawable/ic_place"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenit_medium"
+                    android:gravity="center_vertical"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@{viewModel.listingLiveData.locationAttributes.address}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    tools:text="409 Cummings Trafficway" />
+
+                <TextView
+                    android:id="@+id/tvListingAbout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:letterSpacing="0.05"
+                    android:text="@string/about_this_home"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingMap"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingMap" />
+
+                <TextView
+                    android:id="@+id/tvListingYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="21dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenit_medium"
+                    android:gravity="center"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@{@string/built_in(viewModel.listingLiveData.yearOfConstruction)}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingAbout"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout"
+                    tools:text="Built in 1992" />
+
+                <TextView
+                    android:id="@+id/tvTotalFloors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="21dp"
+                    android:layout_marginStart="8dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenit_medium"
+                    android:gravity="center"
+                    android:lineSpacingExtra="6sp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/tvListingYear"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout"
+                    tools:text="5 total floors"
+                    app:drawableStartCompat="@drawable/gray_circle" />
+
+                <TextView
+                    android:id="@+id/tvFloorNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="21dp"
+                    android:layout_marginStart="8dp"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="@font/avenit_medium"
+                    android:gravity="center"
+                    android:lineSpacingExtra="6sp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/tvTotalFloors"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout"
+                    tools:text="2nd floor"
+                    app:drawableStartCompat="@drawable/gray_circle" />
+
+                <TextView
+                    android:id="@+id/tvListingDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_roman"
+                    android:lineSpacingExtra="10sp"
+                    android:text="@{viewModel.listingLiveData.description}"
+                    android:textColor="@color/description_color"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingYear"
+                    tools:text="But before you unpack, just check to make sure whether the Island has been affected. We have had many tropical storm warnings over the years, but ... Florida we’ve been extremely fortunate. In " />
+
+                <TextView
+                    android:id="@+id/tvListingShowMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableEnd="@drawable/ic_arrow_down_thirty"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="0.03"
+                    android:onClick="@{()->viewModel.navigateToDescription(viewModel.listingLiveData.description)}"
+                    android:text="@string/show_more"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvListingDescription" />
+
+                <TextView
+                    android:id="@+id/tvFacilities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:letterSpacing="0.05"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/facilities"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingDescription"
+                    app:layout_constraintTop_toBottomOf="@id/tvListingShowMore" />
+
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/light_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTotalAreaPrefix"
+                    app:layout_goneMarginTop="20dp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:onClick="@{()->viewModel.onBackPressed()}"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_back_grey"
+                    android:tint="@android:color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcFacilitiesContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvFacilities"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:spanCount="2"
+                    tools:listitem="@layout/list_item_listing_facility" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btExitListing"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:fontFamily="@font/avenir_heavy"
+                    android:letterSpacing="0.01"
+                    android:onClick="@{()->viewModel.onExitClicked()}"
+                    android:text="@string/exit"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:visibility="@{mode == ListingDisplayMode.PREVIEW ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/btEditListing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:letterSpacing="0.01"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_edit_grey"
+                    android:tint="@android:color/white"
+                    android:visibility="@{mode == ListingDisplayMode.PUBLISHED || mode == ListingDisplayMode.UNPUBLISHED? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/ivFavorite"
+                    android:theme="@style/CheckboxCustomStyle"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="16dp"
+                    android:button="@drawable/favourite_checkbox"
+                    android:checked="@={viewModel.listingLiveData.favourite}"
+                    android:visibility="@{mode == ListingDisplayMode.IMPROPER_LISTING ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_heart_24dp" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/tvListingAvatar"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/barrierPublishInfo"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/avatars" />
+
+                <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+                    android:id="@+id/pagerIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/create_listing_margin_left_right"
+                    app:layout_constraintBottom_toBottomOf="@id/vpListingImages"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:spi_dotColor="@color/pager_dot_color"
+                    app:spi_dotSelectedColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tvAdvancedDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:letterSpacing="0.05"
+                    android:text="@string/advanced_details"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvListingMap"
+                    app:layout_constraintTop_toBottomOf="@+id/rcFacilitiesContainer" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAdvancedDetailsContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="80dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvAdvancedDetails"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:spanCount="2"
+                    tools:listitem="@layout/list_item_listing_facility" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/btListingAction"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/rounded_corners_shape_4dp"
+            android:backgroundTint="@color/colorAccent"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/tvListingActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.06"
+                android:text="@string/apply_filters"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvListingActionHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenit_medium"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.06"
+                android:text="@string/contact_button_hint"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
