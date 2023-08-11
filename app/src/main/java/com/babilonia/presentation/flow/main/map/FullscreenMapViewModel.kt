@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.babilonia.android.geo.AppOrientationProvider
 import com.babilonia.data.model.DataResult
 import com.babilonia.data.model.geo.LocationRequest
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.RouteStep
 import com.babilonia.domain.model.geo.ILocation
@@ -12,6 +13,7 @@ import com.babilonia.domain.usecase.CurrentLocationSubscriberUseCase
 import com.babilonia.domain.usecase.GetListingUseCase
 import com.babilonia.domain.usecase.GetRouteUseCase
 import com.babilonia.presentation.base.BaseViewModel
+import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.extension.safeLet
 import com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,7 +29,7 @@ class FullscreenMapViewModel @Inject constructor(
     private val getRouteUseCase: GetRouteUseCase,
     private val orientationProvider: AppOrientationProvider
 ) : BaseViewModel() {
-
+    val authFailedData = SingleLiveEvent<Unit>()
     private val listingLiveData = MutableLiveData<Listing>()
     private val currentLocationLiveData = MutableLiveData<ILocation>()
     private val routeLiveData = MutableLiveData<List<RouteStep>>()
@@ -95,7 +97,12 @@ class FullscreenMapViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, GetListingUseCase.Params(
             id = listingId,

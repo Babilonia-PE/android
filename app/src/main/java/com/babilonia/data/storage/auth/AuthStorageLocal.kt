@@ -18,6 +18,7 @@ import javax.inject.Named
 // Created by Anton Yatsenko on 06.06.2019.
 private const val TOKEN = "token"
 private const val REFRESH = "refresh"
+private const val VALIDATE_DEFAULT_LOCATION = "validate_default_location"
 
 class AuthStorageLocal @Inject constructor(
     @Named(LOCAL) private val config: RealmConfiguration,
@@ -51,6 +52,14 @@ class AuthStorageLocal @Inject constructor(
         }
     }
 
+    override fun isValidateDefaultLocation(): Boolean {
+        return prefs.getBoolean(VALIDATE_DEFAULT_LOCATION, false)
+    }
+
+    override fun setValidateDefaultLocation(status: Boolean) {
+        prefs.edit().putBoolean(VALIDATE_DEFAULT_LOCATION, status).apply()
+    }
+
     override fun signOut(): Completable {
         return Completable.create {
             try {
@@ -59,7 +68,8 @@ class AuthStorageLocal @Inject constructor(
                         it.deleteAll()
                     }
                 }
-                prefs.edit().clear()
+//                prefs.edit().clear()
+                prefs.edit().clear().apply()
                 it.onComplete()
             } catch (e: Exception) {
                 it.onError(e)
@@ -108,6 +118,6 @@ class AuthStorageLocal @Inject constructor(
     }
 
     private fun isNew(user: UserDto): Boolean {
-        return user.firstName.isNullOrEmpty() && user.lastName.isNullOrEmpty()
+        return user.fullName.isNullOrEmpty()
     }
 }

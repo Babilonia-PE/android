@@ -10,6 +10,11 @@ class AndroidLocation(val androidLocation: Location) : ILocation {
     override var longitude: Double = androidLocation.longitude
     override var altitude: Double = androidLocation.altitude
     override var address: String? = EmptyConstants.EMPTY_STRING
+    override var department: String? = EmptyConstants.EMPTY_STRING
+    override var province: String? = EmptyConstants.EMPTY_STRING
+    override var district: String? = EmptyConstants.EMPTY_STRING
+    override var zipCode: String? = EmptyConstants.EMPTY_STRING
+    override var country: String? = EmptyConstants.EMPTY_STRING
 
     override fun toString(): String {
         return "latitude = ${latitude}; longitude = ${longitude}; altitude = ${altitude};"

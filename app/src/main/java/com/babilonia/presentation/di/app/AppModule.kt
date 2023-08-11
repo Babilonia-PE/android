@@ -3,6 +3,7 @@ package com.babilonia.presentation.di.app
 import android.content.Context
 import android.content.SharedPreferences
 import com.babilonia.presentation.di.viewmodel.ViewModelFactoryModule
+import com.facebook.appevents.AppEventsLogger
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -24,4 +25,8 @@ class AppModule(var context: Context) {
     @Singleton
     fun provideSharedPrefrences(): SharedPreferences =
         context.getSharedPreferences(BABILONIA_PREFS, Context.MODE_PRIVATE)
+
+    @Provides
+    @Singleton
+    fun provideFbLogger() = AppEventsLogger.newLogger(context)
 }

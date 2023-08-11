@@ -10,6 +10,9 @@ open class ListingJson {
     @SerializedName("id")
     var id: Long = UUID.randomUUID().hashCode().toLong()
 
+    @SerializedName("url")
+    var url: String? = null
+
     @SerializedName("listing_type")
     var listingType: String? = null
 
@@ -17,7 +20,7 @@ open class ListingJson {
     var propertyType: String? = null
 
     @SerializedName("price")
-    var price: Int? = null
+    var price: Long? = null
 
     @SerializedName("description")
     var description: String? = null
@@ -73,6 +76,9 @@ open class ListingJson {
     @SerializedName("user")
     var user: UserJson? = null
 
+    @SerializedName("contact")
+    var contact: ContactJson? = null
+
     @SerializedName("facilities")
     var facilities: List<FacilityJson> = mutableListOf()
 
@@ -88,7 +94,7 @@ open class ListingJson {
     @SerializedName("views_count")
     var viewsCount: Int = 0
 
-    @SerializedName("contact_views_count")
+    @SerializedName("contacts_count")
     var contactedCount: Int = 0
 
     @SerializedName("favourites_count")
@@ -99,6 +105,9 @@ open class ListingJson {
 
     @SerializedName("state")
     var publishState: String? = null
+
+    @SerializedName("publisher_role")
+    var publisherRole: String? = null
 
     @SerializedName("created_at")
     var createdAt: String? = null

@@ -3,14 +3,12 @@ package com.babilonia.data.storage.auth
 import android.webkit.MimeTypeMap
 import com.babilonia.EmptyConstants
 import com.babilonia.data.datasource.AuthDataSourceRemote
-import com.babilonia.data.network.model.AuthRequest
-import com.babilonia.data.network.model.AuthResponse
-import com.babilonia.data.network.model.BaseResponse
-import com.babilonia.data.network.model.RefreshTokenRequest
+import com.babilonia.data.network.model.*
 import com.babilonia.data.network.model.json.AppConfigJson
-import com.babilonia.data.network.model.json.UpdateUserJson
+import com.babilonia.data.network.model.json.ImageJson
 import com.babilonia.data.network.model.json.UserJson
 import com.babilonia.data.network.service.AuthService
+import com.babilonia.data.network.service.NewAuthService
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -20,25 +18,49 @@ import java.io.File
 import javax.inject.Inject
 
 // Created by Anton Yatsenko on 27.05.2019.
-class AuthStorageRemote @Inject constructor(private var authService: AuthService) : AuthDataSourceRemote {
+class AuthStorageRemote @Inject constructor(
+    private var authService: AuthService,
+    private var newAuthService: NewAuthService,
+) : AuthDataSourceRemote {
     override fun getAppConfig(): Single<AppConfigJson> {
-        return authService.getAppConfig().map { it.data }
+        return newAuthService.getAppConfig().map { it.data }
     }
 
     override fun getUser(): Single<UserJson> {
-        return authService.getUser().map { it.data }
+        return newAuthService.getUser().map { it.data }
     }
 
-    override fun updateUser(updateUserJson: UpdateUserJson): Single<UserJson> {
-        val baseResponse = BaseResponse(updateUserJson)
-        return authService.updateUser(baseResponse)
-            .map { it.data }
-    }
-
-    override fun uploadUserAvatar(
-        avatar: String, firstName: String, lastName: String, email: String
+    override fun updateUser(
+        fullName: String,
+        email: String,
+        phoneNumber: String,
+        password: String?,
+        photoId: Int?
     ): Single<UserJson> {
-        val image = File(avatar)
+        //val fullNamePart = MultipartBody.Part.createFormData("data[full_name]", fullName)
+        //val emailPart = MultipartBody.Part.createFormData("data[email]", email)
+
+        var photo: List<Int>? = null
+        photoId?.let {
+            photo = arrayListOf(it)
+        }
+
+        return newAuthService.updateUser(
+            UpdateUserRequest(
+                fullName,
+                email,
+                phoneNumber,
+                password.isNullOrEmpty().not(),
+                password,
+                photo
+            )
+        ).map { it.data }
+    }
+
+    override fun uploadImages(
+        image: String, type: String
+    ): Single<List<ImageJson>> {
+        val image = File(image)
         val mediaType = MediaType.parse(
             MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                 MimeTypeMap.getFileExtensionFromUrl(
@@ -49,12 +71,11 @@ class AuthStorageRemote @Inject constructor(private var authService: AuthService
         val body = RequestBody.create(
             mediaType, image
         )
-        val avatarPart = MultipartBody.Part.createFormData("data[avatar]", image.name, body)
-        val firstNamePart = MultipartBody.Part.createFormData("data[first_name]", firstName)
-        val lastNamePart = MultipartBody.Part.createFormData("data[last_name]", lastName)
-        val emailPart = MultipartBody.Part.createFormData("data[email]", email)
-        return authService.uploadUserAvatar(avatarPart, firstNamePart, lastNamePart, emailPart)
-            .map { it.data }
+        val imagePart = MultipartBody.Part.createFormData("photo[]", image.name, body)
+        val sourcePart = MultipartBody.Part.createFormData("source", "android")
+        val typePart = MultipartBody.Part.createFormData("type", type)
+        return newAuthService.uploadImages(imagePart, sourcePart, typePart)
+            .map { it.data.ids }
     }
 
     override fun refreshToken(token: String): Call<BaseResponse<AuthResponse>> {
@@ -64,5 +85,51 @@ class AuthStorageRemote @Inject constructor(private var authService: AuthService
     override fun authenticate(authRequest: AuthRequest): Single<AuthResponse> {
         return authService.authenticate(authRequest)
             .map { it.data }
+    }
+
+    override fun signUp(
+        fullName: String,
+        email: String,
+        password: String,
+        phoneNumber: String,
+        ipAddress: String,
+        userAgent: String,
+        signProvider: String
+    ): Single<SignUpResponse> {
+        return newAuthService.signUp(
+            SignUpRequest(
+                fullName,
+                email,
+                password,
+                phoneNumber,
+                ipAddress,
+                userAgent,
+                signProvider
+            )
+        )
+            .map { it.data }
+    }
+
+    override fun logIn(
+        email: String,
+        password: String,
+        ipAddress: String,
+        userAgent: String,
+        signProvider: String
+    ): Single<LogInResponse> {
+        return newAuthService.logIn(
+            LogInRequest(
+                email,
+                password,
+                ipAddress,
+                userAgent,
+                signProvider
+            )
+        )
+            .map { it.data }
+    }
+
+    override fun deleteAccount(): Single<BaseResponse<Any>> {
+        return newAuthService.deleteAccount()
     }
 }

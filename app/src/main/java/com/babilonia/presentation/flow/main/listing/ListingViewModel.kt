@@ -5,6 +5,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import com.babilonia.EmptyConstants
 import com.babilonia.R
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.enums.ListingAction
 import com.babilonia.domain.model.enums.ListingActionMode
@@ -12,6 +13,7 @@ import com.babilonia.domain.usecase.*
 import com.babilonia.presentation.base.BaseViewModel
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode
+import com.babilonia.presentation.flow.main.publish.mylistings.MyListingsFragmentDirections
 import com.babilonia.presentation.flow.main.publish.mylistings.common.NewListingOpenMode
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
@@ -19,22 +21,25 @@ import javax.inject.Inject
 
 const val DESCRIPTION = "description"
 const val ID = "id"
+const val ACTIVE_TAB = "activeTab"
 
 class ListingViewModel @Inject constructor(
     private val getListingUseCase: GetListingUseCase,
     private val createListingUseCase: CreateListingUseCase,
     private val listingActionUseCase: ListingActionUseCase,
     private val getUserIdUseCase: GetUserIdUseCase,
-    private val updateListingUseCase: UpdateListingUseCase
+    private val updateListingUseCase: UpdateListingUseCase,
+    private val sendActionUseCase: SendActionUseCase
 ) : BaseViewModel(), CompoundButton.OnCheckedChangeListener {
-
+    val authFailedData = SingleLiveEvent<Unit>()
     val listingLiveData = MutableLiveData<Listing>()
-    val contactOwnerLiveData = SingleLiveEvent<String>()
     val userIdLiveData = MutableLiveData<Long>()
     val onBackPressedLiveData = SingleLiveEvent<Unit>()
     val listingCreatedLiveData = SingleLiveEvent<Unit>()
     var listingId = EmptyConstants.EMPTY_LONG
     var displayMode = ListingDisplayMode.IMPROPER_LISTING
+    val viewLoadedData = MutableLiveData<Boolean>(false)
+    var ipAddress = ""
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
 
@@ -51,8 +56,14 @@ class ListingViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
-                e.printStackTrace()
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else {
+                    dataError.postValue(e)
+                    e.printStackTrace()
+                }
             }
 
         }, params)
@@ -61,11 +72,17 @@ class ListingViewModel @Inject constructor(
     fun getUserId() {
         getUserIdUseCase.execute(object : DisposableSingleObserver<Long>() {
             override fun onSuccess(userId: Long) {
-                userIdLiveData.value = userId
+                if (userIdLiveData.value != userId)
+                    userIdLiveData.value = userId
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, Unit)
     }
@@ -100,44 +117,92 @@ class ListingViewModel @Inject constructor(
         } else {
             ListingActionMode.DELETE
         }
-        listingActionUseCase.execute(object : DisposableCompletableObserver() {
-            override fun onComplete() {
-            }
+        listingActionUseCase.execute(
+            object : DisposableCompletableObserver() {
+                override fun onComplete() {
+                }
 
-            override fun onError(e: Throwable) {
-                dataError.postValue(e)
-            }
+                override fun onError(e: Throwable) {
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else
+                        dataError.postValue(e)
+                }
 
-        }, ListingActionUseCase.Params(listingLiveData.value?.id, ListingAction.FAVOURITE, mode))
+            }, ListingActionUseCase.Params(
+                listingLiveData.value?.id,
+                ListingAction.FAVOURITE,
+                mode,
+                ipAddress,
+                "android",
+                "email"
+            )
+        )
     }
 
     fun contactOwner() {
-        listingActionUseCase.execute(object : DisposableCompletableObserver() {
-            override fun onComplete() {
-                listingLiveData.value?.user?.phoneNumber?.let {
-                    contactOwnerLiveData.value = it
+        listingActionUseCase.execute(
+            object : DisposableCompletableObserver() {
+                override fun onComplete() {}
+
+                override fun onError(e: Throwable) {
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else
+                        dataError.postValue(e)
                 }
-            }
+
+            }, ListingActionUseCase.Params(
+                listingLiveData.value?.id,
+                ListingAction.PHONE_VIEW,
+                ListingActionMode.SET,
+                ipAddress,
+                "android",
+                "email"
+            )
+        )
+    }
+
+    /*fun triggerView() {
+        listingActionUseCase.execute(object : DisposableCompletableObserver() {
+            override fun onComplete() { }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
 
         }, ListingActionUseCase.Params(
             listingLiveData.value?.id,
-            ListingAction.CONTACT_VIEW,
+            ListingAction.VIEWS_VIEW,
             ListingActionMode.SET
         ))
-    }
+    }*/
 
     fun getListing(mode: ListingDisplayMode) {
         getListingUseCase.execute(object : DisposableSingleObserver<Listing>() {
             override fun onSuccess(listing: Listing) {
+//                val firstTime = listingLiveData.value == null
                 listingLiveData.value = listing
+//                if(firstTime)
+//                    triggerView()
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
 
         }, GetListingUseCase.Params(listingId, mode))
@@ -145,7 +210,9 @@ class ListingViewModel @Inject constructor(
 
     fun navigateToListOfListings(currentDisplayMode: ListingDisplayMode) {
         resetListingId()
-        navigate(ListingFragmentDirections.actionListingFragmentToMyListingsFragment(currentDisplayMode))
+//        navigate(ListingFragmentDirections.actionListingFragmentToMyListingsFragment(currentDisplayMode))
+        val bundle = bundleOf(ACTIVE_TAB to currentDisplayMode)
+        navigate(R.id.action_listingFragment_to_myListingsFragment, bundle)
     }
 
     fun onExitClicked() {
@@ -170,10 +237,33 @@ class ListingViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    dataError.postValue(e)
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else
+                        dataError.postValue(e)
                 }
             }, it)
         }
 
+    }
+
+    fun onWhatsappClicked(id: Long) {
+        sendActionUseCase.execute(
+            object : DisposableCompletableObserver() {
+                override fun onComplete() {}
+
+                override fun onError(e: Throwable) {
+                    //dataError.postValue(e)
+                }
+            }, SendActionUseCase.Params(
+                id,
+                ListingAction.WHATSAPP_VIEW,
+                ipAddress,
+                "android",
+                "email"
+            )
+        )
     }
 }

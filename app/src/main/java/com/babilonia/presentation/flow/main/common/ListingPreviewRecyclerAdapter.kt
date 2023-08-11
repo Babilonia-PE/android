@@ -122,7 +122,7 @@ class ListingPreviewRecyclerAdapter(
             )
             vpImages.adapter =
                 ListingImagesPagerAdapter(listing.images, 16) {
-                    listing.id?.let { id -> listener.onPreviewClicked(id) }
+                    listener.onPreviewClicked(listing)
                 }
             pagerIndicator.attachToPager(vpImages)
             tvImagesCount.text = listing.images?.size.toString()
@@ -151,7 +151,7 @@ class ListingPreviewRecyclerAdapter(
             }
 
             holder.itemView.setOnClickListener {
-                listing.id?.let { id -> listener.onPreviewClicked(id) }
+                listener.onPreviewClicked(listing)
             }
         }
     }

@@ -11,7 +11,7 @@ data class Listing(
     var id: Long?,
     var listingType: String?,
     var propertyType: String?,
-    var price: Int?,
+    var price: Long?,
     var description: String?,
     var bathroomsCount: Int?,
     var bedroomsCount: Int?,
@@ -29,7 +29,8 @@ data class Listing(
     var advancedDetails: List<Facility>?,
     var images: List<ListingImage>?,
     var user: User? = null,
-    var status: String,
+    var contact: Contact? = null,
+    var status: String? = null,
     var isDraft: Boolean = false,
     var isFavourite: Boolean,
     var viewsCount: Int= 0,
@@ -37,10 +38,12 @@ data class Listing(
     var favoritesCount: Int = 0,
     var adPlan: PaymentPlanKey? = null,
     var publishState: PublishState? = null,
+    var publisherRole: String? = null,
     var createdAt: String? = null,
     var updatedAt: String? = null,
     var adPurchasedAt: String? = null,
-    var adExpiresAt: String? = null
+    var adExpiresAt: String? = null,
+    var url: String? = null,
     ) : ClusterItem {
     override fun getSnippet(): String {
         return EmptyConstants.EMPTY_STRING
@@ -64,6 +67,7 @@ data class Listing(
         other as Listing
 
         if (id != other.id) return false
+        if (url != other.url) return false
         if (listingType != other.listingType) return false
         if (propertyType != other.propertyType) return false
         if (price != other.price) return false
@@ -88,6 +92,7 @@ data class Listing(
 
     override fun hashCode(): Int {
         var result = id ?: 0
+        result = 31 * result + (url?.hashCode() ?: 0)
         result = 31 * result + (listingType?.hashCode() ?: 0)
         result = 31 * result + (propertyType?.hashCode() ?: 0)
         result = 31 * result + (price ?: 0)
@@ -98,7 +103,7 @@ data class Listing(
         result = 31 * result + (area ?: 0)
         result = 31 * result + (builtArea ?: 0)
         result = 31 * result + (petFriendly?.hashCode() ?: 0)
-        result = 31 * result + (locationAttributes?.hashCode() ?: 0)
+        result = 31 * result + locationAttributes.hashCode()
         result = 31 * result + (yearOfConstruction ?: 0)
         result = 31 * result + (primaryImageId ?: 0)
         result = 31 * result + facilities.hashCode()
@@ -123,6 +128,7 @@ data class Listing(
 
     fun setFrom(another: Listing) {
         id = another.id
+        url = another.url
         listingType = another.listingType
         propertyType = another.propertyType
         price = another.price
@@ -139,6 +145,7 @@ data class Listing(
         facilities = another.facilities
         images = another.images
         user = another.user
+        contact = another.contact
         status = another.status
         isDraft = another.isDraft
         isFavourite = another.isFavourite
@@ -147,6 +154,7 @@ data class Listing(
         favoritesCount = another.favoritesCount
         adPlan = another.adPlan
         publishState = another.publishState
+        publisherRole = another.publisherRole
         createdAt = another.createdAt
         updatedAt = another.updatedAt
         adPurchasedAt = another.adPurchasedAt

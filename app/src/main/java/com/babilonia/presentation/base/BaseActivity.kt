@@ -2,6 +2,7 @@ package com.babilonia.presentation.base
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.facebook.appevents.AppEventsLogger
 import dagger.android.support.DaggerAppCompatActivity
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
@@ -12,6 +13,9 @@ abstract class BaseActivity<VM : BaseViewModel> : DaggerAppCompatActivity() {
     val viewModel: VM by lazy { ViewModelProviders.of(this, viewModelFactory).get(getViewModelClass()) }
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var fbLogger: AppEventsLogger
 
     abstract fun startListenToEvents()
     abstract fun stopListenToEvents()

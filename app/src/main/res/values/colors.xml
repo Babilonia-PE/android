@@ -78,4 +78,6 @@
 
     <color name="paymentPlanPlus">#fcb719</color>
     <color name="paymentPlanPremium">#005291</color>
+
+    <color name="colorError">#B00020</color>
 </resources>

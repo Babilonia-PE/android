@@ -4,69 +4,92 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.text.InputFilter
+import android.net.Uri
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.method.DigitsKeyListener
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Observer
+import androidx.core.widget.doAfterTextChanged
 import com.babilonia.BuildConfig
+import com.babilonia.Constants
+import com.babilonia.Constants.BUNDLE_PAYMENT_MESSAGE
 import com.babilonia.R
 import com.babilonia.databinding.FragmentCheckoutBinding
 import com.babilonia.domain.model.enums.PaymentPlanKey
 import com.babilonia.presentation.base.BaseFragment
+import com.babilonia.presentation.extension.gone
 import com.babilonia.presentation.extension.invisible
 import com.babilonia.presentation.extension.visible
 import com.babilonia.presentation.flow.main.payment.PaymentActivitySharedViewModel
 import com.babilonia.presentation.utils.PriceFormatter
-import com.babilonia.presentation.utils.payment.StripeHelper
-import com.stripe.android.model.CardBrand
-import com.stripe.android.model.CardParams
-import com.stripe.android.model.ConfirmPaymentIntentParams
-import com.stripe.android.model.PaymentMethodCreateParams
+import com.babilonia.presentation.utils.SvgUtil.formatByGroup
+import com.babilonia.presentation.utils.SvgUtil.formatExpiryDate
+import com.babilonia.presentation.utils.SvgUtil.removeCharacter
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.fragment_checkout.*
+import java.util.*
 
 class CheckoutFragment : BaseFragment<FragmentCheckoutBinding, PaymentActivitySharedViewModel>() {
 
-    private var currentCardBrand = CardBrand.Unknown
-    private val stripeHelper = StripeHelper()
-    private var paymentParams: PaymentMethodCreateParams? = null
     private var progressDialog: AlertDialog? = null
+
+    companion object {
+        private const val DIM_GROUP_CARD   = 4
+        private const val DIM_GROUP_DATE   = 2
+        private const val CARD_MIN_LENGTH  = 15
+        private const val CVC_MIN_LENGTH   = 3
+        private const val DATE_EXPIRED_MAX = 5
+    }
 
     override fun viewCreated() {
         setToolbar()
         fillUiFields()
-        setCardBrand(CardBrand.Unknown)
-        listenToCardBrandChange()
-        initStripe()
+        listenToNumberCard()
+        listenToDateExpired()
+        listenToCVC()
+        listenToCardHolderName()
         setOnPayClickListener()
         observeViewModel()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        stripeHelper.onActivityResult(requestCode, resultCode, data)
-    }
-
     private fun observeViewModel() {
-        viewModel.getClientSecretLiveData().observe(this, Observer { pay(it) })
-        viewModel.getErrorLiveData().observe(this, Observer { errorMessage -> // our backend error. Unused because has no localization.
+        viewModel.getErrorLiveData().observe(this, {
             hideProgress()
-            showErrorDialog(resources.getString(R.string.error_processing_payment_backend), true)
-        })
-        viewModel.getPaymentSuccessfulLiveData().observe(this, Observer { paymentSuccessful ->
-            if (paymentSuccessful) {
-                hideProgress()
-                activity?.let {
-                    it.setResult(Activity.RESULT_OK)
-                    it.finish()
+            try{
+                it?.let{ message ->
+                    if(message.contains(resources.getString(R.string.mapper_error_copy_rxjava)))
+                        showErrorDialog(resources.getString(R.string.error_processing_payment_backend), true)
+                    else showErrorDialog(message, true)
+                }?:run{
+                    showErrorDialog(resources.getString(R.string.error_processing_payment_backend), true)
                 }
-            } else {
-                hideProgress()
+            }catch (e: Exception){
+                e.printStackTrace()
+                FirebaseCrashlytics.getInstance().recordException(e)
                 showErrorDialog(resources.getString(R.string.error_processing_payment_backend), true)
             }
         })
+
+        viewModel.getPaymentIntentLiveData().observe(this, {
+            viewModel.doPayment(getCardNumber(), getCvc(), getExpiryDate(), getCardholderName())
+        })
+
+        viewModel.getDoPaymentLiveData().observe(this, { doPayment ->
+            hideProgress()
+            activity?.let {
+                val bundle = Bundle()
+                bundle.putSerializable(BUNDLE_PAYMENT_MESSAGE, doPayment.description?:resources.getString(R.string.listing_published_successfully))
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
+            }
+        })
+
+        validateLinks(viewModel.publisherRole)
     }
 
     private fun fillUiFields() {
@@ -105,126 +128,172 @@ class CheckoutFragment : BaseFragment<FragmentCheckoutBinding, PaymentActivitySh
                 }
             }
         }
+
+        tvTermsAndConditions.setOnClickListener {
+            showConditions()
+        }
     }
 
-    private fun listenToCardBrandChange() {
-        etStripeCardNumber.doOnTextChanged { _, _, _, _ ->
-            if (currentCardBrand != etStripeCardNumber.cardBrand) {
-                setCardBrand(etStripeCardNumber.cardBrand)
+    private fun listenToNumberCard() {
+        etCardNumber.keyListener = DigitsKeyListener.getInstance(getString(R.string.limit_card_number))
+        etExpiryDate.keyListener = DigitsKeyListener.getInstance(getString(R.string.limit_card_number))
+        etCvc.keyListener        = DigitsKeyListener.getInstance(getString(R.string.limit_card_number))
+
+        etCardNumber.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                etCardNumber.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                s?.let{ editable ->
+                    if (editable.isNotEmpty()){
+                        etCardNumber.removeTextChangedListener(this)
+                        etCardNumber.setText(formatByGroup(editable.toString(), DIM_GROUP_CARD, " "))
+                        etCardNumber.setSelection(etCardNumber.text?.length?:0)
+                        etCardNumber.addTextChangedListener(this)
+                    }
+                }
             }
+        })
+    }
+
+    private fun listenToDateExpired() {
+        etExpiryDate.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                etExpiryDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                s?.let{ editable ->
+                    if (editable.isNotEmpty()){
+                        etExpiryDate.removeTextChangedListener(this)
+                        etExpiryDate.setText(formatByGroup(editable.toString(), DIM_GROUP_DATE, "/"))
+                        etExpiryDate.setSelection(etExpiryDate.text?.length?:0)
+                        etExpiryDate.addTextChangedListener(this)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun listenToCVC(){
+        etCvc.doAfterTextChanged {
+            etCvc.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         }
     }
 
-    private fun initStripe() {
-        activity?.let {
-            stripeHelper.initStripe(it.applicationContext, BuildConfig.STRIPE_KEY)
-            stripeHelper.setPaymentCallbacks(
-                onSuccess = {
-                    viewModel.checkPublishStatus()
-                },
-                onError = { errorMessage -> // Stripe error message. Unused because has no localization.
-                    hideProgress()
-                    showErrorDialog(resources.getString(R.string.error_processing_payment_stripe), false)
-                })
-        }
-    }
-
-    private fun pay(clientSecret: String) {
-        paymentParams?.let {
-            stripeHelper.pay(
-                this,
-                ConfirmPaymentIntentParams.createWithPaymentMethodCreateParams(it, clientSecret)
-            )
-            paymentParams = null
+    private fun listenToCardHolderName(){
+        etCardholderName.doAfterTextChanged{
+            etCvc.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         }
     }
 
     private fun setOnPayClickListener() {
         btnPay.setOnClickListener {
             if (isPaymentDataValid()) {
-                showProgress()
-                paymentParams = createPaymentParams()
-                viewModel.createPaymentIntent()
+                 showProgress()
+                 viewModel.createPaymentIntent()
+            }else {
+                showErrorDialog(resources.getString(R.string.please_fill_in_the_fields_correctly))
             }
         }
     }
 
     private fun isPaymentDataValid(): Boolean {
-        when {
-            isCardNumberValid().not() -> etStripeCardNumber.requestFocus()
-            isExpiryDateValid().not() -> etExpiryDate.requestFocus()
-            isCvcValid().not() -> etCvc.requestFocus()
-            isCardholderNameValid().not() -> etCardholderName.requestFocus()
+        tilCardNumber.error     = null
+        tilExpiryDate.error     = null
+        tilCvc.error            = null
+        tilCardholderName.error = null
+        return when {
+            isCardNumberValid().not()     -> {
+                etCardNumber.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorError))
+                tilCardNumber.error = " "
+                etCardNumber.requestFocus()
+                false
+            }
+            isDateValid().not()           -> {
+                etExpiryDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorError))
+                tilExpiryDate.error = " "
+                etExpiryDate.requestFocus()
+                false
+            }
+            isCvcValid().not()            -> {
+                etCvc.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorError))
+                tilCvc.error = " "
+                etCvc.requestFocus()
+                false
+            }
+            isCardholderNameValid().not() -> {
+                etCardholderName.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorError))
+                tilCardholderName.error = " "
+                etCardholderName.requestFocus()
+                false
+            }
             else -> {
-                return true
+                etCardNumber.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                etExpiryDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                etCvc.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                etCardholderName.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                true
             }
         }
-        return false
     }
 
-    private fun createPaymentParams(): PaymentMethodCreateParams? {
-        return getExpiryDate()?.let { expiryDate ->
-            PaymentMethodCreateParams.createCard(
-                CardParams(
-                    getCardNumber(),
-                    expiryDate.month,
-                    expiryDate.year,
-                    getCvc(),
-                    getCardholderName()
-                )
-            )
+    private fun isCardNumberValid(): Boolean = removeCharacter(etCardNumber.text.toString()).length>=CARD_MIN_LENGTH
+
+    private fun isDateValid(): Boolean {
+        try {
+            val dim = etExpiryDate.toString().replace(" ", "").length
+            if (dim < DATE_EXPIRED_MAX)
+                return false
+
+            val today = Calendar.getInstance()
+            val year = today.get(Calendar.YEAR).toString().substring(1, 4).toInt()
+            val month = today.get(Calendar.MONTH).toString().toInt().plus(1)
+
+            etExpiryDate.text?.toString()?.replace(" ", "")?.let { expiredDate ->
+                return if (expiredDate.contains("/")) {
+                    val arr = expiredDate.split("/")
+                    val tempYear = arr[1].toInt()
+                    val tempMonth = arr[0].toInt()
+                    when {
+                        tempYear == year -> {
+                            if (tempMonth in 1..12) {
+                                tempMonth >= month
+                            } else false
+                        }
+                        tempYear < year -> false
+                        tempYear > year -> true
+                        else -> false
+                    }
+                } else false
+            } ?: run {
+                return false
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
+            return false
         }
     }
 
-    private fun isCardNumberValid(): Boolean = etStripeCardNumber.isCardNumberValid
+    private fun isCvcValid(): Boolean = removeCharacter(etCvc.text.toString()).length >= CVC_MIN_LENGTH
 
-    private fun isExpiryDateValid(): Boolean = etExpiryDate.isDateValid
+    private fun isCardholderNameValid(): Boolean = !etCardholderName.text.isNullOrBlank()
 
-    private fun isCvcValid(): Boolean = etCvc.text.toString().length >= CVC_MIN_LENGTH
+    private fun getCardNumber() = etCardNumber.text.toString().replace(" ", "")
 
-    private fun isCardholderNameValid(): Boolean = etCardholderName.text.isNullOrBlank().not()
+    private fun getCvc() = etCvc.text.toString().replace(" ", "")
 
-    private fun getCardNumber() = etStripeCardNumber.text.toString().replace(" ", "")
+    private fun getExpiryDate() = etExpiryDate.text.toString().replace(" ", "")
 
-    private fun getCvc() = etCvc.text.toString()
-
-    private fun getExpiryDate() = etExpiryDate.validatedDate
-
-    private fun getCardholderName() = etCardholderName.text.toString()
+    private fun getCardholderName() = etCardholderName.text.toString().trim()
 
     private fun setToolbar() {
         binding.toolbar.setNavigationIcon(R.drawable.ic_close_listing)
         binding.toolbar.setNavigationOnClickListener { viewModel.navigateBack() }
-    }
-
-    private fun setCardBrand(newBrand: CardBrand) {
-        currentCardBrand = newBrand
-
-        etCvc.filters = arrayOf(InputFilter.LengthFilter(newBrand.maxCvcLength))
-
-        tilCvc.hint = if (newBrand == CardBrand.AmericanExpress) {
-            resources.getString(R.string.cvc_amex_hint)
-        } else {
-            resources.getString(R.string.cvc_number_hint)
-        }
-
-        ivCardBrand.setImageResource(newBrand.icon)
-        if (newBrand == CardBrand.Unknown) {
-            applyCardTint()
-        }
-    }
-
-    private fun applyCardTint() {
-        ivCardBrand.setImageDrawable(
-            DrawableCompat.unwrap(
-                DrawableCompat.wrap(ivCardBrand.drawable).also { compatIcon ->
-                    DrawableCompat.setTint(
-                        compatIcon.mutate(),
-                        ResourcesCompat.getColor(ivCardBrand.resources, R.color.silver_sand, null)
-                    )
-                }
-            )
-        )
     }
 
     private fun applyPlanIconTint(@ColorRes color: Int) {
@@ -263,7 +332,7 @@ class CheckoutFragment : BaseFragment<FragmentCheckoutBinding, PaymentActivitySh
         }
     }
 
-    private fun showErrorDialog(errorMessage: String?, closeActivityOnDismiss: Boolean) {
+    private fun showErrorDialog(errorMessage: String?, closeActivityOnDismiss: Boolean = false) {
         context?.let {
             AlertDialog.Builder(it)
                 .setTitle(getString(R.string.error_processing_payment))
@@ -276,7 +345,28 @@ class CheckoutFragment : BaseFragment<FragmentCheckoutBinding, PaymentActivitySh
         }
     }
 
-    companion object {
-        private const val CVC_MIN_LENGTH = 3
+    private fun validateLinks(publisherRole: String?){
+        when(publisherRole?.trim()){
+            Constants.PUBLISHER_ROLE_REALTOR -> {
+                tvByClicking.visible()
+                tvTermsAndConditions.visible()
+            }
+            Constants.PUBLISHER_ROLE_OWNER -> {
+                tvByClicking.visible()
+                tvTermsAndConditions.visible()
+            }
+            else -> {
+                tvByClicking.gone()
+                tvTermsAndConditions.gone()
+            }
+        }
+    }
+
+    private fun showConditions(){
+        val web = activity?.getString(R.string.url_terms_and_conditions) ?: ""
+        val url = BuildConfig.BASE_URL_WEB + web
+        val uri    = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 }

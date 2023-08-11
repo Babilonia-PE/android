@@ -1,5 +1,6 @@
 package com.babilonia.presentation.flow.ar
 
+import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import com.babilonia.Constants
@@ -12,6 +13,7 @@ import com.babilonia.data.model.ar.Sizebale
 import com.babilonia.data.model.ar.tag.ArObject
 import com.babilonia.data.model.ar.tag.MovableArObject
 import com.babilonia.data.model.geo.LocationRequest
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.RouteStep
 import com.babilonia.domain.model.enums.ListingAction
 import com.babilonia.domain.model.enums.ListingActionMode
@@ -28,9 +30,13 @@ import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode
 import com.babilonia.presentation.flow.main.publish.createlisting.ID
 import com.babilonia.presentation.flow.main.publish.createlisting.MODE
+import com.babilonia.presentation.flow.main.search.common.FiltersDelegate
+import com.babilonia.presentation.flow.main.search.common.FiltersDelegateImpl
+import com.babilonia.presentation.flow.main.search.model.FiltersVisibility
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.subjects.BehaviorSubject
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -41,8 +47,8 @@ class ArSceneViewModel @Inject constructor(
     private val getRouteUseCase: GetRouteUseCase,
     private val listingActionUseCase: ListingActionUseCase,
     private val getUserIdUseCase: GetUserIdUseCase
-) : BaseViewModel() {
-
+) : BaseViewModel(), FiltersDelegate by FiltersDelegateImpl() {
+    val authFailedData = SingleLiveEvent<Unit>()
     private val locationRequest = LocationRequest(
         LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
         LocationRequest.LOCATION_UPDATE_INTERVAL_SMALL
@@ -63,6 +69,12 @@ class ArSceneViewModel @Inject constructor(
     val contactOwnerLiveData = SingleLiveEvent<String>()
     val routeLiveData = MutableLiveData<List<RouteStep>>()
     val userIdLiveData = MutableLiveData<Long>()
+
+    val filtersVisibilityLiveData = MutableLiveData<FiltersVisibility>(FiltersVisibility.All())
+    var metadataUpdateSubject = BehaviorSubject.create<Boolean>()
+    val locationLiveData = MutableLiveData<ILocation>()
+
+    var ipAddress = ""
 
     lateinit var params: Params
 
@@ -85,7 +97,12 @@ class ArSceneViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, Unit)
     }
@@ -102,10 +119,22 @@ class ArSceneViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
 
-        }, ListingActionUseCase.Params(id, ListingAction.FAVOURITE, mode))
+        }, ListingActionUseCase.Params(
+            id,
+            ListingAction.FAVOURITE,
+            mode,
+            ipAddress,
+            "android",
+            "email"
+        ))
     }
 
     fun subscribeToArState(
@@ -142,13 +171,21 @@ class ArSceneViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
 
         }, ListingActionUseCase.Params(
             id,
-            ListingAction.CONTACT_VIEW,
-            ListingActionMode.SET
+            ListingAction.PHONE_VIEW,
+            ListingActionMode.SET,
+            ipAddress,
+            "android",
+            "email"
         ))
     }
 
@@ -183,7 +220,12 @@ class ArSceneViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    dataError.postValue(e)
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else
+                        dataError.postValue(e)
                 }
             }, GetRouteUseCase.Params(currentLocation, listingLocation))
         }
@@ -341,7 +383,8 @@ class ArSceneViewModel @Inject constructor(
             sceneWidth = params.sceneWidth,
             sceneHeight = params.sceneHeight,
             horizontalSpace = params.horizontalSpace,
-            verticalSpace = params.verticalSpace
+            verticalSpace = params.verticalSpace,
+            filters = getFilters()
         )
     }
 
@@ -397,7 +440,7 @@ class ArSceneViewModel @Inject constructor(
 
             override fun onNext(result: DataResult<ILocation>) {
                 when (result) {
-                    is DataResult.Success -> currentLocationLiveData.postValue(result.data)
+                    is DataResult.Success -> currentLocationLiveData.postValue(result.data!!)
                     is DataResult.Error -> result.throwable.printStackTrace()
                 }
             }
@@ -424,6 +467,17 @@ class ArSceneViewModel @Inject constructor(
 
     private fun destinationArrivalValidation(destination: MovableArObject): Boolean {
         return destination.distance <= Constants.DESTINATION_AREA_RADIUS_METERS
+    }
+
+    fun onPropertyTypeChanged(newType: String) {
+        clearTempFacilities()
+        filtersVisibilityLiveData.value = FiltersVisibility.getVisibilityByPropertyName(newType)
+    }
+
+    fun applyFilters(context: Context) {
+        applyFilters(context.resources)
+        getArStateUseCase.clear()
+        subscribeToArState(getArStateUseCaseParams(), getArStateObserver())
     }
 
     class Params(

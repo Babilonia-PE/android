@@ -64,7 +64,7 @@
             android:letterSpacing="0.06"
             android:maxLines="2"
             android:onClick="@{() -> model.navigateToEditName()}"
-            android:text="@{model.userLiveData.firstName+' '+model.userLiveData.lastName}"
+            android:text="@{model.userLiveData.fullName}"
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/ivProfileAvatar"
@@ -153,6 +153,7 @@
                     android:layout_marginTop="10dp"
                     android:letterSpacing="0.01"
                     android:lineSpacingExtra="8sp"
+                    android:onClick="@{() -> model.navigateToPhoneEdit()}"
                     android:text="@string/your_phone_number"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -162,14 +163,17 @@
 
                 <TextView
                     android:id="@+id/tvPhoneValue"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
                     android:letterSpacing="0.02"
                     android:lineSpacingExtra="6sp"
-
+                    android:onClick="@{() -> model.navigateToPhoneEdit()}"
                     android:textColor="@color/listing_bottombar_gray"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="@+id/tvPhoneTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPhoneTitle"
                     tools:text="+1 (222) 234 324" />
 

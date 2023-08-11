@@ -53,6 +53,33 @@
                 android:textSize="18sp"
                 app:fontFamily="@font/samsungsharpsans_bold" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:gravity="right|end">
+
+                <Button
+                    android:id="@+id/listingTypeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:fontFamily="@font/samsungsharpsans_medium"
+                    android:background="@color/transparent"
+                    android:drawableRight="@drawable/ic_arrow_hide_down_silver_16dp"
+                    android:text="@string/all" />
+                <Button
+                    android:id="@+id/propertyTypeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/samsungsharpsans_medium"
+                    android:drawableRight="@drawable/ic_arrow_hide_down_silver_16dp"
+                    android:background="@color/transparent"
+                    android:text="@string/all" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <include
@@ -176,6 +203,23 @@
             <include
                 android:id="@+id/clBottomListing"
                 layout="@layout/ar_scene_bottom_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clFilterRoot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".presentation.flow.ar.ArSceneFragment">
+
+            <include
+                android:id="@+id/clBottomFilter"
+                layout="@layout/ar_filters_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

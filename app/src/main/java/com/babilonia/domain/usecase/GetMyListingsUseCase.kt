@@ -8,8 +8,12 @@ import javax.inject.Inject
 
 // Created by Anton Yatsenko on 21.06.2019.
 class GetMyListingsUseCase @Inject constructor(private val listingRepository: ListingRepository) :
-    FlowableUseCase<List<Listing>, Unit>() {
-    override fun buildUseCaseFlowable(params: Unit): Flowable<List<Listing>> {
-        return listingRepository.getMyListings()
+    FlowableUseCase<List<Listing>, GetMyListingsUseCase.Params>() {
+    override fun buildUseCaseFlowable(params: Params): Flowable<List<Listing>> {
+        return listingRepository.getMyListings(state = params.state)
     }
+
+    class Params(
+        val state: String
+    )
 }

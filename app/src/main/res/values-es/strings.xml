@@ -43,6 +43,7 @@
     <string name="property_type">Tipo de inmueble</string>
     <string name="property_facilities">Comodidades</string>
     <string name="sale">Venta</string>
+    <string name="all">Todos</string>
     <string name="rent">Alquiler</string>
     <string name="for_sale">en Venta</string>
     <string name="for_rent">en Alquiler</string>
@@ -63,6 +64,11 @@
     <string name="description">Descripción</string>
     <string name="address">Dirección</string>
 
+    <string name="department">Departamento</string>
+    <string name="province">Provincia</string>
+    <string name="district">Distrito</string>
+    <string name="country">País</string>
+
     <string name="pick_selected_location">Escoger la ubicación seleccionada</string>
     <string name="cant_find_user_location">No se pudo detectar la ubicación</string>
     <string name="no_internet_connection">Sin conexión a internet</string>
@@ -75,6 +81,8 @@
     <string name="MPD_action_cancel">Cerrar</string>
     <string name="year_of_construction">Año de construcción</string>
     <string name="lets_s_start">Comencemos</string>
+    <string name="sign_up">Registrase</string>
+    <string name="log_in">INGRESAR</string>
     <string name="no_facilities_hint">%1$s no tiene comodidades, así que saltémonos este paso</string>
     <string name="no_advanced_details_hint">%1$s no tiene características adicionales, así que saltémonos este paso</string>
     <string name="no_general_details_hint">%1$s no tiene detalles generales, así que saltémonos este paso</string>
@@ -125,20 +133,24 @@
     <string name="not_published_tab_name">No Publicado</string>
     <string name="not_published">Borrador completo</string>
     <string name="expired">Expirado</string>
-    <string name="your_phone_number">Numero de teléfono</string>
+    <string name="your_phone_number">Número de teléfono</string>
     <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="phone_number">Número de teléfono</string>
     <string name="currency">Moneda</string>
     <string name="account">Cuenta</string>
     <string name="about">Sobre nosotros</string>
     <string name="terms_and_conditions">Términos y condiciones</string>
     <string name="privacy_policy">Política de privacidad</string>
-
+    <string name="terms_and_conditions_underline"><u>Términos y Condiciones de Contratación Publicitaria.</u></string>
     <string name="email_saved">¡Correo electrónico actualizado!</string>
     <string name="change_email">Cambiar correo electrónico</string>
+    <string name="change_phone_number">Cambiar número de teléfono</string>
     <string name="change">Cambiar</string>
     <string name="invalid_email">El formato de correo electrónico no es valido</string>
     <string name="email_already_taken">El correo electrónico ya ha sido tomado</string>
     <string name="change_name">Cambiar nombre</string>
+    <string name="full_name">Nombre completo</string>
     <string name="first_name">Nombre</string>
     <string name="last_name">Apellido</string>
     <string name="save">Guardar</string>
@@ -153,15 +165,21 @@
     <string name="upload_photo_progress">Actualizando foto de perfil…</string>
     <string name="first_name_empty">Ingrese su nombre</string>
     <string name="last_name_empty">Ingrese su apellido</string>
+    <string name="password_empty">Ingrese su contraseña</string>
+    <string name="invalid_phonenumber">El formato de teléfono no es valido</string>
     <string name="field_should_not_be_empty">Este campo no debe estar vacío</string>
     <string name="sing_out_title">¿Desea cerrar sesión?</string>
     <string name="sign_out_message">No podrás buscar propiedades ni recibirnotificaciones</string>
     <string name="sign_out">Cerrar sesión</string>
+    <string name="delete_account_title">¿Eliminar cuenta?</string>
+    <string name="delete_account_message">Tu cuenta será eliminada permanentemente</string>
+    <string name="delete_account">Eliminar cuenta</string>
     <string name="cancel">Cancelar</string>
     <string name="contact">Contactar</string>
     <string name="call">Llamar</string>
     <string name="contact_button_hint">Esta llamada puede incurrir costos adicionales</string>
     <string name="open">Abrir</string>
+    <string name="share">Compartir</string>
 
     <string name="edit_details">Editar detalles</string>
     <string name="unpublish">Despublicar</string>
@@ -173,7 +191,7 @@
     <string name="delete_draft">Eliminar borrador</string>
     <string name="delete">Borrar</string>
     <string name="delete_listing_success_message">Aviso eliminado con éxito</string>
-    <string name="search_by_address">Urbanización, distrito o ciudad</string>
+    <string name="search_by_address">Distrito, provincia o ciudad</string>
     <string name="no_matching_results">¡Lo sentimos! No encontramos inmuebles como el que busca…</string>
     <string name="try_change_your_search_criteria">Intente cambiar el criterio de búsqueda.</string>
     <string name="edit_listing">Editar aviso</string>
@@ -216,6 +234,17 @@
         <item>Oficina</item>
         <item>Terreno</item>
         <item>Cuarto</item>
+        <item>Local Industrial"</item>
+        <item>Terreno Agrícola</item>
+        <item>Terreno Industrial</item>
+        <item>Terreno Comercial</item>
+        <item>Casa de Campo</item>
+        <item>Casa de Playa</item>
+        <item>Edificio</item>
+        <item>Hotel</item>
+        <item>Depósito</item>
+        <item>Estacionamiento</item>
+        <item>Aires</item>
     </string-array>
 
     <string-array name="property_types_for_sorting">
@@ -231,17 +260,17 @@
 
     <string-array name="sort_types">
         <item>Relevancia</item>
-        <item>Más nuevos</item>
-        <item>Más antiguos</item>
+        <item>Publicaciones nuevas</item>
+        <item>Publicaciones antiguas</item>
         <item>Precio - Alto a bajo</item>
         <item>Precio - Bajo a alto</item>
         <item>Precio por m² - Alto a bajo</item>
         <item>Precio por m² - Bajo a alto</item>
         <item>Área – Más amplios</item>
         <item>Área - Más pequeños</item>
-        <item>Más cercanos</item>
-        <item>Más lejanos</item>
-    </string-array>
+    </string-array> <!--
+       <item>Más cercanos</item>
+        <item>Más lejanos</item>-->
 
     <string name="navigate">navegar</string>
     <string name="prefix_for">en %1$s</string>
@@ -284,6 +313,30 @@
     <string name="plan_listing">Aviso %s</string>
     <string name="listing_published_successfully">¡Aviso publicado con éxito!</string>
     <string name="listing_successfully_updated">Aviso actualizado con éxito</string>
+    <string name="permission_not_granted">Permisos no concedidos</string>
+    <string name="action_must_be_done_from_web">Esta acción lo debes realizar desde la web</string>
+    <string name="select_an_image">Selecciona un imagen</string>
+    <string name="image_could_not_be_obtained">No se ha podido obtener la imagen</string>
+
+    <string name="url_terms_and_conditions">information/terms_and_conditions</string>
+    <string name="url_privacy_policy">information/privacy_policy</string>
+    <string name="by_clicking_on_pay_you_are_accepting_our">Al hacer clic en \'Pagar\', estas aceptando nuestros&#160;</string>
+    <string name="whatsapp_message">¡Hola! Estoy muy interesado en tu propiedad publicada en Babilonia y me gustaría más información.</string>
+    <string name="whatsapp_not_installed">Whatsapp no instalado</string>
+
+    <string name="share_message">Te comparto esta propiedad publicada en Babilonia.</string>
+
+    <string name="departments_error">No se pudieron obtener los departamentos inicialmente. Se volveran a cargar otra vez.</string>
+    <string name="provinces_error">No se pudieron obtener las provincias. Seleccione otra vez un departamento.</string>
+    <string name="districts_error">No se pudieron obtener los distritos. Seleccione otra vez una provincia.</string>
+
+    <string name="card_number_hint">1234 1234 1234 1234 1234</string>
+    <string name="limit_card_number">0123456789</string>
+    <string name="card_cvc">CVC</string>
+    <string name="please_fill_in_the_fields_correctly">Por favor, complete los campos correctamente.</string>
+
+    <string name="mapper_error_copy_rxjava">The mapper function returned</string>
+    <string name="phone_number_not_available">Número de teléfono no disponible</string>
 
     <plurals name="bedrooms_plural">
         <item quantity="one">%s dormitorio</item>

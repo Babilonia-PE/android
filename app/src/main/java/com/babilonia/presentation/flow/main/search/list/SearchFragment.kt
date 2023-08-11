@@ -19,6 +19,7 @@ import com.babilonia.domain.model.geo.ILocation
 import com.babilonia.presentation.base.BaseFragment
 import com.babilonia.presentation.extension.invisible
 import com.babilonia.presentation.extension.visible
+import com.babilonia.presentation.extension.visibleOrGone
 import com.babilonia.presentation.flow.main.common.EndlessScrollListener
 import com.babilonia.presentation.flow.main.common.ListingPreviewRecyclerAdapter
 import com.babilonia.presentation.flow.main.search.ListingSearchViewModel
@@ -32,8 +33,11 @@ class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewMode
 
     private var adapter: ListingPreviewRecyclerAdapter? = null
     private var endlessScrollListener: EndlessScrollListener? = null
+
     override fun viewCreated() {
         binding.model = viewModel
+        viewModel.setIsShowScreenMap(false)
+        viewModel.clearSearchFromMap(false)
         setupRecyclerView()
         updateSortingView()
         viewModel.getUserId()
@@ -80,6 +84,7 @@ class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewMode
                 topListingsVisibilityLiveData.value?.let {
                     adapter?.setTopListingsVisible(it)
                 }
+                updateEmptyStateVisibility()
                 updateSortingVisibility()
             })
             topListingsVisibilityLiveData.observe(this@SearchFragment, Observer {
@@ -87,7 +92,15 @@ class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewMode
                 updateEmptyStateVisibility()
                 updateSortingVisibility()
             })
+
+            isLoading.observe(this@SearchFragment, Observer{
+                hideLoading(it)
+            })
         }
+    }
+
+    private fun hideLoading(status: Boolean){
+        binding.constraintLayout.visibleOrGone(status)
     }
 
     override fun stopListenToEvents() {
@@ -179,14 +192,25 @@ class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewMode
 
     private fun setClicks() {
         binding.fabToMap.setOnClickListener {
+            viewModel.setSearchByBounds(true)
+            viewModel.setIsForcedLocationGPS(false)
+            viewModel.setSearchWithSwipeMap(false)
+            viewModel.setIsSearchByAutocomplete(false)
             findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToListingsMapFragment())
         }
         binding.layoutSorting.llSorting.setOnClickListener { showSortingDialog() }
     }
 
     private fun subscribeToMyLocation(location: ILocation) {
-        viewModel.getListings(location)
-        viewModel.getTopListings(location)
+        if(!location.department.isNullOrBlank() ||
+            !location.province.isNullOrBlank() ||
+            !location.district.isNullOrBlank() ||
+            !location.address.isNullOrBlank()) {
+            viewModel.getListings(location)
+            viewModel.getTopListings(location)
+        }else {
+            viewModel.getTopListingsLoading(location)
+        }
     }
 
     private fun withRequestLocationPermission(onComplete: (isGranted: Boolean) -> Unit) {

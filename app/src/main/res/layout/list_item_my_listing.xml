@@ -147,7 +147,7 @@
             android:letterSpacing="0.01"
             android:lineSpacingExtra="12sp"
             android:lines="1"
-            android:text="@{model.locationAttributes.address}"
+            app:valLocationString="@{model.locationAttributes}"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"

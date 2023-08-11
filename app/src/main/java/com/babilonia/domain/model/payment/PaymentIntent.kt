@@ -1,0 +1,13 @@
+package com.babilonia.domain.model.payment
+
+/** Created by Renso Contreras on 22/10/2021.
+ * rensocontreras91@gmail.com
+ * Lima, Peru.
+ **/
+
+data class PaymentIntent(
+    val state: String?,
+    val orderId: String?,
+    val deviceSessionId: String?,
+    val paymentIntentId: String?
+)

@@ -8,6 +8,7 @@ import com.babilonia.EmptyConstants
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
+import java.util.*
 
 // Created by Anton Yatsenko on 26.02.2019.
 /**
@@ -61,9 +62,25 @@ fun String?.formattedStringToInt(): Int? {
     else 0
 }
 
+fun String?.formattedStringToLong(): Long? {
+    return if (this.isNullOrEmpty().not())
+        this?.replace(",", EmptyConstants.EMPTY_STRING)?.toLong()
+    else 0
+}
+
 fun LatLng.toBounds(radius: Double): LatLngBounds {
     // radius is in meter
     val southwest = SphericalUtil.computeOffset(this, radius * Math.sqrt(2.0), 225.0)
     val northeast = SphericalUtil.computeOffset(this, radius * Math.sqrt(2.0), 45.0)
     return LatLngBounds(southwest, northeast)
+}
+
+fun String.capitalizeEachWord(): String {
+    val words = this.trim().toLowerCase(Locale.getDefault()).split(" ")
+    var concatWords = ""
+    for (index in words.indices){
+        concatWords = if(index==0) words[index].capitalize(Locale.getDefault())
+        else concatWords.plus(" ").plus(words[index].capitalize(Locale.getDefault()))
+    }
+    return concatWords.trim()
 }

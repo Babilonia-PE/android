@@ -1,7 +1,9 @@
 package com.babilonia.presentation.flow.main.search.map
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Outline
 import android.graphics.Point
 import android.os.Build
@@ -10,8 +12,10 @@ import android.provider.Settings
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -30,12 +34,14 @@ import com.babilonia.presentation.flow.main.search.map.common.ListingUtilsDelega
 import com.babilonia.presentation.flow.main.search.map.common.ListingsMarkerRenderer
 import com.babilonia.presentation.flow.main.search.map.common.ListingsUtilsDelegate
 import com.babilonia.presentation.flow.main.search.map.common.MarkerManager
+import com.babilonia.presentation.utils.SvgUtil.getBuilder
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.clustering.ClusterManager
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -48,8 +54,16 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
     private var clusterManager: ClusterManager<Listing>? = null
     private var map: GoogleMap? = null
     private var mapFragment: SupportMapFragment? = null
+    private var isCleared = true
+    private var firstEnterScreen = true
+    private var copyListings: List<Listing>?=null
+    private var isLocationByBounds = false
+    private var isFirstEnterByAutocomplete = false
+
     override fun viewCreated() {
         binding.model = viewModel
+        viewModel.setIsShowScreenMap(true)
+        isCleared = false
         setBottomSheetBehaviour()
         mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         withRequestLocationPermission {
@@ -70,48 +84,45 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
 
     override fun startListenToEvents() {
         super.startListenToEvents()
-        viewModel.listings.observe(this, Observer {
-            var listings = it
-            if (listings.size > LISTINGS_PAGE_SIZE) {
-                listings = listings.subList(0, LISTINGS_PAGE_SIZE)
-            }
-            MarkerManager.clearCache()
-            MarkerManager.cache(listings)
-            refreshMarkers()
-            binding.noResults.isVisible = listings.isEmpty()
-        })
-        viewModel.locationLiveData.observe(this, Observer {
-            Handler().post {
-                subscribeToMyLocation(it)
-            }
-        })
-        viewModel.onFocusChangeEvent.observe(this, Observer {
-            if (it) {
-                BottomSheetBehavior.from(binding.clBottomListing.previewContainer).state =
-                    BottomSheetBehavior.STATE_HIDDEN
-            }
-        })
-        viewModel.arOnboardingLiveData.observe(this, Observer {
-            showArOnboardingDialog()
-        })
     }
 
     override fun stopListenToEvents() {
         super.stopListenToEvents()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         viewModel.listings.removeObservers(this)
         viewModel.locationLiveData.removeObservers(this)
         viewModel.suggestions.removeObservers(this)
         viewModel.onPlaceFoundEvent.removeObservers(this)
         viewModel.arOnboardingLiveData.removeObservers(this)
+        viewModel.notClearSearchLiveData.removeObservers(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
-        map?.isMyLocationEnabled = true
-        viewModel.onPlaceFoundEvent.observe(this, Observer {
-            map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it.viewport, 10))
-            viewModel.currentZoom = map?.cameraPosition?.zoom ?: EmptyConstants.EMPTY_FLOAT
-        })
+        map?.let{ mMap ->
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Toast.makeText(requireContext(), "ERROR MAP LOCATION PERMISSION", Toast.LENGTH_LONG).show()
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            mMap.isMyLocationEnabled = true
+        }?:run{
+            Toast.makeText(requireContext(), "ERROR MAP LOCATION", Toast.LENGTH_LONG).show()
+        }
+
         if (clusterManager == null) {
             clusterManager = ClusterManager(requireContext(), map)
             val listingsMarkerRenderer = ListingsMarkerRenderer(requireContext(), map, clusterManager)
@@ -128,11 +139,6 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
                 zoomToPinWithMargin(it)
                 true
             }
-            if (viewModel.locationLiveData.value == null) {
-                viewModel.getLocation {
-                    zoomToMyLocation(it)
-                }
-            }
             map?.setInfoWindowAdapter(null)
             map?.setOnCameraIdleListener(this)
             map?.setOnMarkerClickListener(clusterManager)
@@ -141,16 +147,88 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
 
         map?.setOnInfoWindowClickListener(null)
         map?.uiSettings?.isMapToolbarEnabled = false
-        viewModel.locationLiveData.value?.let {
-            zoomToMyLocation(it)
-        }
+
+        viewModel.listings.observe(this, Observer {
+            copyListings = it
+            var listings = it
+            if (listings.size > LISTINGS_PAGE_SIZE) {
+                listings = listings.subList(0, LISTINGS_PAGE_SIZE)
+            }
+
+            MarkerManager.clearCache()
+            MarkerManager.cache(listings)
+            refreshMarkers()
+            binding.noResults.isVisible = listings.isEmpty()
+
+            val width = resources.displayMetrics.widthPixels
+            val height = resources.displayMetrics.heightPixels
+
+            copyListings?.let { mListings ->
+                if (mListings.isNotEmpty() && viewModel.getSearchByBounds()) {
+                    val mLatLong = getBuilder(mListings)
+                    copyListings = null
+                    if(viewModel.getIsForcedLocationGPS()){
+                        isLocationByBounds = false
+                    } else {
+                        isLocationByBounds = true
+                    }
+                    map?.moveCamera(CameraUpdateFactory.newLatLngBounds(mLatLong, width.times(0.7).toInt(), height.times(0.7).toInt(), 30))
+                    viewModel.setSearchByBounds(false)
+                }else if(mListings.isEmpty() && viewModel.getSearchByBounds()){
+                    val location = viewModel.onPlaceFoundEvent.value
+                    isLocationByBounds = true
+                    if (location != null) {
+                        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds(LatLng(location.latitude, location.longitude), LatLng(location.latitude, location.longitude)), width.times(0.7).toInt(), height.times(0.7).toInt(), 30))
+                    }
+                }
+            }
+        })
+
+        viewModel.onFocusChangeEvent.observe(this, Observer {
+            if (it) {
+                BottomSheetBehavior.from(binding.clBottomListing.previewContainer).state =
+                    BottomSheetBehavior.STATE_HIDDEN
+            }
+        })
+
+        viewModel.arOnboardingLiveData.observe(this, Observer {
+            showArOnboardingDialog()
+        })
+
+        viewModel.notClearSearchLiveData.observe(this, Observer {
+            isCleared = false
+        })
+
+
+        viewModel.onPlaceFoundEvent.observe(this, Observer {
+            if(viewModel.getIsSearchByAutocomplete() && isFirstEnterByAutocomplete){
+                viewModel.getListingsFromMapNoCoordinate(it, LISTINGS_PAGE_SIZE)
+            }else if(viewModel.getIsGPSLocation() && isFirstEnterByAutocomplete){
+                viewModel.getListingsFromMapWithCoordinate(it, LISTINGS_PAGE_SIZE)
+            }
+            viewModel.setIsSearchByAutocomplete(false)
+           // viewModel.setSearchByBounds(true)
+        })
+
+        isFirstEnterByAutocomplete = true
     }
 
     override fun onCameraIdle() {
-        map?.cameraPosition?.target?.let {
-            viewModel.currentZoom = map?.cameraPosition?.zoom ?: EmptyConstants.EMPTY_FLOAT
-            viewModel.setLocationFromMapPosition(it.latitude, it.longitude, calculateRadius(it))
-        }
+        if(!isLocationByBounds) {
+            map?.cameraPosition?.target?.let {
+                //TODO viewModel.currentZoom = map?.cameraPosition?.zoom ?: EmptyConstants.EMPTY_FLOAT
+                moveCurrentPosition(it)
+                viewModel.clearSearchFromMap(isCleared)
+                isCleared = true
+            }
+        }else isLocationByBounds = false
+
+        firstEnterScreen = false
+    }
+
+    private fun moveCurrentPosition(latLng: LatLng) {
+        val iLocation = viewModel.setLocationFromMapPosition(latLng.latitude, latLng.longitude)
+        viewModel.getListingsFromMapWithCoordinate(iLocation, LISTINGS_PAGE_SIZE)
     }
 
     private fun calculateRadius(center: LatLng): Int {
@@ -216,10 +294,14 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
             }
         }
         binding.clBottomListing.previewContainer.setOnClickListener {
-            MarkerManager.getSelected()?.id?.let { id -> viewModel.onPreviewClicked(id) }
+            MarkerManager.getSelected()?.let { listing ->
+                viewModel.onPreviewClicked(listing)
+            }
         }
         binding.clBottomListing.vpImages.setOnClickListener {
-            MarkerManager.getSelected()?.id?.let { id -> viewModel.onPreviewClicked(id) }
+            MarkerManager.getSelected()?.let { listing ->
+                viewModel.onPreviewClicked(listing)
+            }
         }
         binding.clBottomListing.ivCollaps.setOnClickListener {
             hideBottomListing()
@@ -314,8 +396,8 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
                 tvAddress.text = locationAttributes?.address
 
                 vpImages.adapter = ListingImagesPagerAdapter(images, 16) {
-                    MarkerManager.getSelected()?.id?.let { id ->
-                        viewModel.onPreviewClicked(id)
+                    MarkerManager.getSelected()?.let { listing ->
+                        viewModel.onPreviewClicked(listing)
                     }
                 }
 
@@ -348,10 +430,6 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
         BottomSheetBehavior.from(binding.clBottomListing.previewContainer).state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    private fun subscribeToMyLocation(it: ILocation) {
-        viewModel.getListings(it, calculateRadius(LatLng(it.latitude, it.longitude)), LISTINGS_PAGE_SIZE)
-    }
-
     @SuppressLint("CheckResult")
     private fun withRequestLocationPermission(oncComplete: (isGranted: Boolean) -> Unit) {
         RxPermissions(this).request(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -360,10 +438,10 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
             }
     }
 
-    private fun zoomToMyLocation(it: ILocation, zoom: Float = viewModel.currentZoom) {
+    private fun zoomToMyLocation(it: ILocation) {
         val cameraPosition: CameraPosition = CameraPosition.Builder()
             .target(LatLng(it.latitude, it.longitude))      // Sets the center of the map to locationLiveData user
-            .zoom(zoom)                   // Sets the zoom
+            .zoom(13f)                   // Sets the zoom
             .build()                   // Creates a CameraPosition from the builder
         map?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }

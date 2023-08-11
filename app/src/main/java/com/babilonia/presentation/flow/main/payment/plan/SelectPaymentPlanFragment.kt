@@ -8,6 +8,8 @@ import com.babilonia.databinding.FragmentPaymentSelectPlanBinding
 import com.babilonia.domain.model.enums.PaymentPlanKey
 import com.babilonia.domain.model.payment.PaymentPlan
 import com.babilonia.presentation.base.BaseFragment
+import com.babilonia.presentation.extension.gone
+import com.babilonia.presentation.extension.visible
 import com.babilonia.presentation.flow.main.payment.PaymentActivitySharedViewModel
 import com.babilonia.presentation.utils.StartSnapHelper
 import kotlinx.android.synthetic.main.fragment_payment_select_plan.*
@@ -22,6 +24,7 @@ class SelectPaymentPlanFragment : BaseFragment<FragmentPaymentSelectPlanBinding,
     private val descriptionsAdapter = SelectPaymentPlanDescriptionAdapter()
 
     override fun viewCreated() {
+        pbLoading.visible()
         setToolbar()
         setClicks()
         calculateMaxVelocity()
@@ -33,6 +36,7 @@ class SelectPaymentPlanFragment : BaseFragment<FragmentPaymentSelectPlanBinding,
 
     private fun observeViewModel() {
         viewModel.getPaymentPlansLiveData().observe(this, Observer { paymentPlans ->
+            pbLoading.gone()
             if (plansAdapter.getRealItemCount() == 0) {
                 setItems(paymentPlans)
             } else {

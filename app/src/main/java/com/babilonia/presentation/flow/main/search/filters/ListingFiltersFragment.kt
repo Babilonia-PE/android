@@ -107,6 +107,8 @@ class ListingFiltersFragment : BaseFragment<ListingFiltersFragmentBinding, Listi
             binding.filterGeneral.resetRangeBar()
             binding.filterQuality.resetFilters()
             facilitiesRecyclerAdapter?.resetAllFacilities()
+            viewModel.setSearchByBounds(true)
+            viewModel.setIsForcedLocationGPS(true)
             viewModel.metadataUpdateSubject.onNext(true)
             viewModel.onPropertyTypeChanged(Constants.ALL_FACILITIES)
             requestFacilities()

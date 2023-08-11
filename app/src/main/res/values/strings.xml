@@ -42,6 +42,7 @@
     <string name="property_type">Property type</string>
     <string name="property_facilities">Property facilities</string>
     <string name="sale">Sale</string>
+    <string name="all">All</string>
     <string name="rent">Rent</string>
     <string name="for_sale">for Sale</string>
     <string name="for_rent">for Rent</string>
@@ -73,6 +74,8 @@
     <string name="MPD_action_cancel">Close</string>
     <string name="year_of_construction">Year of construction</string>
     <string name="lets_s_start">Let\'s start</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="log_in">LOGIN</string>
     <string name="no_facilities_hint">%1$s has no facilities, so let\'s skip this step</string>
     <string name="no_advanced_details_hint">%1$s has no advanced details, so let\'s skip this step</string>
     <string name="no_general_details_hint">%1$s has no general details, so let\'s skip this step</string>
@@ -124,17 +127,22 @@
     <string name="expired">Expired</string>
     <string name="your_phone_number">Your phone number</string>
     <string name="email">Email</string>
+    <string name="password">Pasword</string>
+    <string name="phone_number">Phone number</string>
     <string name="currency">Currency</string>
     <string name="account">Account</string>
     <string name="about">About</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_and_conditions_underline"><u>Terms and Conditions of Advertising Contracting.</u></string>
     <string name="email_saved">Email saved!</string>
     <string name="change_email">Change Email</string>
+    <string name="change_phone_number">Change phone number</string>
     <string name="change">Change</string>
     <string name="invalid_email">Email format is invalid</string>
     <string name="email_already_taken">Email has already been taken</string>
     <string name="change_name">Change name</string>
+    <string name="full_name">Full name</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="save">Save</string>
@@ -149,15 +157,21 @@
     <string name="upload_photo_progress">Setting Profile Photo…</string>
     <string name="first_name_empty">First name is empty</string>
     <string name="last_name_empty">Last name is empty</string>
+    <string name="password_empty">Password is empty</string>
+    <string name="invalid_phonenumber">Phone number format is invalid</string>
     <string name="field_should_not_be_empty">The field shouldn\'t be empty</string>
     <string name="sing_out_title">Sign out?</string>
     <string name="sign_out_message">You will not be able to search properties and receive any notifications</string>
     <string name="sign_out">Sign out</string>
+    <string name="delete_account_title">Delete account?</string>
+    <string name="delete_account_message">Your account will be permanently deleted</string>
+    <string name="delete_account">Delete account</string>
     <string name="cancel">Cancel</string>
     <string name="contact">Contact</string>
     <string name="call">Call</string>
     <string name="contact_button_hint">This call may incur additional costs</string>
     <string name="open">Open</string>
+    <string name="share">Share</string>
     <string name="edit_details">Edit details</string>
     <string name="unpublish">Unpublish</string>
     <string name="unpublish_confirmation_title">Unpublish listing?</string>
@@ -168,7 +182,7 @@
     <string name="delete_draft">Delete draft</string>
     <string name="delete">Delete</string>
     <string name="delete_listing_success_message">Listing deleted successfully!</string>
-    <string name="search_by_address">Search by address</string>
+    <string name="search_by_address">District, province or city</string>
     <string name="no_matching_results">No matching results…</string>
     <string name="try_change_your_search_criteria">Try changing your search criteria.</string>
     <string name="edit_listing">Edit Listing</string>
@@ -194,6 +208,11 @@
     <string name="ar_dialog_description">Are you interested in the area where you are? Explore it with our AR and discover which properties are for sale or rent. Click on navigate and we will take you by the shortest route…</string>
     <string name="got_it">Got it</string>
 
+    <string name="department">Department</string>
+    <string name="province">Province</string>
+    <string name="district">District</string>
+    <string name="country">Country</string>
+
     <string name="listings_found_count">Found %d Listings</string>
     <string name="price_range">Price range:</string>
     <string-array name="status">
@@ -209,6 +228,17 @@
         <item>Office</item>
         <item>Land</item>
         <item>Room</item>
+        <item>Local Industrial</item>
+        <item>Land Agricultural</item>
+        <item>Land Industrial</item>
+        <item>Land Commercial</item>
+        <item>Cottage</item>
+        <item>Beach House</item>
+        <item>Building</item>
+        <item>Hotel</item>
+        <item>Deposit</item>
+        <item>Parking</item>
+        <item>Airs</item>
     </string-array>
     <string-array name="property_types_for_sorting">
         <!-- Check 'FiltersVisibility.getVisibilityByPropertyName()' when making any changes -->
@@ -222,17 +252,17 @@
     </string-array>
     <string-array name="sort_types">
         <item>Most Relevant</item>
-        <item>Newest to Oldest</item>
-        <item>Oldest to Newest</item>
+        <item>New posts</item>
+        <item>Old posts</item>
         <item>Price - Highest to Lowest</item>
         <item>Price - Lowest to Highest</item>
         <item>m² Price - Highest to Lowest</item>
         <item>m² Price - Lowest to Highest</item>
         <item>Area - Highest to Lowest</item>
         <item>Area - Lowest to Highest</item>
+    </string-array> <!--
         <item>Closest to Farthest</item>
-        <item>Farthest to Closest</item>
-    </string-array>
+        <item>Farthest to Closest</item> -->
 
     <string name="navigate">navigate</string>
     <string name="prefix_for">for %1$s</string>
@@ -278,6 +308,31 @@
     <string name="plan_listing">%s Listing</string>
     <string name="listing_published_successfully">Listing published successfully!</string>
     <string name="listing_successfully_updated">Listing has been successfully updated</string>
+    <string name="permission_not_granted">Permissions not granted</string>
+    <string name="action_must_be_done_from_web">This action must be done from web</string>
+    <string name="select_an_image">Select an image</string>
+    <string name="image_could_not_be_obtained">Image could not be obtained</string>
+
+    <string name="url_terms_and_conditions">information/terms_and_conditions</string>
+    <string name="url_privacy_policy">information/privacy_policy</string>
+
+    <string name="by_clicking_on_pay_you_are_accepting_our">By clicking on \'Pay\', you are accepting our&#160;</string>
+    <string name="whatsapp_message">Hi there! I am very interested in your property listed in Babilonia and would like more information.</string>
+    <string name="whatsapp_not_installed">Whatsapp not installed</string>
+
+    <string name="share_message">I share with you this property published in Babylon.</string>
+
+    <string name="departments_error">Couldn\'t get the departments initially. They will be reloaded again.</string>
+    <string name="provinces_error">The provinces could not be obtained. Select a department again.</string>
+    <string name="districts_error">The districts could not be obtained. Select a province again.</string>
+
+    <string name="card_number_hint">1234 1234 1234 1234</string>
+    <string name="limit_card_number">0123456789</string>
+    <string name="card_cvc">CVC</string>
+    <string name="please_fill_in_the_fields_correctly">Please, fill in the fields correctly</string>
+
+    <string name="mapper_error_copy_rxjava">The mapper function returned</string>
+    <string name="phone_number_not_available">Phone number not available</string>
 
     <plurals name="bedrooms_plural">
         <item quantity="zero">%s bedrooms</item>
@@ -386,4 +441,6 @@
         <item quantity="many">%d photos</item>
         <item quantity="other">%d photos</item>
     </plurals>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

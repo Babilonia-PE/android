@@ -92,7 +92,6 @@ class TextPickerDialog(
         }
     }
 
-
     interface NumberPickerCallBack {
         fun onSelectingValue(value: String)
     }

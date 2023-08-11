@@ -2,10 +2,7 @@ package com.babilonia.presentation.flow.main.publish.common
 
 import androidx.lifecycle.*
 import com.babilonia.EmptyConstants
-import com.babilonia.domain.model.Facility
-import com.babilonia.domain.model.Listing
-import com.babilonia.domain.model.ListingImage
-import com.babilonia.domain.model.Location
+import com.babilonia.domain.model.*
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.flow.main.publish.mylistings.common.NewListingOpenMode
 
@@ -16,6 +13,7 @@ class CreateListingLivedataImpl : CreateListingLivedataDelegate {
 
     override var description = MutableLiveData<String>()
     override var location = MutableLiveData<Location>()
+    override var tempLocation = MutableLiveData<Location>()
     override var area = MutableLiveData<String>()
     override var builtArea = MutableLiveData<String>()
     override var property = MutableLiveData<String>()
@@ -42,6 +40,7 @@ class CreateListingLivedataImpl : CreateListingLivedataDelegate {
     private val facilityIds = mutableListOf<Int>()
     private val advancedDetailsIds = mutableListOf<Int>()
 
+
     override var descriptionTrigger: LiveData<Boolean> = Transformations.map(description) {
         it.isNullOrEmpty().not()
     }
@@ -66,6 +65,8 @@ class CreateListingLivedataImpl : CreateListingLivedataDelegate {
     override val triggersObserver = Observer<Boolean> {
         mediator.value = it
     }
+
+    override var contact = MutableLiveData<Contact>()
 
     override var createdAt: String? = null
 
@@ -92,14 +93,12 @@ class CreateListingLivedataImpl : CreateListingLivedataDelegate {
         return images.value?.map { it.id }
     }
 
-    override fun setDraft(
-        model: Listing,
-        mode: NewListingOpenMode
-    ) {
+    override fun setDraft(model: Listing, mode: NewListingOpenMode) {
         isDraft = true
         id = model.id
         description.value = model.description
         location.value = model.locationAttributes
+        contact.value = model.contact
         area.value = model.area?.toString()
         builtArea.value = model.builtArea?.toString()
         property.value = model.propertyType?.substring(0, 1)?.toUpperCase()?.plus(model.propertyType?.substring(1))
@@ -141,4 +140,5 @@ class CreateListingLivedataImpl : CreateListingLivedataDelegate {
         }
         this.advancedDetails.value = advancedDetails.toMutableList()
     }
+
 }

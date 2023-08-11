@@ -8,7 +8,7 @@ import com.babilonia.data.storage.auth.AuthStorageLocal
 import com.babilonia.data.storage.auth.AuthStorageRemote
 import com.babilonia.data.storage.listing.ListingStorageLocal
 import com.babilonia.data.storage.listing.ListingStorageRemote
-import com.babilonia.data.storage.payment.PaymentsDataSourceRemoteImpl
+import com.babilonia.data.storage.payment.PaymentsStorageRemote
 import com.babilonia.data.storage.search.PlacesStorageRemote
 import com.google.android.libraries.places.api.Places
 import dagger.Module
@@ -22,7 +22,6 @@ import javax.inject.Singleton
 /**
  * Module for data sources and storages
  */
-
 
 @Module
 class DataSourceModule {
@@ -38,6 +37,11 @@ class DataSourceModule {
     @Reusable
     fun provideListingStorageRemote(listingStorageRemote: ListingStorageRemote): ListingsDataSourceRemote =
         listingStorageRemote
+
+    @Provides
+    @Reusable
+    fun providePaymentStorageRemote(paymentsStorageRemote: PaymentsStorageRemote): PaymentsDataSourceRemote =
+        paymentsStorageRemote
 
     @Named(LOCAL)
     @Provides
@@ -59,7 +63,4 @@ class DataSourceModule {
 
     @Provides
     fun provideArRemoteDataSource(remoteDataSource: RealEstateDataSourceImpl): RealEstateDataSource = remoteDataSource
-
-    @Provides
-    fun providePaymentsDataSourceRemote(remoteDataSource: PaymentsDataSourceRemoteImpl): PaymentsDataSourceRemote = remoteDataSource
 }

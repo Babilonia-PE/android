@@ -9,9 +9,8 @@ import android.widget.Filterable
 import android.widget.TextView
 import com.babilonia.EmptyConstants
 import com.babilonia.R
-import com.babilonia.domain.model.Place
+import com.babilonia.domain.model.Location
 import com.babilonia.domain.model.RecentSearch
-
 
 // Created by Anton Yatsenko on 17.07.2019.
 private const val MY_LOCATION = 0
@@ -26,7 +25,7 @@ private const val MODE_HISTORY = 2
 
 class SearchAdapter : BaseAdapter(), Filterable {
 
-    private val places = arrayListOf<Place>()
+    private val places = arrayListOf<Location>()
     private val history = arrayListOf<RecentSearch>()
     private var notFoundLocationName = EmptyConstants.EMPTY_STRING
 
@@ -58,7 +57,7 @@ class SearchAdapter : BaseAdapter(), Filterable {
                 isClickable = false
             }
             PLACE -> LayoutInflater.from(parent?.context).inflate(R.layout.list_item_search_sugest, parent, false).apply {
-                findViewById<TextView>(R.id.tvPlace)?.text = (places[position - 1] as Place).title
+                findViewById<TextView>(R.id.tvPlace)?.text = places[position - 1].toString()
             }
             HISTORY_HEADER -> LayoutInflater.from(parent?.context).inflate(R.layout.list_header_search_history, parent, false).apply {
                 isClickable = false
@@ -128,7 +127,7 @@ class SearchAdapter : BaseAdapter(), Filterable {
         }
     }
 
-    fun setPlaces(newPlaces: List<Place>) {
+    fun setPlaces(newPlaces: List<Location>) {
         notFoundLocationName = EmptyConstants.EMPTY_STRING
         places.clear()
         places.addAll(newPlaces)
@@ -172,7 +171,7 @@ class SearchAdapter : BaseAdapter(), Filterable {
         if (notFoundLocationName.isNotEmpty()) {
             realPosition -= 1
         }
-        return history[realPosition].queryText
+        return history[realPosition].toString()
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.babilonia.presentation.flow.main.root
 
+import android.content.Intent
+import android.os.Handler
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -29,6 +31,24 @@ class RootFragment : BaseFragment<RootFragmentBinding, RootViewModel>() {
         setupBottomNavigationBar()
         observeViewModel()
         viewModel.checkDeeplinks()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkShorCutsCall()
+    }
+
+    private fun checkShorCutsCall() {
+        val extraParam = Intent.EXTRA_SHORTCUT_ID
+        if(activity?.intent?.hasExtra(extraParam) == true) {
+            when (activity?.intent?.getStringExtra(extraParam))  {
+                "open_create_listing" ->
+                    Handler().postDelayed({
+                        binding.bottomNav.show(R.id.my_listings_nav_graph)
+                    }, 500)
+            }
+        }
     }
 
     private fun observeViewModel() {

@@ -53,6 +53,20 @@ class ListingFullscreenMapFragment :
         super.onStop()
     }
 
+    override fun startListenToEvents() {
+        super.startListenToEvents()
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+    }
+
+    override fun stopListenToEvents() {
+        super.stopListenToEvents()
+        viewModel.authFailedData.removeObservers(this)
+    }
+
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap

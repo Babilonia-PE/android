@@ -4,8 +4,7 @@ package com.babilonia.domain.model
 class User(
     var id: Long?,
     var phoneNumber: String?,
-    var firstName: String?,
-    var lastName: String?,
+    var fullName: String?,
     var avatar: String?,
     var email: String?
 )

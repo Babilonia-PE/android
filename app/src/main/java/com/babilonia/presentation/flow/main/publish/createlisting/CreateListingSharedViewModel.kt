@@ -4,10 +4,9 @@ import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
 import com.babilonia.Constants
 import com.babilonia.EmptyConstants
-import com.babilonia.domain.model.Facility
-import com.babilonia.domain.model.Listing
-import com.babilonia.domain.model.Location
+import com.babilonia.domain.model.*
 import com.babilonia.presentation.extension.formattedStringToInt
+import com.babilonia.presentation.extension.formattedStringToLong
 import com.babilonia.presentation.flow.main.publish.common.CreateListingLivedataDelegate
 import com.babilonia.presentation.flow.main.publish.common.CreateListingLivedataImpl
 import com.babilonia.presentation.flow.main.publish.common.ListingPage
@@ -25,7 +24,7 @@ class CreateListingSharedViewModel : ViewModel(),
     var currentPage: ListingPage = ListingPage.COMMON
     var currentItem = 0
     var mode = NewListingOpenMode.NEW
-    var status: String = Constants.HIDDEN
+    var status: String? = Constants.HIDDEN
     var shouldEnableContinueButton = object : ObservableBoolean() {
         override fun get(): Boolean {
             return when (currentPage) {
@@ -69,17 +68,28 @@ class CreateListingSharedViewModel : ViewModel(),
             Location().apply {
                 longitude = location.value?.longitude ?: EmptyConstants.ZERO_DOUBLE
                 latitude = location.value?.latitude ?: EmptyConstants.ZERO_DOUBLE
+                department = location.value?.department
+                province = location.value?.province
+                district = location.value?.district
+                zipCode = location.value?.zipCode
                 address = location.value?.address
+                country = location.value?.country
             }
         } else {
             Location.emptyLocation
         }
+        val contactDto: Contact = if (contact.value != null) {
+            Contact(contact.value?.contactName, contact.value?.contactEmail, contact.value?.contactPhone)
+        } else {
+            Contact(null, null, null)
+        }
+
         resetValuesForPropertyType()
         return Listing(
             id,
             listing.value,
             property.value?.toLowerCase(Locale.getDefault()),
-            price.value?.formattedStringToInt(),
+            price.value?.formattedStringToLong(),
             description.value,
             bathroom.value,
             bedroom.value,
@@ -91,18 +101,26 @@ class CreateListingSharedViewModel : ViewModel(),
             builtArea.value?.formattedStringToInt(),
             petFriendly.value,
             locationDto,
-            year.value?.toInt(),
+            validateYear(year.value),
             primaryImageId(),
             facilities.value?.filter { it.isChecked },
             advancedDetails.value?.filter { it.isChecked },
             images.value,
             null,
+            contactDto,
             status,
             isDraft = true,
             isFavourite = false
         ).apply {
             this@CreateListingSharedViewModel.createdAt?.let { createdAt = it }
         }
+    }
+
+    private fun validateYear(value: String?): Int{
+        return if(value.isNullOrBlank()){
+            val today = Calendar.getInstance()
+            today.get(Calendar.YEAR)
+        }else value.toInt()
     }
 
     private fun resetValuesForPropertyType() {
@@ -133,7 +151,10 @@ class CreateListingSharedViewModel : ViewModel(),
                 && areaTrigger.value == true
                 && propertyTrigger.value == true
                 && priceTrigger.value == true
-                && isYearOk)
+                && isYearOk
+                && !getMyLocation()?.department.isNullOrBlank()
+                && !getMyLocation()?.province.isNullOrBlank()
+                && !getMyLocation()?.district.isNullOrBlank())
     }
 
     private fun validateDetailsPage(): Boolean {
@@ -142,5 +163,21 @@ class CreateListingSharedViewModel : ViewModel(),
 
     private fun validateForImagesPage(): Boolean {
         return imagesTrigger.value == true
+    }
+
+    fun getMyLocation(): Location?{
+        return location.value
+    }
+
+    fun setMyLocation(mLocation: Location?) {
+        location.value = mLocation
+    }
+
+    fun getMyTempLocation(): Location?{
+        return tempLocation.value
+    }
+
+    fun setMyTempLocation(mLocation: Location?) {
+        tempLocation.value = mLocation
     }
 }

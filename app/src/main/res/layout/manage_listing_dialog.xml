@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:outlineProvider="background"
@@ -21,6 +23,20 @@
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/tvShare"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+        android:drawableStart="@drawable/ic_gray_share_24"
+        android:drawablePadding="32dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/samsungsharpsans_bold"
+        android:text="@string/share"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
         android:id="@+id/tvEdit"
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -33,7 +49,8 @@
         android:fontFamily="@font/samsungsharpsans_bold"
         android:text="@string/edit_details"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tvUnpublish"
@@ -48,7 +65,8 @@
         android:fontFamily="@font/samsungsharpsans_bold"
         android:text="@string/unpublish"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:visibility="visible"/>
 
     <TextView
         android:id="@+id/tvPublish"
@@ -63,7 +81,8 @@
         android:fontFamily="@font/samsungsharpsans_bold"
         android:text="@string/publish"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:visibility="visible"/>
 
     <TextView
         android:id="@+id/tvDelete"
@@ -78,5 +97,6 @@
         android:fontFamily="@font/samsungsharpsans_bold"
         android:text="@string/delete_draft"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:visibility="visible"/>
 </LinearLayout>

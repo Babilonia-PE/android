@@ -2,9 +2,11 @@ package com.babilonia.data.storage.ar
 
 import com.babilonia.Constants
 import com.babilonia.data.datasource.RealEstateDataSource
+import com.babilonia.data.mapper.FiltersMapper
 import com.babilonia.data.mapper.ListingMapper
 import com.babilonia.data.network.model.json.ListingJson
 import com.babilonia.data.network.service.ListingsService
+import com.babilonia.data.network.service.NewListingsService
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.ListingImage
 import com.babilonia.domain.model.Location
@@ -15,23 +17,26 @@ import javax.inject.Inject
 
 class RealEstateDataSourceImpl @Inject constructor(
     private val listingsService: ListingsService,
+    private val newListingsService: NewListingsService,
     private val listingsMapper: ListingMapper
 ) : RealEstateDataSource {
 
     fun getListings(
         lat: Float,
         lon: Float,
-        radius: Int
+        radius: Int,
+        filtersMap: Map<String, String>,
     ): Single<List<ListingJson>> {
-        return listingsService.getArListings(
+        return newListingsService.getArListings(
             lat,
             lon,
-            radius
+            radius,
+            filtersMap
         ).map { it.data.records }
     }
 
-    override fun getRealEstateList(currentLocation: ILocation): Observable<List<Listing>> {
-        return getListings(currentLocation.latitude.toFloat(), currentLocation.longitude.toFloat(), Constants.AR_PRELOAD_DISTANCE)
+    override fun getRealEstateList(currentLocation: ILocation, filtersMap: Map<String, String>): Observable<List<Listing>> {
+        return getListings(currentLocation.latitude.toFloat(), currentLocation.longitude.toFloat(), Constants.AR_PRELOAD_DISTANCE, filtersMap)
             .flatMapObservable { listings ->
                 Observable.just(listings.map { listingsMapper.mapRemoteToDomain(it) })
             }

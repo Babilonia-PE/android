@@ -5,13 +5,17 @@ import androidx.lifecycle.Observer
 import com.babilonia.databinding.FavoritesFragmentBinding
 import com.babilonia.presentation.base.BaseFragment
 import com.babilonia.presentation.flow.main.common.ListingPreviewRecyclerAdapter
+import com.babilonia.presentation.utils.NetworkUtil
 
 class FavoritesFragment : BaseFragment<FavoritesFragmentBinding, FavoritesViewModel>() {
     private var adapter: ListingPreviewRecyclerAdapter? = null
     override fun viewCreated() {
         adapter = ListingPreviewRecyclerAdapter(viewModel)
         binding.rcFavorites.adapter = adapter
+        viewModel.getUserId()
         viewModel.getFavourites()
+
+        viewModel.ipAddress = NetworkUtil.getIPAddress(requireContext()) ?: ""
     }
 
     override fun startListenToEvents() {
@@ -22,6 +26,12 @@ class FavoritesFragment : BaseFragment<FavoritesFragmentBinding, FavoritesViewMo
             adapter?.clear()
             adapter?.addItems(it)
         })
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+        viewModel.authFailedData.removeObservers(this)
     }
 
     override fun stopListenToEvents() {

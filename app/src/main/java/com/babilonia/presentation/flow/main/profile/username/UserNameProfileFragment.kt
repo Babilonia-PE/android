@@ -25,28 +25,12 @@ class UserNameProfileFragment : BaseFragment<UserNameProfileFragmentBinding, Pro
     }
 
     private fun setErrorListeners() {
-        binding.etFirstName.addTextChangedListener(object : TextWatcher {
+        binding.etFullName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s?.trim().isNullOrEmpty()) {
-                    binding.tyFirstName.error = getString(R.string.first_name_empty)
+                    binding.tyFullName.error = getString(R.string.first_name_empty)
                 } else {
-                    binding.tyFirstName.error = null
-                }
-                viewModel.updateUserNameValidator.notifyChange()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
-        binding.etLastName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.trim().isNullOrEmpty()) {
-                    binding.tyLastName.error = getString(R.string.last_name_empty)
-                } else {
-                    binding.tyLastName.error = null
+                    binding.tyFullName.error = null
                 }
                 viewModel.updateUserNameValidator.notifyChange()
             }

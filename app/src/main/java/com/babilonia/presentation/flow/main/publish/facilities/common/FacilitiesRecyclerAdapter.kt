@@ -10,6 +10,7 @@ import com.babilonia.R
 import com.babilonia.databinding.ListItemFacilityBinding
 import com.babilonia.domain.model.Facility
 import com.babilonia.presentation.extension.loadSvg
+import com.babilonia.presentation.extension.withGlideFitImage
 
 // Created by Anton Yatsenko on 07.06.2019.
 class FacilitiesRecyclerAdapter(
@@ -35,7 +36,11 @@ class FacilitiesRecyclerAdapter(
             holder.itemView.setOnClickListener {
                 holder.binding?.cbFacility?.isChecked = binding.cbFacility.isChecked.not()
             }
-            binding.ivFacility.loadSvg(model.icon)
+            if(model.icon?.endsWith(".svg") == true)
+                binding.ivFacility.loadSvg(model.icon)
+            else {
+                binding.ivFacility.withGlideFitImage(model.icon)
+            }
             binding.cbFacility.setOnCheckedChangeListener { _, _ ->
                 model.isChecked = binding.cbFacility.isChecked
                 facilityChangeListener.onChange(model)

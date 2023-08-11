@@ -7,5 +7,6 @@ enum class SuccessMessageType {
     DRAFT,
     AVATAR,
     USERNAME,
-    DESTINATION_REACHED
+    DESTINATION_REACHED,
+    PHONE_NUMBER
 }

@@ -17,9 +17,9 @@ interface ListingsDataSourceLocal {
     fun saveFacilities(type: String, data: List<FacilityDto>): Completable
     fun saveAdvancedDetails(type: String, data: List<FacilityDto>): Completable
     fun uploadListingImage(path: String): Single<ImageDto>
-    fun getMyListings(): Single<List<ListingDto>>
+    fun getMyListings(state: String): Single<List<ListingDto>>
     fun saveListings(listings: List<ListingDto>): Completable
-    fun getDraftListings(): Single<List<ListingDto>>
+    fun getDraftListings(state: String): Single<List<ListingDto>>
     fun getFavouriteListings(): Single<List<ListingDto>>
     fun saveFavourites(listings: List<ListingDto>): Completable
     fun updateFavorite(id: Long, isFavourite: Boolean): Completable

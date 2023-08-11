@@ -25,21 +25,28 @@ class GetListingsUseCase @Inject constructor(private val listingRepository: List
                 radius,
                 sortType,
                 filters,
-                facilities
+                facilities,
+                department,
+                province,
+                district,
+                address
             )
         }
     }
 
     class Params(
-        val lat: Float,
-        val lon: Float,
+        val lat: Float?,
+        val lon: Float?,
         val queryText: String?,
         val placeId: String?,
         val page: Int = 1,
-        val radius: Int,
+        val radius: Int?,
         val sortType: SortType,
         val filters: List<Filter>,
         val facilities: List<Facility>,
-        val pageSize: Int = Constants.PER_PAGE
-    )
+        val pageSize: Int = Constants.PER_PAGE,
+        val department: String?,
+        val province: String?,
+        val district: String?,
+        val address: String?)
 }

@@ -6,9 +6,7 @@ import com.google.gson.annotations.SerializedName
 class UpdateUserJson(
     @SerializedName("phone_number")
     var phoneNumber: String? = null,
-    @SerializedName("first_name")
-    var firstName: String? = null,
-    @SerializedName("last_name")
-    var lastName: String? = null,
+    @SerializedName("full_name")
+    var fullName: String? = null,
     var email: String? = null
 )

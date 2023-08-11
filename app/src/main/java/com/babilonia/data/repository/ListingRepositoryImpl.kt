@@ -39,7 +39,8 @@ class ListingRepositoryImpl @Inject constructor(
     private val listingMapper: ListingMapper,
     private val filtersMapper: FiltersMapper,
     private val recentSearchMapper: RecentSearchMapper,
-    private val listingsMetadataMapper: ListingsMetadataMapper
+    private val listingsMetadataMapper: ListingsMetadataMapper,
+    private val dataLocationMapper: DataLocationMapper
 ) : ListingRepository {
     override fun getListingsPriceRange(
         lat: Float,
@@ -60,7 +61,15 @@ class ListingRepositoryImpl @Inject constructor(
     }
 
     override fun getListingsMetadata(
-        lat: Float, lon: Float, radius: Int, filters: List<Filter>, facilities: List<Facility>
+        lat: Float?,
+        lon: Float?,
+        radius: Int?,
+        filters: List<Filter>,
+        facilities: List<Facility>,
+        department: String?,
+        province: String?,
+        district: String?,
+        address: String?
     ): Observable<ListingsMetadata> {
         return listingDataSourceRemote
             .getListingsMetadata(
@@ -68,7 +77,11 @@ class ListingRepositoryImpl @Inject constructor(
                 lon,
                 radius,
                 filtersMapper.mapToQuery(filters),
-                filtersMapper.mapFacilitiesToQuery(facilities)
+                filtersMapper.mapFacilitiesToQuery(facilities),
+                department,
+                province,
+                district,
+                address
             )
             .map { listingsMetadataMapper.mapRemoteToDomain(it) }
     }
@@ -78,16 +91,20 @@ class ListingRepositoryImpl @Inject constructor(
     }
 
     override fun getListings(
-        lat: Float,
-        lon: Float,
+        lat: Float?,
+        lon: Float?,
         queryText: String?,
         placeId: String?,
         page: Int,
         pageSize: Int,
-        radius: Int,
+        radius: Int?,
         sortType: SortType,
         filters: List<Filter>,
-        facilities: List<Facility>
+        facilities: List<Facility>,
+        department: String?,
+        province: String?,
+        district: String?,
+        address: String?
     ): Single<List<Listing>> {
         val listingsSingle = if (page == Constants.FIRST_PAGE) {
             listingDataSourceMemory.deleteAll()
@@ -102,7 +119,11 @@ class ListingRepositoryImpl @Inject constructor(
                         radius,
                         sortType,
                         filtersMapper.mapToQuery(filters),
-                        filtersMapper.mapFacilitiesToQuery(facilities)
+                        filtersMapper.mapFacilitiesToQuery(facilities),
+                        department,
+                        province,
+                        district,
+                        address
                     )
                 )
         } else {
@@ -116,7 +137,11 @@ class ListingRepositoryImpl @Inject constructor(
                 radius,
                 sortType,
                 filtersMapper.mapToQuery(filters),
-                filtersMapper.mapFacilitiesToQuery(facilities)
+                filtersMapper.mapFacilitiesToQuery(facilities),
+                department,
+                province,
+                district,
+                address
             )
         }
 
@@ -147,16 +172,59 @@ class ListingRepositoryImpl @Inject constructor(
             .mapErrors()
     }
 
-    override fun setListingAction(id: String, key: String): Completable {
-        val remoteAction = listingDataSourceRemote.setListingAction(id, key)
+    override fun setListingAction(
+        id: Long,
+        key: String,
+        ipAddress: String,
+        userAgent: String,
+        signProvider: String
+    ): Completable {
+        val remoteAction = listingDataSourceRemote.setListingAction(
+            id,
+            key,
+            ipAddress,
+            userAgent,
+            signProvider
+        )
         val fullAction = addFavoriteActionIfRequired(remoteAction, id, key, true)
         return fullAction
             .mapNetworkErrors()
             .mapErrors()
     }
 
-    override fun deleteListingAction(id: String, key: String): Completable {
-        val remoteAction = listingDataSourceRemote.deleteListingAction(id, key)
+    override fun setContactAction(
+        id: Long,
+        key: String,
+        ipAddress: String,
+        userAgent: String,
+        signProvider: String
+    ): Completable {
+        val remoteAction = listingDataSourceRemote.setContactAction(
+            id,
+            key,
+            ipAddress,
+            userAgent,
+            signProvider
+        )
+        return remoteAction
+            .mapNetworkErrors()
+            .mapErrors()
+    }
+
+    override fun deleteListingAction(
+        id: Long,
+        key: String,
+        ipAddress: String,
+        userAgent: String,
+        signProvider: String
+    ): Completable {
+        val remoteAction = listingDataSourceRemote.deleteListingAction(
+            id,
+            key,
+            ipAddress,
+            userAgent,
+            signProvider
+        )
         val fullAction = addFavoriteActionIfRequired(remoteAction, id, key, false)
         return fullAction
             .mapNetworkErrors()
@@ -165,13 +233,13 @@ class ListingRepositoryImpl @Inject constructor(
 
     private fun addFavoriteActionIfRequired(
         remoteAction: Completable,
-        id: String,
+        id: Long,
         key: String,
         isSetAction: Boolean): Completable {
         return if (key == ListingAction.FAVOURITE.name.toLowerCase(Locale.ROOT)) {
             remoteAction
-                .mergeWith(listingDataSourceLocal.updateFavorite(id.toLong(), isSetAction))
-                .mergeWith(listingDataSourceMemory.updateFavorite(id.toLong(), isSetAction))
+                .mergeWith(listingDataSourceLocal.updateFavorite(id, isSetAction))
+                .mergeWith(listingDataSourceMemory.updateFavorite(id, isSetAction))
         } else {
             remoteAction
         }
@@ -185,9 +253,9 @@ class ListingRepositoryImpl @Inject constructor(
             .map { listingMapper.mapLocalToDomain(it) }
     }
 
-    override fun getMyListings(): Flowable<List<Listing>> {
-        val draftListings = listingDataSourceLocal.getDraftListings()
-        val remote = listingDataSourceRemote.getMyListings()
+    override fun getMyListings(state: String): Flowable<List<Listing>> {
+        val draftListings = listingDataSourceLocal.getDraftListings(state=state)
+        val remote = listingDataSourceRemote.getMyListings(state=state)
             .flatMap {
                 listingDataSourceLocal.saveListings(it.map { listingMapper.mapRemoteToLocal(it) }).toSingleDefault(it)
             }
@@ -199,7 +267,7 @@ class ListingRepositoryImpl @Inject constructor(
                     return@BiFunction list.sortedByDescending { it.id }
                 })
 
-        val local = listingDataSourceLocal.getMyListings()
+        val local = listingDataSourceLocal.getMyListings(state=state)
             .zipWith(draftListings,
                 BiFunction<List<ListingDto>, List<ListingDto>, List<Listing>> { local, draft ->
                     val list = mutableListOf<Listing>()
@@ -257,9 +325,9 @@ class ListingRepositoryImpl @Inject constructor(
             .mapNetworkErrors()
     }
 
-    override fun uploadListingImage(path: String): Single<ListingImage> {
+    override fun uploadListingImage(path: String): Single<List<ListingImage>> {
         return listingDataSourceRemote.uploadListingImage(path)
-            .map { listingImageMapper.mapRemoteToDomain(it) }
+            .map { it.map { listingImageMapper.mapRemoteToDomain(it) } }
             .mapNetworkErrors()
             .mapErrors()
     }
@@ -294,12 +362,28 @@ class ListingRepositoryImpl @Inject constructor(
 
     override fun getRecentSearch(): Single<List<RecentSearch>> {
         return listingDataSourceRemote.getRecentSearches()
+            .mapNetworkErrors()
+            .mapErrors()
             .map { recentSearchMapper.mapRemoteToDomain(it) }
     }
 
     override fun getTopListings(lat: Float, lon: Float, radius: Int): Single<List<Listing>> {
-        return listingDataSourceRemote.getTopListings(lat, lon, radius).map { listings ->
-            listings.map { listingMapper.mapRemoteToDomain(it) }
-        }
+        return listingDataSourceRemote.getTopListings(lat, lon, radius)
+            .mapNetworkErrors()
+            .mapErrors()
+            .map { listings ->
+                listings.map { listingMapper.mapRemoteToDomain(it) }
+            }
+    }
+
+    override fun getDataLocationSearched(address: String, page: Int, perPage: Int): Single<DataLocation> {
+        return listingDataSourceRemote.getDataLocationSearched(address, page, perPage)
+            .map { dataLocationMapper.mapRemoteToDomain(it) }
+    }
+
+    override fun getListUbigeo(type: String, department: String?, province: String?): Single<List<String>> {
+        return listingDataSourceRemote.getListUbigeo(type, department, province)
+            .mapNetworkErrors()
+            .mapErrors()
     }
 }

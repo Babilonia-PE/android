@@ -5,6 +5,7 @@
     tools:ignore="Deprecated">
 
     <data>
+        <import type="android.view.View" />
 
         <import type="com.babilonia.Constants" />
 
@@ -15,6 +16,10 @@
         <variable
             name="model"
             type="com.babilonia.presentation.flow.main.publish.createlisting.CreateListingSharedViewModel" />
+
+        <variable
+            name="viewModelContainer"
+            type="com.babilonia.presentation.flow.main.publish.createlisting.CreateListingContainerViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -54,7 +59,6 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvListingTypeTitle" />
-
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btRent"
@@ -125,9 +129,194 @@
                     android:focusable="false"
                     android:text="@{model.location.address}"
                     tools:ignore="Deprecated"
-                    tools:text="asguiasgi" />
+                    tools:text="Via Filippo Turati, 6" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiCountry"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/country"
+                app:validateAddressString="@{model.location.address}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiAddress">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCountry"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:focusable="false"
+                    android:inputType="text"
+                    android:text="@{model.location.country}"
+                    tools:text="Perú" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiDepartment"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/department"
+                app:endIconDrawable="@drawable/ic_dropdown"
+                app:endIconMode="custom"
+                app:validateAddressString="@{model.location.address}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiCountry">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDepartment"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:focusable="false"
+                    android:inputType="text"
+                    app:validateString="@{model.location.department}"
+                    app:setEnableTextInputEditText="@{!viewModelContainer.isLoadingDepartment() &amp;&amp; !viewModelContainer.isLoadingProvince() &amp;&amp; !viewModelContainer.isLoadingDistrict()}"
+                    tools:text="Lima" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/pbLoadingDepartment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
+                android:indeterminate="true"
+                android:theme="@style/ProgressPrimary"
+                android:elevation="0.1dp"
+                android:background="@color/white"
+                android:visibility="@{viewModelContainer.isLoadingDepartment()? View.VISIBLE: View.GONE}"
+                tools:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/tiDepartment"
+                app:layout_constraintEnd_toEndOf="@+id/tiDepartment"
+                app:layout_constraintTop_toTopOf="@+id/tiDepartment" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiProvince"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/province"
+                app:validateAddressString="@{model.location.address}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiDepartment"
+                app:endIconDrawable="@drawable/ic_dropdown"
+                app:endIconMode="custom"
+                tools:visibility="visible">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etProvince"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:focusable="false"
+                    android:inputType="text"
+                    app:validateString="@{model.location.province}"
+                    app:setEnableTextInputEditText="@{!viewModelContainer.isLoadingDepartment() &amp;&amp; !viewModelContainer.isLoadingProvince() &amp;&amp; !viewModelContainer.isLoadingDistrict()}"
+                    tools:text="Lima" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/pbLoadingProvince"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
+                android:indeterminate="true"
+                android:theme="@style/ProgressPrimary"
+                android:elevation="0.1dp"
+                android:background="@color/white"
+                android:visibility="@{viewModelContainer.isLoadingProvince()? View.VISIBLE: View.GONE}"
+                tools:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/tiProvince"
+                app:layout_constraintEnd_toEndOf="@+id/tiProvince"
+                app:layout_constraintTop_toTopOf="@+id/tiProvince" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiDistrict"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                android:layout_marginTop="@dimen/create_listing_margin_top_bottom"
+                android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                android:hint="@string/district"
+                app:validateAddressString="@{model.location.address}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiProvince"
+                app:endIconDrawable="@drawable/ic_dropdown"
+                app:endIconMode="custom"
+                tools:visibility="visible">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDistrict"
+                    style="@style/createListingInputStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:focusable="false"
+                    android:inputType="text"
+                    app:validateString="@{model.location.district}"
+                    app:setEnableTextInputEditText="@{!viewModelContainer.isLoadingDepartment() &amp;&amp; !viewModelContainer.isLoadingProvince() &amp;&amp; !viewModelContainer.isLoadingDistrict()}"
+                    tools:text="Independencia" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/pbLoadingDistrict"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
+                android:indeterminate="true"
+                android:theme="@style/ProgressPrimary"
+                android:elevation="0.1dp"
+                android:background="@color/white"
+                android:visibility="@{viewModelContainer.isLoadingDistrict()? View.VISIBLE: View.GONE}"
+                tools:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/tiDistrict"
+                app:layout_constraintEnd_toEndOf="@+id/tiDistrict"
+                app:layout_constraintTop_toTopOf="@+id/tiDistrict" />
+
+
+
+
+
+
+
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiDescription"
@@ -143,7 +332,8 @@
                 app:counterMaxLength="2000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tiAddress">
+                app:layout_constraintTop_toBottomOf="@+id/tiDistrict"
+                tools:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDescription"
@@ -154,7 +344,7 @@
                     android:focusable="false"
                     android:maxLength="2000"
                     android:text="@{model.description}"
-                    tools:text="astas   " />
+                    tools:text="Mi description   " />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -168,7 +358,8 @@
                 android:layout_marginEnd="@dimen/create_listing_margin_left_right"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tiDescription">
+                app:layout_constraintTop_toBottomOf="@+id/tiDescription"
+                tools:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPrice"
@@ -220,7 +411,8 @@
                 android:hint="@string/built_area_square_meters"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tiArea">
+                app:layout_constraintTop_toBottomOf="@+id/tiArea"
+                tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBuiltArea"
@@ -235,7 +427,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiYear"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -249,7 +440,8 @@
                 app:endIconMode="custom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tiBuiltArea">
+                app:layout_constraintTop_toBottomOf="@+id/tiBuiltArea"
+                tools:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etYear"
@@ -265,10 +457,8 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
 
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 // Created by Anton Yatsenko on 18.06.2019.
 class UploadListingImageUseCase @Inject constructor(private val listingRepository: ListingRepository) :
-    SingleUseCase<ListingImage, String>() {
-    override fun buildUseCaseSingle(params: String): Single<ListingImage> {
+    SingleUseCase<List<ListingImage>, String>() {
+    override fun buildUseCaseSingle(params: String): Single<List<ListingImage>> {
         return listingRepository.uploadListingImage(params)
     }
 }

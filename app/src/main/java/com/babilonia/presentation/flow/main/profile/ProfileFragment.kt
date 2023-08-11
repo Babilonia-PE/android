@@ -25,8 +25,10 @@ import com.babilonia.R
 import com.babilonia.databinding.ProfileFragmentBinding
 import com.babilonia.presentation.base.BaseFragment
 import com.babilonia.presentation.extension.withGlide
+import com.babilonia.presentation.utils.PathFinder
 import com.babilonia.presentation.utils.RealPathUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.marchinram.rxgallery.RxGallery
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.yalantis.ucrop.UCrop
@@ -55,9 +57,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding, ProfileViewModel>()
         super.startListenToEvents()
         viewModel.userLiveData.observe(this, Observer {
             binding.ivProfileAvatar.withGlide(it.avatar, R.drawable.ic_profile_placeholder)
-            val manager = requireContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            binding.tvPhoneValue.text =
-                PhoneNumberUtils.formatNumber(it.phoneNumber, manager.simCountryIso.toUpperCase(Locale.ROOT))
+            if (it.phoneNumber?.isNotEmpty() == true) {
+                val manager = requireContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                binding.tvPhoneValue.text =
+                    PhoneNumberUtils.formatNumber(it.phoneNumber, manager.simCountryIso.toUpperCase(Locale.ROOT))
+            }
         })
         viewModel.photoUploadProgressLiveData.observe(this, Observer {
             if (it) {
@@ -66,19 +70,32 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding, ProfileViewModel>()
                 hideProgress()
             }
         })
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
     }
 
     override fun stopListenToEvents() {
         super.stopListenToEvents()
         viewModel.userLiveData.removeObservers(this)
         viewModel.photoUploadProgressLiveData.removeObservers(this)
+        viewModel.authFailedData.removeObservers(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_FROM_GALLERY) {
             data?.data?.let {
-                cropImage(RealPathUtil.getRealPathFromURI(requireContext(), it))
+                var realPath = PathFinder.getFilePathV1(requireActivity(), it)
+                if(realPath==null) realPath = PathFinder.getFilePathV2(requireActivity(), it)
+                realPath?.let{ path ->
+                    cropImage(path)
+                }?:run{
+                    FirebaseCrashlytics.getInstance().setCustomKey("ERROR:", "ERROR PATH")
+                    showSnackbar(R.string.image_could_not_be_obtained)
+                }
             }
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             currentPhotoPath?.let {
@@ -144,18 +161,18 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding, ProfileViewModel>()
 
     @SuppressLint("CheckResult")
     private fun pickImageFromGallery() {
-        RxGallery.gallery(requireActivity(), false, RxGallery.MimeType.IMAGE)
-            .subscribe(
-                { uris ->
-                    cropImage(RealPathUtil.getRealPathFromURI(requireContext(), uris.first()))
-                },
-                { throwable -> Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show() })
+        val intent = Intent()
+        intent.action = Intent.ACTION_OPEN_DOCUMENT //ACTION_GET_CONTENT
+        intent.type = Constants.TYPE_IMAGE
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        val chooser = Intent.createChooser(intent, getString(R.string.select_an_image))
+        startActivityForResult(chooser, PICK_IMAGE_FROM_GALLERY)
     }
 
     @SuppressLint("CheckResult")
     private fun requestStoragePermission() {
         RxPermissions(this)
-            .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .subscribe {
                 if (it) {
                     pickImageFromGallery()

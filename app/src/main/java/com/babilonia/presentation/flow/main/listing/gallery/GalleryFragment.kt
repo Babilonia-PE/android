@@ -21,6 +21,20 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding, GalleryViewModel>()
         viewModel.getListing(args.id)
     }
 
+    override fun startListenToEvents() {
+        super.startListenToEvents()
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+    }
+
+    override fun stopListenToEvents() {
+        super.stopListenToEvents()
+        viewModel.authFailedData.removeObservers(this)
+    }
+
     private fun observeViewModel() {
         viewModel.getListingLiveData().observe(this, Observer { listing ->
             val photosCount = listing.images?.size ?: 0

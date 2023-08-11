@@ -7,11 +7,13 @@ import com.babilonia.Constants
 import com.babilonia.data.datasource.RealEstateDataSource
 import com.babilonia.data.datasource.system.LocationProvider
 import com.babilonia.data.datasource.system.RotationProvider
+import com.babilonia.data.mapper.FiltersMapper
 import com.babilonia.data.model.DataResult
 import com.babilonia.data.model.ar.ArState
 import com.babilonia.data.model.ar.tag.MovableArObject
 import com.babilonia.data.model.geo.LocationRequest
 import com.babilonia.data.model.geo.RealEstateGeoData
+import com.babilonia.domain.model.Filter
 import com.babilonia.domain.model.geo.ILocation
 import com.babilonia.domain.repository.ListingRepository
 import com.babilonia.domain.utils.ArTagScreenPositionProvider
@@ -30,7 +32,8 @@ class ArRepositoryImpl @Inject constructor(
     private val rotationProvider: RotationProvider,
     private val arTagTypeProvider: ArTagTypeProvider,
     private val screenPositionProvider: ArTagScreenPositionProvider,
-    private val prefs: SharedPreferences
+    private val prefs: SharedPreferences,
+    private val filtersMapper: FiltersMapper
 ) : ArRepository {
 
     override fun needToShowOnboarding(): Single<Boolean> {
@@ -47,13 +50,14 @@ class ArRepositoryImpl @Inject constructor(
         cameraProjectionMatrix: FloatArray,
         locationRequest: LocationRequest,
         sceneWidth: Int,
-        sceneHeight: Int
+        sceneHeight: Int,
+        filters: List<Filter>
     ): Observable<DataResult<ArState>> {
 
         val locationObservable = getLocationObservable(locationRequest)
             .switchMap { locationResult ->
                 when (locationResult) {
-                    is DataResult.Success -> arRemoteDataSource.getRealEstateList(locationResult.data)
+                    is DataResult.Success -> arRemoteDataSource.getRealEstateList(locationResult.data, filtersMapper.mapToQuery(filters),)
                         .map { realEstateList ->
                             realEstateList
                                 .map {

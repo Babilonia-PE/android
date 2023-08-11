@@ -2,6 +2,7 @@ package com.babilonia.presentation.flow.ar
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -14,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.transition.TransitionManager
 import com.babilonia.Constants
@@ -26,19 +28,20 @@ import com.babilonia.data.model.ar.tag.MovableArObject
 import com.babilonia.databinding.ArSceneFragmentBinding
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.RouteStep
+import com.babilonia.domain.model.enums.FilterType
 import com.babilonia.domain.model.enums.PaymentPlanKey
 import com.babilonia.domain.model.enums.PropertyType
 import com.babilonia.domain.model.enums.SuccessMessageType
 import com.babilonia.domain.model.geo.ILocation
 import com.babilonia.presentation.base.BaseFragment
-import com.babilonia.presentation.extension.invisible
-import com.babilonia.presentation.extension.safeLet
-import com.babilonia.presentation.extension.visible
-import com.babilonia.presentation.extension.withGlide
+import com.babilonia.presentation.extension.*
 import com.babilonia.presentation.flow.ar.ArScreenMode.NAVIGATION
 import com.babilonia.presentation.flow.ar.ArScreenMode.SEARCH
 import com.babilonia.presentation.flow.main.listing.common.ListingImagesPagerAdapter
 import com.babilonia.presentation.flow.main.search.map.common.ListingUtilsDelegateImpl
+import com.babilonia.presentation.flow.main.search.model.DisplaybleFilter
+import com.babilonia.presentation.flow.main.search.model.PrefixedDisplayableFilter
+import com.babilonia.presentation.utils.NetworkUtil
 import com.babilonia.presentation.view.ArTagViewFactory
 import com.babilonia.presentation.view.dialog.StyledAlertDialog
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -46,15 +49,24 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.chip.Chip
+import com.google.android.material.shape.CornerFamily
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.log.logcat
 import io.fotoapparat.selector.*
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ar_filters_fragment.*
 import kotlinx.android.synthetic.main.ar_scene_bottom_details.*
 import kotlinx.android.synthetic.main.ar_scene_fragment.*
 import kotlinx.android.synthetic.main.layout_ar_navigation_preview.*
+import kotlinx.android.synthetic.main.layout_filters_ar.*
+import kotlinx.android.synthetic.main.layout_filters_general.*
+import kotlinx.android.synthetic.main.layout_filters_general.btRent
+import kotlinx.android.synthetic.main.layout_filters_general.btSale
+import kotlinx.android.synthetic.main.layout_filters_general.tiPropertyType
+import kotlinx.android.synthetic.main.layout_filters_general.tvListingTypeTitle
 import timber.log.Timber
 import java.lang.Math.toDegrees
 import java.text.NumberFormat
@@ -162,6 +174,84 @@ class ArSceneFragment : BaseFragment<ArSceneFragmentBinding, ArSceneViewModel>()
         ivArrowHide.setOnClickListener { viewModel.unselectTag() }
         ivBack.setOnClickListener { requireActivity().onBackPressed() }
         btnGoToMap.setOnClickListener { viewModel.navigateToMap() }
+        listingTypeButton.setOnClickListener { showFilters(FilterType.LISTING) }
+        propertyTypeButton.setOnClickListener { showFilters(FilterType.PROPERTY) }
+
+        ivArrowHideFilters.setOnClickListener { hideFilters() }
+        btApplyFilters.setOnClickListener { onApplyFilters() }
+        filterGeneral.initGeneralFilters(viewModel)
+
+        viewModel.ipAddress = NetworkUtil.getIPAddress(requireContext()) ?: ""
+    }
+
+    override fun startListenToEvents() {
+        super.startListenToEvents()
+
+        with(viewModel) {
+            filtersLiveData.observe(this@ArSceneFragment, Observer {
+              initFilters(it)
+            })
+//            locationLiveData.observe(this@ArSceneFragment, Observer {
+//                subscribeToMyLocation(it)
+//            })
+        }
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+    }
+
+    override fun stopListenToEvents() {
+        super.stopListenToEvents()
+
+        with(viewModel) {
+            filtersLiveData.removeObservers(this@ArSceneFragment)
+//            locationLiveData.removeObservers(this@ArSceneFragment)
+        }
+        viewModel.authFailedData.removeObservers(this)
+    }
+
+    /*private fun subscribeToMyLocation(location: ILocation) {
+        if(!location.department.isNullOrBlank() ||
+            !location.province.isNullOrBlank() ||
+            !location.district.isNullOrBlank() ||
+            !location.address.isNullOrBlank()) {
+
+            print("subscribeToMyLocation")
+//            viewModel.getListings(location)
+//            viewModel.getTopListings(location)
+        }else {
+//            viewModel.getTopListingsLoading(location)
+        }
+    }*/
+
+    private fun initFilters(filters: List<DisplaybleFilter>) {
+        listingTypeButton.text = getString(R.string.all)
+        propertyTypeButton.text = getString(R.string.all)
+
+        filters.forEach { filter ->
+            if (filter.value.isNotEmpty()) {
+                when(filter.type) {
+                    FilterType.LISTING.type -> {
+                        listingTypeButton.text = filter.value
+                    }
+                    FilterType.PROPERTY.type -> {
+                        propertyTypeButton.text = filter.value
+                    }
+                }
+            }
+        }
+//
+        val realFiltersCount = filters.filter { it.value.isNotEmpty() }.size
+//
+        if (realFiltersCount > 1) {
+//            binding.tvFiltersHint.visible()
+        } else {
+//            // In this case we have only Sale/Rent filter. It can not be removed by tap so we hide
+//            // 'Tap on filter to remove' hint
+//            binding.tvFiltersHint.invisible()
+        }
     }
 
     override fun onStart() {
@@ -447,6 +537,7 @@ class ArSceneFragment : BaseFragment<ArSceneFragmentBinding, ArSceneViewModel>()
     }
 
     private fun showBottomListing(listing: Listing) {
+        hideFilters()
         listing.apply {
             val typeUpperCase = context?.let {
                 ListingUtilsDelegateImpl.getLocalizedType(it, listing.listingType)
@@ -529,6 +620,46 @@ class ArSceneFragment : BaseFragment<ArSceneFragmentBinding, ArSceneViewModel>()
         TransitionManager.beginDelayedTransition(clRoot)
     }
 
+    private fun showFilters(filterType: FilterType) {
+        hideBottomListing()
+
+        when(filterType) {
+            FilterType.PROPERTY -> {
+                listingTypeContainer.gone()
+                propertyTypeContainer.visible()
+            }
+            else -> {
+                listingTypeContainer.visible()
+                propertyTypeContainer.gone()
+            }
+        }
+
+        animationSet.apply {
+            clone(clFilterRoot)
+            clear(clBottomFilter.id, ConstraintSet.TOP)
+            connect(clBottomFilter.id, ConstraintSet.BOTTOM, clFilterRoot.id, ConstraintSet.BOTTOM)
+            applyTo(clFilterRoot)
+        }
+
+        TransitionManager.beginDelayedTransition(clFilterRoot)
+    }
+
+    private fun hideFilters() {
+        animationSet.apply {
+            clone(clFilterRoot)
+            clear(clBottomFilter.id, ConstraintSet.BOTTOM)
+            connect(clBottomFilter.id, ConstraintSet.TOP, clFilterRoot.id, ConstraintSet.BOTTOM)
+            applyTo(clFilterRoot)
+        }
+
+        TransitionManager.beginDelayedTransition(clFilterRoot)
+    }
+
+    private fun onApplyFilters() {
+        context?.let { it1 -> viewModel.applyFilters(it1) }
+        hideFilters()
+    }
+
     private fun updateNavigateButton() {
         val placeLocation = (viewModel.selectedTag.value?.tag as? MovableArObject)?.location
         safeLet(placeLocation, viewModel.currentLocationLiveData.value) { placeLoc, userLoc ->
@@ -556,11 +687,11 @@ class ArSceneFragment : BaseFragment<ArSceneFragmentBinding, ArSceneViewModel>()
     }
 
     private fun showContactDialog(userId: Long, phoneNumber: String) {
+        viewModel.contactOwner(userId, phoneNumber)
         context?.let {
             StyledAlertDialog.Builder(it)
                 .setTitleText(phoneNumber)
                 .setRightButton(getString(R.string.call)) {
-                    viewModel.contactOwner(userId, phoneNumber)
                 }
                 .setLeftButton(getString(R.string.cancel))
                 .build()

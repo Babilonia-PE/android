@@ -18,14 +18,14 @@ object Constants {
     const val HIDDEN = "hidden"
     const val VISIBLE = "visible"
     const val CORNER_RADIUS = 16
-    const val PER_PAGE_MAX = 1000
-    const val PER_PAGE = 25
-    const val LIMA_LAT = -12.0552493
-    const val LIMA_LON = -77.0627323
+    const val PER_PAGE_MAX = 1500
+    const val PER_PAGE = 50
+    const val LIMA_LAT = -12.119031
+    const val LIMA_LON = -77.028803
     const val LIMA_DEFAULT_REQUEST = "Lima, Peru"
     var RETRY_COUNT = 0
-    const val MAX_RADIUS = 5000
-    const val DEFAULT_RADIUS = 5000
+    const val MAX_RADIUS = 2000
+    const val DEFAULT_RADIUS = 2000
     const val DESTINATION_AREA_RADIUS_METERS = 10.0
     const val FIRST_PAGE = 1
     const val DEFAULT_DEBOUNCE = 500L
@@ -40,4 +40,11 @@ object Constants {
 
     const val COUNTRY_CODE_UKRAINE = "UA"
     const val COUNTRY_CODE_PERU = "PE"
+
+    const val PUBLISHER_ROLE_REALTOR = "realtor"
+    const val PUBLISHER_ROLE_OWNER   = "owner"
+
+    const val TYPE_IMAGE = "image/*"
+
+    const val BUNDLE_PAYMENT_MESSAGE   = "BUNDLE_PAYMENT_MESSAGE"
 }

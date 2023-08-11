@@ -41,6 +41,7 @@ class SplashFragment : BaseFragment<com.babilonia.databinding.SplashFragmentBind
     override fun startListenToEvents() {
         super.startListenToEvents()
         viewModel.isLoggedInEvent.observe(this, Observer {
+            binding.btSignUp.visible()
             binding.btLogin.visible()
         })
         viewModel.navigateToRootLiveData.observe(this, Observer {
@@ -58,12 +59,27 @@ class SplashFragment : BaseFragment<com.babilonia.databinding.SplashFragmentBind
     }
 
     private fun setupClicks() {
+        binding.btSignUp.setOnClickListener {
+            startSignUp()
+        }
         binding.btLogin.setOnClickListener {
-            authorizeWithPhone()
+            //authorizeWithPhone()
+            startLogIn()
+        }
+        binding.ivBabilonia.setOnClickListener {
+            //force crash throw RuntimeException("crash testing production")
         }
     }
 
-    private fun authorizeWithPhone() {
+    private fun startSignUp() {
+        viewModel.navigateToSignUp()
+    }
+
+    private fun startLogIn() {
+        viewModel.navigateToLogIn()
+    }
+
+    /*private fun authorizeWithPhone() {
         val providers = arrayListOf(
             AuthUI.IdpConfig.PhoneBuilder().build())
 
@@ -72,9 +88,10 @@ class SplashFragment : BaseFragment<com.babilonia.databinding.SplashFragmentBind
                 .createSignInIntentBuilder()
                 .setTheme(R.style.FirebaseUI)
                 .setAvailableProviders(providers)
+                //.setIsSmartLockEnabled(false)
                 .build(),
             APP_REQUEST_CODE)
-    }
+    }*/
 
     private fun checkDeepLinks() {
         FirebaseDynamicLinks.getInstance()

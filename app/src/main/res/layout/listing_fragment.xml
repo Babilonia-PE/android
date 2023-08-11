@@ -46,7 +46,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:background="@color/light_gray" />
+                    tools:background="@color/light_gray" >
+
+
+                </androidx.viewpager.widget.ViewPager>
 
                 <View
                     android:id="@+id/imageGradient"
@@ -452,7 +455,7 @@
                     android:fontFamily="@font/avenit_medium"
                     android:gravity="center_vertical"
                     android:lineSpacingExtra="6sp"
-                    android:text="@{viewModel.listingLiveData.locationAttributes.address}"
+                    app:valLocationString="@{viewModel.listingLiveData.locationAttributes}"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -473,55 +476,64 @@
                     app:layout_constraintStart_toStartOf="@+id/tvListingMap"
                     app:layout_constraintTop_toBottomOf="@+id/tvListingMap" />
 
-                <TextView
-                    android:id="@+id/tvListingYear"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clGroup"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="21dp"
-                    android:drawablePadding="8dp"
-                    android:fontFamily="@font/avenit_medium"
-                    android:gravity="center"
-                    android:lineSpacingExtra="6sp"
-                    android:text="@{@string/built_in(viewModel.listingLiveData.yearOfConstruction)}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tvListingAbout"
-                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout"
-                    tools:text="Built in 1992" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout">
 
-                <TextView
-                    android:id="@+id/tvTotalFloors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="21dp"
-                    android:layout_marginStart="8dp"
-                    android:drawablePadding="8dp"
-                    android:fontFamily="@font/avenit_medium"
-                    android:gravity="center"
-                    android:lineSpacingExtra="6sp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toEndOf="@+id/tvListingYear"
-                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout"
-                    tools:text="5 total floors"
-                    app:drawableStartCompat="@drawable/gray_circle" />
+                    <TextView
+                        android:id="@+id/tvListingYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/avenit_medium"
+                        android:gravity="center"
+                        android:lineSpacingExtra="6sp"
+                        android:text="@{@string/built_in(viewModel.listingLiveData.yearOfConstruction)}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Built in 1992" />
 
-                <TextView
-                    android:id="@+id/tvFloorNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="21dp"
-                    android:layout_marginStart="8dp"
-                    android:drawablePadding="8dp"
-                    android:fontFamily="@font/avenit_medium"
-                    android:gravity="center"
-                    android:lineSpacingExtra="6sp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toEndOf="@+id/tvTotalFloors"
-                    app:layout_constraintTop_toBottomOf="@+id/tvListingAbout"
-                    tools:text="2nd floor"
-                    app:drawableStartCompat="@drawable/gray_circle" />
+                    <TextView
+                        android:id="@+id/tvTotalFloors"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/avenit_medium"
+                        android:gravity="center"
+                        android:lineSpacingExtra="6sp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:drawableStartCompat="@drawable/gray_circle"
+                        app:layout_constraintStart_toEndOf="@+id/tvListingYear"
+                        app:layout_constraintTop_toTopOf="@+id/clGroup"
+                        tools:text="5 total floors" />
+
+                    <TextView
+                        android:id="@+id/tvFloorNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/avenit_medium"
+                        android:gravity="center"
+                        android:lineSpacingExtra="6sp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:drawableStartCompat="@drawable/gray_circle"
+                        app:layout_constraintStart_toEndOf="@+id/tvTotalFloors"
+                        app:layout_constraintTop_toTopOf="@+id/clGroup"
+                        tools:text="2nd floor" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/tvListingDescription"
@@ -538,7 +550,7 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvListingYear"
+                    app:layout_constraintTop_toBottomOf="@+id/clGroup"
                     tools:text="But before you unpack, just check to make sure whether the Island has been affected. We have had many tropical storm warnings over the years, but ... Florida we’ve been extremely fortunate. In " />
 
                 <TextView
@@ -644,6 +656,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/ivFavorite"
                     android:theme="@style/CheckboxCustomStyle"
@@ -656,6 +669,18 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_heart_24dp" />
+
+                <ImageButton
+                    android:id="@+id/shareButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="56dp"
+                    android:background="@color/transparent"
+                    app:srcCompat="@drawable/ic_white_share_24"
+                    android:visibility="@{mode == ListingDisplayMode.PUBLISHED || mode == ListingDisplayMode.IMPROPER_LISTING? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/tvListingAvatar"
@@ -710,44 +735,57 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <LinearLayout
-            android:id="@+id/btListingAction"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/rounded_corners_shape_4dp"
-            android:backgroundTint="@color/colorAccent"
-            android:foreground="?attr/selectableItemBackground"
-            android:layout_gravity="bottom"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="bottom">
 
-            <TextView
-                android:id="@+id/tvListingActionText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/samsungsharpsans_bold"
-                android:gravity="center_horizontal"
-                android:letterSpacing="0.06"
-                android:text="@string/apply_filters"
-                android:textAllCaps="true"
-                android:textColor="#ffffff"
-                android:textSize="16sp" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/fabWhatsapp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_whatsapp"
+                android:stateListAnimator="@null"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible"/>
 
-            <TextView
-                android:id="@+id/tvListingActionHint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/avenit_medium"
-                android:gravity="center_horizontal"
-                android:letterSpacing="0.06"
-                android:text="@string/contact_button_hint"
-                android:textColor="#ffffff"
-                android:textSize="12sp" />
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/btListingAction"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/rounded_corners_shape_4dp"
+                android:backgroundTint="@color/colorAccent"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/fabWhatsapp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UnusedAttribute"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tvListingActionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/samsungsharpsans_bold"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="0.06"
+                    android:text="@string/apply_filters"
+                    android:textAllCaps="true"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

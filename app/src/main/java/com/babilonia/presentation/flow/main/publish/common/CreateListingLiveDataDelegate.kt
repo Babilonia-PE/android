@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.babilonia.domain.model.Facility
-import com.babilonia.domain.model.Listing
-import com.babilonia.domain.model.ListingImage
-import com.babilonia.domain.model.Location
+import com.babilonia.domain.model.*
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.flow.main.publish.mylistings.common.NewListingOpenMode
 
@@ -17,6 +14,7 @@ interface CreateListingLivedataDelegate {
     var isDraft: Boolean
     var description: MutableLiveData<String>
     var location: MutableLiveData<Location>
+    var tempLocation: MutableLiveData<Location>
     var area: MutableLiveData<String>
     var builtArea: MutableLiveData<String>
     var property: MutableLiveData<String>
@@ -40,7 +38,6 @@ interface CreateListingLivedataDelegate {
     var editListingImagesEvent: SingleLiveEvent<List<ListingImage>>
     var mediator: MediatorLiveData<Boolean>
 
-
     var descriptionTrigger: LiveData<Boolean>
     var areaTrigger: LiveData<Boolean>
     var locationTrigger: LiveData<Boolean>
@@ -50,16 +47,14 @@ interface CreateListingLivedataDelegate {
     var imagesTrigger: LiveData<Boolean>
     val triggersObserver: Observer<Boolean>
 
+    var contact: MutableLiveData<Contact>
+
     var createdAt: String?
 
     fun primaryImageId(): Int?
     fun imageIds(): List<Int>?
 
-    fun setDraft(
-        listing: Listing,
-        mode: NewListingOpenMode
-    )
-
+    fun setDraft(listing: Listing, mode: NewListingOpenMode)
     fun setFacilities(facilities: List<Facility>)
     fun setAdvancedDetails(advancedDetails: List<Facility>)
 }

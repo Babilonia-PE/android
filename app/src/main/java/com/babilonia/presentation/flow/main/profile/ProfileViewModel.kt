@@ -6,12 +6,14 @@ import android.util.Patterns
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import com.babilonia.R
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.data.network.error.EmailAlreadyTakenException
+import com.babilonia.domain.model.ListingImage
 import com.babilonia.domain.model.User
 import com.babilonia.domain.model.enums.SuccessMessageType
 import com.babilonia.domain.usecase.GetUserUseCase
 import com.babilonia.domain.usecase.UpdateUserUseCase
-import com.babilonia.domain.usecase.UploadUserAvatarUseCase
+import com.babilonia.domain.usecase.UploadImagesUseCase
 import com.babilonia.presentation.base.BaseViewModel
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.flow.main.common.PrivacyContentType
@@ -25,20 +27,25 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val uploadUserAvatarUseCase: UploadUserAvatarUseCase,
+    private val uploadImagesUseCase: UploadImagesUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val deeplinkHandler: DeeplinkHandler
 ) : BaseViewModel() {
+    val authFailedData = SingleLiveEvent<Unit>()
     val userLiveData = MutableLiveData<User>()
     var updateUserNameValidator = object : ObservableBoolean() {
         override fun get(): Boolean {
-            return userLiveData.value?.firstName?.trim().isNullOrEmpty().not()
-                    && userLiveData.value?.lastName?.trim().isNullOrEmpty().not()
+            return userLiveData.value?.fullName?.trim().isNullOrEmpty().not()
         }
     }
     var updateEmailValidator = object : ObservableBoolean() {
         override fun get(): Boolean {
             return isEmailValid()
+        }
+    }
+    var updatePhoneValidator = object : ObservableBoolean() {
+        override fun get(): Boolean {
+            return isPhoneNumberValid()
         }
     }
     var editType: SuccessMessageType? = null
@@ -59,6 +66,10 @@ class ProfileViewModel @Inject constructor(
         navigate(R.id.action_profileFragment_to_profileEmailFragment)
     }
 
+    fun navigateToPhoneEdit() {
+        navigate(R.id.action_profileFragment_to_profilePhoneFragment)
+    }
+
     fun navigateToEditName() {
         navigate(R.id.action_profileFragment_to_userNameProfileFragment)
     }
@@ -77,9 +88,9 @@ class ProfileViewModel @Inject constructor(
 
     fun updateUser() {
         userLiveData.value?.let { user ->
-            user.firstName = user.firstName?.trim()
-            user.lastName = user.lastName?.trim()
+            user.fullName = user.fullName?.trim()
             user.email = user.email?.trim()
+            user.phoneNumber = user.phoneNumber?.trim()
             updateUserUseCase.execute(object : DisposableSingleObserver<User>() {
                 override fun onSuccess(user: User) {
                     userLiveData.postValue(user)
@@ -90,15 +101,53 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    if (e is EmailAlreadyTakenException) {
-                        emailAlreadyTakenLiveData.call()
-                    } else {
-                        dataError.postValue(e)
-                    }                }
-            }, user)
+                    when (e) {
+                        is AuthFailedException -> {
+                            authFailedData.call()
+                        }
+                        is EmailAlreadyTakenException -> {
+                            emailAlreadyTakenLiveData.call()
+                        }
+                        else -> {
+                            dataError.postValue(e)
+                        }
+                    }
+                }
+            }, UpdateUserUseCase.Params(user, null, null))
         }
     }
 
+    fun updateUser(password: String?, photoId: Int?) {
+        userLiveData.value?.let { user ->
+            user.fullName = user.fullName?.trim()
+            user.email = user.email?.trim()
+            user.phoneNumber = user.phoneNumber?.trim()
+            updateUserUseCase.execute(object : DisposableSingleObserver<User>() {
+                override fun onSuccess(user: User) {
+                    userLiveData.postValue(user)
+                    editType?.let {
+                        messageEvent.postValue(it)
+                    }
+                    getUser()
+                    navigateBack()
+                }
+
+                override fun onError(e: Throwable) {
+                    when (e) {
+                        is AuthFailedException -> {
+                            authFailedData.call()
+                        }
+                        is EmailAlreadyTakenException -> {
+                            emailAlreadyTakenLiveData.call()
+                        }
+                        else -> {
+                            dataError.postValue(e)
+                        }
+                    }
+                }
+            }, UpdateUserUseCase.Params(user, password, photoId))
+        }
+    }
 
     fun getUser() {
         getUserUseCase.execute(object : DisposableSubscriber<User>() {
@@ -111,7 +160,12 @@ class ProfileViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, Unit)
     }
@@ -139,23 +193,30 @@ class ProfileViewModel @Inject constructor(
 
     private fun uploadImage(path: String) {
         userLiveData.value?.let {
-            uploadUserAvatarUseCase.execute(object : DisposableSingleObserver<User>() {
+            uploadImagesUseCase.execute(object : DisposableSingleObserver<List<ListingImage>>() {
                 override fun onStart() {
                     super.onStart()
                     photoUploadProgressLiveData.value = true
                 }
                 override fun onError(e: Throwable) {
-                    dataError.postValue(e)
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else {
+                        dataError.postValue(e)
+                        photoUploadProgressLiveData.value = false
+                    }
+                }
+
+                override fun onSuccess(images: List<ListingImage>) {
+                    updateUser(null, images[0].id)
+                    //userLiveData.value = user
+                    //messageEvent.postValue(SuccessMessageType.AVATAR)
                     photoUploadProgressLiveData.value = false
                 }
 
-                override fun onSuccess(user: User) {
-                    userLiveData.value = user
-                    messageEvent.postValue(SuccessMessageType.AVATAR)
-                    photoUploadProgressLiveData.value = false
-                }
-
-            }, UploadUserAvatarUseCase.Params(path, it.firstName, it.lastName, it.email))
+            }, UploadImagesUseCase.Params(path, "profile"))
         }
 
     }
@@ -163,5 +224,11 @@ class ProfileViewModel @Inject constructor(
     private fun isEmailValid(): Boolean {
         return userLiveData.value?.email?.trim().isNullOrEmpty().not() &&
                 Patterns.EMAIL_ADDRESS.matcher(userLiveData.value?.email).matches()
+    }
+
+    private fun isPhoneNumberValid(): Boolean {
+        return userLiveData.value?.phoneNumber?.trim().isNullOrEmpty() ||
+                Patterns.PHONE.matcher(userLiveData.value?.phoneNumber).matches()
+        //return true
     }
 }

@@ -18,7 +18,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:backgroundTint="@color/colorPrimary"
-            android:enabled="@{model.location==null?false:true}"
+            android:enabled="@{ (model.location==null?false:true) || (model.tempLocation==null?false:true) }"
             android:text="@string/pick_selected_location"
             android:textColor="@android:color/white"
             app:cornerRadius="6dp"

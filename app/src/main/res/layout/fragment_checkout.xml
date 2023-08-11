@@ -80,8 +80,8 @@
             app:layout_constraintBottom_toBottomOf="@id/tvPaymentAmount"
             tools:text="/ 30 days" />
 
-        <com.stripe.android.view.CardNumberTextInputLayout
-            android:id="@+id/tilStripeCardNumber"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCardNumber"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.SilverHint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -93,53 +93,61 @@
             android:nextFocusForward="@+id/etExpiryDate"
             android:nextFocusDown="@+id/etExpiryDate"
             app:hintEnabled="false"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/ErrorAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPaymentAmount">
 
-            <com.stripe.android.view.CardNumberEditText
-                android:id="@+id/etStripeCardNumber"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCardNumber"
                 style="@style/createListingInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/card_number_hint"
+                android:maxLength="24"
                 android:imeOptions="actionNext" />
 
-        </com.stripe.android.view.CardNumberTextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
             android:id="@+id/ivCardBrand"
-            android:layout_width="@dimen/card_brand_view_width"
-            android:layout_height="@dimen/card_brand_view_height"
-            android:layout_marginEnd="@dimen/stripe_card_icon_padding"
-            app:layout_constraintEnd_toEndOf="@id/tilStripeCardNumber"
-            app:layout_constraintTop_toTopOf="@id/tilStripeCardNumber"
-            app:layout_constraintBottom_toBottomOf="@id/tilStripeCardNumber" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/tilCardNumber"
+            app:layout_constraintTop_toTopOf="@id/tilCardNumber"
+            app:layout_constraintBottom_toBottomOf="@id/tilCardNumber" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilExpiryDate"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.SilverHint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:nextFocusRight="@+id/etCvc"
             android:nextFocusForward="@+id/etCvc"
             android:nextFocusDown="@+id/etCvc"
-            android:nextFocusLeft="@id/etStripeCardNumber"
-            android:nextFocusUp="@id/etStripeCardNumber"
+            android:nextFocusLeft="@id/etCardNumber"
+            android:nextFocusUp="@id/etCardNumber"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/ErrorAppearance"
             app:layout_constraintEnd_toStartOf="@id/tilCvc"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilStripeCardNumber">
+            app:layout_constraintTop_toBottomOf="@id/tilCardNumber">
 
-            <com.stripe.android.view.ExpiryDateEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etExpiryDate"
                 style="@style/createListingInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
-                android:digits="@string/stripe_expiration_date_allowlist"
+                android:digits="0123456789"
+                android:maxLength="5"
+                android:longClickable="false"
                 android:hint="@string/card_hint_expiration_date" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -149,24 +157,28 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.SilverHint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:nextFocusRight="@+id/etCardholderName"
             android:nextFocusForward="@+id/etCardholderName"
             android:nextFocusDown="@+id/etCardholderName"
             android:nextFocusLeft="@id/etExpiryDate"
             android:nextFocusUp="@id/etExpiryDate"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/ErrorAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tilExpiryDate"
-            app:layout_constraintTop_toBottomOf="@id/tilStripeCardNumber">
+            app:layout_constraintTop_toBottomOf="@id/tilCardNumber">
 
-            <com.stripe.android.view.CvcEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCvc"
                 style="@style/createListingInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext" />
+                android:hint="@string/card_cvc"
+                android:maxLength="4"
+                android:imeOptions="actionNext"  />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -175,11 +187,13 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.SilverHint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:nextFocusLeft="@id/etCvc"
             android:nextFocusUp="@id/etCvc"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/ErrorAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilExpiryDate">
@@ -202,13 +216,65 @@
             android:layout_height="64dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="10dp"
             android:backgroundTint="@color/colorAccent"
             android:textColor="@android:color/white"
             app:cornerRadius="6dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvByClicking"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvByClicking"
+            style="@style/createListingHintStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/by_clicking_on_pay_you_are_accepting_our"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:paddingTop="10dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/tvTermsAndConditions"
+            app:layout_constraintEnd_toEndOf="@+id/btnPay"
+            app:layout_constraintStart_toStartOf="@+id/btnPay"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="Al hacer clic en 'Pagar', estas aceptando nuestros"/>
+
+        <TextView
+            android:id="@+id/tvTermsAndConditions"
+            style="@style/createListingHintStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="18dp"
+            android:text="@string/terms_and_conditions_underline"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btnPay"
+            app:layout_constraintStart_toStartOf="@+id/btnPay"
+            tools:text="Términos y Condiciones de Contratación Publicitaria."
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/white"
+            android:indeterminate="true"
+            android:theme="@style/ProgressPrimary"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/btnPay"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
+            tools:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

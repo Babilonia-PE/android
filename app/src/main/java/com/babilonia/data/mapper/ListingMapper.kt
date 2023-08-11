@@ -19,7 +19,8 @@ class ListingMapper @Inject constructor(
     private val imageMapper: ListingImageMapper,
     private val facilityMapper: FacilityMapper,
     private val userMapper: UserMapper,
-    private val locationMapper: LocationMapper
+    private val locationMapper: LocationMapper,
+    private val contactMapper: ContactMapper
 ) : Mapper<ListingDto, ListingJson, Listing> {
 
     override fun mapRemoteToLocal(from: ListingJson): ListingDto {
@@ -33,6 +34,7 @@ class ListingMapper @Inject constructor(
     override fun mapDomainToLocal(from: Listing): ListingDto {
         return ListingDto().apply {
             id = from.id ?: 0
+            url = from.url
             listingType = from.listingType
             propertyType = from.propertyType
             price = from.price
@@ -71,6 +73,7 @@ class ListingMapper @Inject constructor(
             }
             images = imagesRealm
             user = from.user?.let { userMapper.mapDomainToLocal(it) }
+            contact = from.contact?.let { contactMapper.mapDomainToLocal(it) }
             draft = from.isDraft
             status = from.status
             favourited = from.isFavourite
@@ -79,6 +82,7 @@ class ListingMapper @Inject constructor(
             favoritesCount = from.favoritesCount
             adPlan = from.adPlan?.name?.toLowerCase()
             publishState = from.publishState?.name?.toLowerCase()
+            publisherRole = from.publisherRole
             createdAt = from.createdAt
             updatedAt = from.updatedAt
             adPurchasedAt = from.adPurchasedAt
@@ -89,6 +93,7 @@ class ListingMapper @Inject constructor(
     override fun mapDomainToRemote(from: Listing): ListingJson {
         return ListingJson().apply {
             id = from.id ?: 0
+            url = from.url
             listingType = from.listingType
             propertyType = from.propertyType
             price = from.price
@@ -123,11 +128,13 @@ class ListingMapper @Inject constructor(
                 imageIds = it.map { it.id }
             }
             user = from.user?.let { userMapper.mapDomainToRemote(it) }
+            contact = from.contact?.let{ contactMapper.mapDomainToRemote(it) }
             status = from.status
             favourited = from.isFavourite
             viewsCount = from.viewsCount
             contactedCount = from.contactedCount
             favoritesCount = from.favoritesCount
+            //TODO, NO mando adPlan cuando debo cambiar de estado
         }
     }
 
@@ -168,6 +175,7 @@ class ListingMapper @Inject constructor(
                 }
             }.sortedByDescending { it.id == from.primaryImageId },
             from.user?.let { userMapper.mapLocalToDomain(it) },
+            from.contact?.let{ contactMapper.mapLocalToDomain(it) },
             from.status ?: Constants.HIDDEN,
             from.draft,
             from.favourited,
@@ -176,10 +184,12 @@ class ListingMapper @Inject constructor(
             from.favoritesCount,
             from.adPlan?.let { PaymentPlanKey.valueOf(it.toUpperCase()) },
             from.publishState?.let { PublishState.valueOf(it.toUpperCase()) },
+            from.publisherRole,
             from.createdAt,
             from.updatedAt,
             from.adPurchasedAt,
-            from.adExpiresAt
+            from.adExpiresAt,
+            from.url
         )
     }
 
@@ -212,18 +222,21 @@ class ListingMapper @Inject constructor(
                 }
             }.sortedByDescending { it.id == from.primaryImageId },
             from.user?.let { userMapper.mapRemoteToDomain(it) },
+            from.contact?.let { contactMapper.mapRemoteToDomain(it) },
             from.status ?: Constants.HIDDEN,
             false,
             from.favourited,
             from.viewsCount,
             from.contactedCount,
             from.favoritesCount,
-            from.adPlan?.let { PaymentPlanKey.valueOf(it.toUpperCase()) },
+            null,
             from.publishState?.let { PublishState.valueOf(it.toUpperCase()) },
+            from.publisherRole,
             from.createdAt,
             from.updatedAt,
             from.adPurchasedAt,
-            from.adExpiresAt
+            from.adExpiresAt,
+            from.url
         )
     }
 }

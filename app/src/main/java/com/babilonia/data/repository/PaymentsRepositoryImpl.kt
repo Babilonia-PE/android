@@ -1,51 +1,66 @@
 package com.babilonia.data.repository
 
-import com.babilonia.EmptyConstants
 import com.babilonia.data.datasource.PaymentsDataSourceRemote
+import com.babilonia.data.mapper.CreateOrderMapper
+import com.babilonia.data.mapper.DoPaymentMapper
+import com.babilonia.data.mapper.PaymentIntentMapper
 import com.babilonia.data.mapper.PaymentPlanMapper
-import com.babilonia.domain.model.enums.PaymentStatus
+import com.babilonia.data.network.error.mapErrors
+import com.babilonia.data.network.error.mapNetworkErrors
+import com.babilonia.domain.model.payment.CreateOrder
+import com.babilonia.domain.model.payment.DoPayment
+import com.babilonia.domain.model.payment.PaymentIntent
 import com.babilonia.domain.model.payment.PaymentPlan
 import com.babilonia.domain.repository.PaymentsRepository
-import io.reactivex.Flowable
 import io.reactivex.Single
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PaymentsRepositoryImpl @Inject constructor(
     private val paymentsDataSourceRemote: PaymentsDataSourceRemote,
+    private val paymentIntentMapper: PaymentIntentMapper,
+    private val createOrderMapper: CreateOrderMapper,
+    private val doPaymentMapper: DoPaymentMapper,
     private val paymentPlanMapper: PaymentPlanMapper
 ) : PaymentsRepository {
 
-    override fun getPaymentPlans(): Single<List<PaymentPlan>> {
-        return paymentsDataSourceRemote.getPaymentPlans().map { response ->
-            response.data.records.map { paymentPlanMapper.mapRemoteToDomain(it) }
-        }
-    }
-
     override fun createPaymentIntent(
-        listingId: Long,
-        productKey: String,
-        publisherRole: String
-    ): Single<String> {
-        return paymentsDataSourceRemote.createPaymentIntent(listingId, productKey, publisherRole)
-            .map { it.data.clientSecret ?: EmptyConstants.EMPTY_STRING }
+        request: String, listingId: Long, productKey: String?, publisherRole: String, clientId: Long
+    ): Single<PaymentIntent> {
+        return paymentsDataSourceRemote.createPaymentIntent(request, listingId, productKey, publisherRole, clientId)
+            .mapNetworkErrors()
+            .mapErrors()
+            .map { paymentIntentMapper.mapRemoteToDomain(it) }
     }
 
-    override fun observePublishStatus(listingId: Long): Flowable<PaymentStatus> {
-        return paymentsDataSourceRemote.getPublishStatus(listingId)
-            .map {
-                it.data.status?.let { statusString ->
-                    PaymentStatus.valueOf(statusString.toUpperCase())
-                } ?: PaymentStatus.NEW
-            }
-            .repeatWhen { flowable ->
-                flowable.take(PUBLISH_STATUS_MAX_ATTEMPTS)
-                    .delay(PUBLISH_STATUS_CHECK_DELAY_MILLIS, TimeUnit.MILLISECONDS)
-            }
+    override fun createNewOrder(request: String, paymentMethod: String, paymentId: String?, productKey: String?, listingId: Long, publisherRole: String, clientId: Long
+    ): Single<CreateOrder> {
+        return paymentsDataSourceRemote.createNewOrder(request, paymentMethod, paymentId, productKey, listingId, publisherRole, clientId)
+            .mapNetworkErrors()
+            .mapErrors()
+            .map { createOrderMapper.mapRemoteToDomain(it) }
     }
 
-    companion object {
-        private const val PUBLISH_STATUS_MAX_ATTEMPTS = 15L
-        private const val PUBLISH_STATUS_CHECK_DELAY_MILLIS = 3000L
+    override fun doPayment(
+        deviceSessionId: String?,
+        paymentType: String,
+        cardNumber: String,
+        orderId: Long?,
+        documentType: String,
+        cardCvv: String,
+        cardExpiration: String,
+        cardName: String
+    ): Single<DoPayment> {
+        return paymentsDataSourceRemote.doPayment(deviceSessionId, paymentType, cardNumber, orderId, documentType, cardCvv, cardExpiration, cardName)
+            .mapNetworkErrors()
+            .mapErrors()
+            .map { doPaymentMapper.mapRemoteToDomain(it) }
+    }
+
+    override fun getPaymentPlans(): Single<List<PaymentPlan>> {
+        return paymentsDataSourceRemote.getPaymentPlans()
+            .mapNetworkErrors()
+            .mapErrors()
+            .map { listAddPlanJson -> listAddPlanJson.map { paymentPlanMapper.mapRemoteToDomain(it) }
+            }
     }
 }

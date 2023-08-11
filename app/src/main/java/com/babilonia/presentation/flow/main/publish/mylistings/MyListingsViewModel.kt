@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.babilonia.Constants
 import com.babilonia.EmptyConstants
 import com.babilonia.R
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.usecase.DeleteDraftUseCase
 import com.babilonia.domain.usecase.GetMyListingsUseCase
@@ -30,9 +31,10 @@ class MyListingsViewModel @Inject constructor(
 ) :
     BaseViewModel(), ListingNavigationListener {
 
-
+    val authFailedData = SingleLiveEvent<Unit>()
     val myListings = MutableLiveData<List<Listing>>()
     val onMoreClickedEvent = ActionLiveData<Listing>()
+    val onShareClickedEvent = ActionLiveData<Listing>()
     val onListingUpdatedLiveData = SingleLiveEvent<Unit>()
     val onListingDeletedLiveData = SingleLiveEvent<Unit>()
 
@@ -40,11 +42,15 @@ class MyListingsViewModel @Inject constructor(
         onMoreClickedEvent.postValue(listing)
     }
 
+    override fun onShareClicked(listing: Listing) {
+        onShareClickedEvent.postValue(listing)
+    }
+
     override fun onDraftClicked(id: Long?) {
         id?.let { navigateToCreateListing(it, NewListingOpenMode.DRAFT) }
     }
 
-    override fun onMyListingClicked(id: Long?, status: String) {
+    override fun onMyListingClicked(id: Long?, status: String?) {
         id?.let {
             if (status == Constants.HIDDEN) {
                 navigate(MyListingsFragmentDirections.actionGlobalListingFragment(id, ListingDisplayMode.UNPUBLISHED))
@@ -69,19 +75,54 @@ class MyListingsViewModel @Inject constructor(
     }
 
     fun getMyListings() {
+        getMyPublishedListings { publishedListings ->
+            getMyUnpublishedListings { unpublishedListings ->
+                val result = publishedListings+unpublishedListings
+                myListings.postValue(result)
+            }
+        }
+    }
+
+    private fun getMyPublishedListings(callback: (List<Listing>) -> Unit){
         getMyListingsUseCase.execute(object : DisposableSubscriber<List<Listing>>() {
             override fun onComplete() {
             }
 
             override fun onNext(t: List<Listing>) {
-                myListings.postValue(t)
+                callback(t)
             }
 
             override fun onError(t: Throwable?) {
-                dataError.postValue(t)
+                if (t is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(t)
             }
 
-        }, Unit)
+        }, GetMyListingsUseCase.Params(state = "published"))
+    }
+
+    private fun getMyUnpublishedListings(callback: (List<Listing>) -> Unit){
+        getMyListingsUseCase.execute(object : DisposableSubscriber<List<Listing>>() {
+            override fun onComplete() {
+            }
+
+            override fun onNext(t: List<Listing>) {
+                callback(t)
+            }
+
+            override fun onError(t: Throwable?) {
+                if (t is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(t)
+            }
+
+        }, GetMyListingsUseCase.Params(state = "unpublished"))
     }
 
     fun updateListing(params: Listing) {
@@ -94,7 +135,12 @@ class MyListingsViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
 
         }, params)

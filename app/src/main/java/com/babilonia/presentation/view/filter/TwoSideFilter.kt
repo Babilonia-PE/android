@@ -2,6 +2,7 @@ package com.babilonia.presentation.view.filter
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
@@ -29,6 +30,7 @@ class TwoSideFilter @JvmOverloads constructor(
     private var onRightPinChangedCallback: ((String, Boolean) -> Unit)? = null
 
     private var formatWithComas = true
+    private var firstSetData = true
 
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_filter_two_side, this, true)
@@ -104,6 +106,9 @@ class TwoSideFilter @JvmOverloads constructor(
     }
 
     fun setRange(minValue: Int, maxValue: Int) {
+        if (!firstSetData) return
+
+        this.firstSetData = false
         val newMinValue = minValue.toLong()
         val newMaxValue = maxValue.toLong()
         if (newMinValue != this.minValue || newMaxValue != this.maxValue) {

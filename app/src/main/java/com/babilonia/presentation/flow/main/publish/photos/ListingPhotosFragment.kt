@@ -10,9 +10,9 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
+import com.babilonia.Constants.TYPE_IMAGE
 import com.babilonia.R
 import com.babilonia.databinding.ListingPhotosFragmentBinding
 import com.babilonia.domain.model.ListingImage
@@ -22,15 +22,14 @@ import com.babilonia.presentation.flow.main.publish.common.BaseCreateListingFrag
 import com.babilonia.presentation.flow.main.publish.createlisting.CreateListingContainerViewModel
 import com.babilonia.presentation.flow.main.publish.photos.common.ListingPhotosListener
 import com.babilonia.presentation.flow.main.publish.photos.common.ListingPhotosRecyclerAdapter
-import com.babilonia.presentation.utils.RealPathUtil.getRealPathFromURI
+import com.babilonia.presentation.utils.PathFinder
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.marchinram.rxgallery.RxGallery
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tbruyelle.rxpermissions2.RxPermissions
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 private const val PICK_IMAGE_FROM_GALLERY = 999
 private const val REQUEST_TAKE_PHOTO = 500
@@ -74,9 +73,33 @@ class ListingPhotosFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            currentPhotoPath?.let {
-                viewModel.compressImageAndUpload(requireContext(), it)
+        if (resultCode == Activity.RESULT_OK) {
+            when(requestCode){
+                REQUEST_TAKE_PHOTO -> {
+                    currentPhotoPath?.let {
+                        viewModel.compressImageAndUpload(requireContext(), it)
+                    }
+                }
+                PICK_IMAGE_FROM_GALLERY -> {
+                    if(data != null) {
+                        data.data?.let { mUri ->
+                            var realPath = PathFinder.getFilePathV1(requireActivity(), mUri)
+                            if(realPath==null) realPath = PathFinder.getFilePathV2(requireActivity(), mUri)
+                            realPath?.let{ path ->
+                                viewModel.compressImageAndUpload(requireContext(), Uri.parse(path))
+                            }?:run{
+                                FirebaseCrashlytics.getInstance().setCustomKey("ERROR:", "ERROR PATH")
+                                showSnackbar(R.string.image_could_not_be_obtained)
+                            }
+                        }?:run{
+                            FirebaseCrashlytics.getInstance().setCustomKey("ERROR:", "ERROR DATA DATA")
+                            showSnackbar(R.string.image_could_not_be_obtained)
+                        }
+                    }else{
+                        FirebaseCrashlytics.getInstance().setCustomKey("ERROR:", "ERROR DATA")
+                        showSnackbar(R.string.image_could_not_be_obtained)
+                    }
+                }
             }
         }
     }
@@ -116,14 +139,12 @@ class ListingPhotosFragment :
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
+                    ex.printStackTrace()
+                    FirebaseCrashlytics.getInstance().recordException(ex)
                     null
                 }
                 photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        requireContext(),
-                        "com.babilonia.fileprovider",
-                        it
-                    )
+                    val photoURI: Uri = FileProvider.getUriForFile(requireContext(), "com.babilonia.fileprovider", it)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
                 }
@@ -148,25 +169,25 @@ class ListingPhotosFragment :
     }
 
     @SuppressLint("CheckResult")
-    private fun pickImageFromGallery() {
-        RxGallery.gallery(requireActivity(), false, RxGallery.MimeType.IMAGE)
-            .subscribe(
-                { uris ->
-                    val realPath = getRealPathFromURI(requireContext(), uris.first())
-                    viewModel.compressImageAndUpload(requireContext(), Uri.parse(realPath))
-                },
-                { throwable -> Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show() })
-    }
-
-    @SuppressLint("CheckResult")
     private fun requestStoragePermission() {
         RxPermissions(this)
-            .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .subscribe {
-                if (it) {
-                    pickImageFromGallery()
+                if(it){
+                    openFiles()
+                }else{
+                    showSnackbar(R.string.permission_not_granted)
                 }
             }
+    }
+
+    private fun openFiles(){
+        val intent = Intent()
+        intent.action = Intent.ACTION_OPEN_DOCUMENT //ACTION_GET_CONTENT
+        intent.type = TYPE_IMAGE
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        val chooser = Intent.createChooser(intent, getString(R.string.select_an_image))
+        startActivityForResult(chooser, PICK_IMAGE_FROM_GALLERY)
     }
 
     private fun showPickerDialog(position: Int, primary: Boolean) {

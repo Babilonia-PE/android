@@ -18,4 +18,6 @@ interface AuthDataSourceLocal {
     fun signOut(): Completable
     fun getAppConfig(): Single<AppConfigDto>
     fun saveConfig(configDto: AppConfigDto): Completable
+    fun isValidateDefaultLocation(): Boolean
+    fun setValidateDefaultLocation(status: Boolean)
 }

@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.babilonia.presentation.flow.ar.ArSceneViewModel
 import com.babilonia.presentation.flow.auth.AuthActivityViewModel
 import com.babilonia.presentation.flow.auth.createprofile.CreateProfileViewModel
+import com.babilonia.presentation.flow.auth.login.LogInViewModel
+import com.babilonia.presentation.flow.auth.signup.SignUpViewModel
 import com.babilonia.presentation.flow.auth.splash.SplashViewModel
 import com.babilonia.presentation.flow.main.MainActivityViewModel
 import com.babilonia.presentation.flow.main.favorites.FavoritesViewModel
@@ -40,6 +42,16 @@ abstract class ViewModelFactoryModule {
     @IntoMap
     @ViewModelKey(CreateProfileViewModel::class)
     abstract fun bindCreateProfileViewModel(myViewModel: CreateProfileViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SignUpViewModel::class)
+    abstract fun bindSignUpViewModel(myViewModel: SignUpViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LogInViewModel::class)
+    abstract fun bindLogInViewModel(myViewModel: LogInViewModel): ViewModel
 
     @Binds
     @IntoMap

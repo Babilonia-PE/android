@@ -18,7 +18,7 @@ import androidx.transition.TransitionManager
 import com.babilonia.EmptyConstants
 import com.babilonia.R
 import com.babilonia.databinding.SearchRootFragmentBinding
-import com.babilonia.domain.model.Place
+import com.babilonia.domain.model.Location
 import com.babilonia.domain.model.RecentSearch
 import com.babilonia.presentation.base.BaseFragment
 import com.babilonia.presentation.extension.hideKeyboard
@@ -28,9 +28,12 @@ import com.babilonia.presentation.extension.visible
 import com.babilonia.presentation.flow.main.search.common.SearchAdapter
 import com.babilonia.presentation.flow.main.search.model.DisplaybleFilter
 import com.babilonia.presentation.flow.main.search.model.PrefixedDisplayableFilter
+import com.babilonia.presentation.utils.NetworkUtil
+import com.babilonia.presentation.utils.SvgUtil.convertRecentSearch
 import com.google.android.material.chip.Chip
 import com.google.android.material.shape.CornerFamily
 import kotlinx.android.synthetic.main.search_root_fragment.*
+import java.util.*
 
 const val RECENT_SEARCH_DROPDOWN_DELAY_MS = 250L
 
@@ -53,6 +56,7 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
         } else {
             binding.ivFilters.setImageResource(R.drawable.ic_filter_black_24)
         }
+        viewModel.ipAddress = NetworkUtil.getIPAddress(requireContext()) ?: ""
     }
 
     override fun startListenToEvents() {
@@ -61,14 +65,14 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
             when {
                 skipNextSuggestion -> skipNextSuggestion = false
                 it.isEmpty() -> searchAdapter.setNotFoundPlace(etSearch.text.toString())
-                it.isNotEmpty() -> searchAdapter.setPlaces(it)
-            }
+                it.isNotEmpty() -> searchAdapter.setPlaces(it) }
+
         })
         viewModel.listings.observe(this, Observer {
             binding.executePendingBindings()
         })
         viewModel.currentPlace.observe(this, Observer {
-            binding.etSearch.setText(it.address)
+            binding.etSearch.setText(it.toString())
             binding.etSearch.clearFocus()
         })
         viewModel.filtersLiveData.observe(this, Observer {
@@ -80,8 +84,22 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
                 hideKeyboard()
             }
         })
+
         viewModel.recentSearches.observe(this, Observer {
             searchAdapter.setRecentSearches(it)
+        })
+        viewModel.clearSearchFromMapLiveData.observe(this, Observer {
+            if(it) {
+                binding.ibClearSearch.isInvisible = true
+                binding.etSearch.text.clear()
+                binding.etSearch.clearFocus()
+                hideKeyboard()
+            }
+        })
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
         })
     }
 
@@ -92,6 +110,9 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
         viewModel.filtersLiveData.removeObservers(this)
         viewModel.onFocusChangeEvent.removeObservers(this)
         viewModel.listings.removeObservers(this)
+        viewModel.recentSearches.removeObservers(this)
+        viewModel.clearSearchFromMapLiveData.removeObservers(this)
+        viewModel.authFailedData.removeObservers(this)
     }
 
     private fun changeSearchSize(
@@ -137,7 +158,7 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
         constraintSet.applyTo(binding.ccRoot)
         binding.etSearch.background = ContextCompat.getDrawable(requireContext(), backgroundDrawable)
         TransitionManager.beginDelayedTransition(binding.ccRoot)
-        binding.etSearch.threshold = 1
+        binding.etSearch.threshold = 2
 
     }
 
@@ -259,7 +280,7 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
                 }
                 val searchText = binding.etSearch.text
                 if (searchText.length > 2) {
-                    viewModel.getPlaces(searchText.toString())
+                    viewModel.getPlaces(searchText.toString(), 1, 10)
                 }
             } else {
                 if (binding.etSearch.text.isEmpty()) {
@@ -298,7 +319,7 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: EmptyConstants.EMPTY_STRING
                 if (text.length > 2) {
-                    viewModel.getPlaces(text)
+                    viewModel.getPlaces(text, 1, 10)
                 } else {
                     searchAdapter.clearPlaces()
                 }
@@ -309,13 +330,17 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
             val clickedItem = searchAdapter.getItem(position)
             skipNextSuggestion = true
             viewModel.needToResetPaginator = true
+            viewModel.notClearSearchFromMap()
             when (clickedItem) {
-                is String -> viewModel.getCurrentPlace() // 'My location' is clicked
-                is Place -> { // autocomplete suggestion is clicked
-                    viewModel.getPlaceById(clickedItem.id)
+                is String -> {  // 'My location' is clicked
+                    viewModel.getCurrentPlace()
+                }
+                is Location -> { // autocomplete suggestion is clicked
+                    viewModel.getLocationSelected(clickedItem, false)
                 }
                 is RecentSearch -> { // recent search item clicked
-                    viewModel.getPlaceById(clickedItem.placeId)
+                    //viewModel.getPlaceById(clickedItem.placeId)
+                    viewModel.getLocationSelected(convertRecentSearch(clickedItem), false)
                 }
             }
             searchAdapter.clearNotFoundPlace()

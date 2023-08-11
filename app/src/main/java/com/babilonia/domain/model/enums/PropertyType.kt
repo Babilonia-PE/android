@@ -10,7 +10,18 @@ enum class PropertyType {
     COMMERCIAL,
     OFFICE,
     LAND,
-    ROOM;
+    ROOM,
+    LOCAL_INDUSTRIAL,
+    LAND_AGRICULTURAL,
+    LAND_INDUSTRIAL,
+    LAND_COMMERCIAL,
+    COTTAGE,
+    BEACH_HOUSE,
+    BUILDING,
+    HOTEL,
+    DEPOSIT,
+    PARKING,
+    AIRS;
 
     companion object {
         fun getPropertyName(propertyIndex: Int): String {

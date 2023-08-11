@@ -7,6 +7,7 @@ import com.babilonia.data.model.ar.ArState
 import com.babilonia.data.model.ar.tag.MovableArObject
 import com.babilonia.data.model.geo.LocationRequest
 import com.babilonia.data.repository.ArRepository
+import com.babilonia.domain.model.Filter
 import com.babilonia.domain.usecase.base.SubscriberUseCase
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
@@ -34,7 +35,8 @@ class GetArStateSubscriberUseCase @Inject constructor(
                 params.cameraProjectionMatrix,
                 params.locationRequest,
                 params.sceneWidth,
-                params.sceneHeight
+                params.sceneHeight,
+                params.filters
             ),
             BiFunction<Float, DataResult<ArState>, DataResult<ArState>> { gravityX, state ->
                 when (state) {
@@ -129,7 +131,8 @@ class GetArStateSubscriberUseCase @Inject constructor(
         val sceneWidth: Int,
         val sceneHeight: Int,
         val horizontalSpace: Float,
-        val verticalSpace: Float
+        val verticalSpace: Float,
+        val filters: List<Filter>
     )
 
     enum class Dir {

@@ -17,6 +17,20 @@ class GalleryPhotoFragment : BaseFragment<FragmentGalleryPhotoBinding, GalleryPh
         viewModel.getListing(args.listingId)
     }
 
+    override fun startListenToEvents() {
+        super.startListenToEvents()
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+    }
+
+    override fun stopListenToEvents() {
+        super.stopListenToEvents()
+        viewModel.authFailedData.removeObservers(this)
+    }
+
     private fun observeViewModel() {
         viewModel.getListingLiveData().observe(this, Observer { listing ->
             initImagesAdapter(listing)

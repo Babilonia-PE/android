@@ -1,6 +1,8 @@
 package com.babilonia.presentation.di.activity
 
 import com.babilonia.presentation.flow.auth.createprofile.CreateProfileFragment
+import com.babilonia.presentation.flow.auth.login.LogInFragment
+import com.babilonia.presentation.flow.auth.signup.SignUpFragment
 import com.babilonia.presentation.flow.auth.splash.SplashFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -13,4 +15,10 @@ abstract class AuthActivityFragmentsModule {
 
     @ContributesAndroidInjector
     abstract fun contributeCreateProfileFragment(): CreateProfileFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSignUpFragment(): SignUpFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeLogInFragment(): LogInFragment
 }

@@ -21,8 +21,7 @@ class UserMapper @Inject constructor() : Mapper<UserDto, UserJson, User> {
         return UserDto().apply {
             id = from.id
             phoneNumber = from.phoneNumber
-            firstName = from.firstName
-            lastName = from.lastName
+            fullName = from.fullName
             avatar = ThumbsDto().apply {
                 thumbMiddle = from.avatar
             }
@@ -34,8 +33,7 @@ class UserMapper @Inject constructor() : Mapper<UserDto, UserJson, User> {
         return UserJson().apply {
             id = from.id
             phoneNumber = from.phoneNumber
-            firstName = from.firstName
-            lastName = from.lastName
+            fullName = from.fullName
             avatar = ThumbsJson().apply {
                 thumbMiddle = from.avatar
             }
@@ -46,18 +44,16 @@ class UserMapper @Inject constructor() : Mapper<UserDto, UserJson, User> {
     override fun mapLocalToDomain(from: UserDto): User = User(
         from.id,
         from.phoneNumber,
-        from.firstName,
-        from.lastName,
-        from.avatar?.thumbMiddle,
+        from.fullName,
+        from.avatar?.thumbMin,
         from.email
     )
 
     override fun mapRemoteToDomain(from: UserJson): User = User(
         from.id,
         from.phoneNumber,
-        from.firstName,
-        from.lastName,
-        from.avatar?.thumbMiddle,
+        from.fullName,
+        from.avatar?.thumbMin,
         from.email
     )
 

@@ -43,6 +43,21 @@
                 android:name="id"
                 app:argType="long" />
         </action>
+
+<!--        <action-->
+<!--            android:id="@+id/action_listingFragment_to_myListingsFragment"-->
+<!--            app:destination="@id/myListingsFragment"-->
+<!--            app:enterAnim="@anim/enter_from_left"-->
+<!--            app:exitAnim="@anim/exit_to_right"-->
+<!--            app:popEnterAnim="@anim/enter_from_right"-->
+<!--            app:popExitAnim="@anim/exit_to_left"-->
+<!--            app:popUpTo="@+id/listingFragment"-->
+<!--            app:popUpToInclusive="true" >-->
+<!--            <argument-->
+<!--                android:name="activeTab"-->
+<!--                app:argType="com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode"-->
+<!--                android:defaultValue="PUBLISHED" />-->
+<!--        </action>-->
     </fragment>
     <action
         android:id="@+id/action_global_listingFragment"

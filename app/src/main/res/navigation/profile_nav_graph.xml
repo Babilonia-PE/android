@@ -15,11 +15,13 @@
             app:destination="@id/profileEmailFragment"
             app:popUpTo="@+id/profileFragment" />
         <action
+            android:id="@+id/action_profileFragment_to_profilePhoneFragment"
+            app:destination="@id/profilePhoneFragment"
+            app:popUpTo="@+id/profileFragment"/>
+        <action
             android:id="@+id/action_profileFragment_to_userNameProfileFragment"
-
             app:popUpTo="@+id/profileFragment"
             app:destination="@id/userNameProfileFragment" />
-
         <action
             android:id="@+id/action_profileFragment_to_accountFragment"
             app:popUpTo="@+id/profileFragment"
@@ -61,4 +63,8 @@
         android:label="AuthActivity" >
 
     </activity>
+    <fragment
+        android:id="@+id/profilePhoneFragment"
+        android:name="com.babilonia.presentation.flow.main.profile.phone.ProfilePhoneFragment"
+        android:label="ProfilePhoneFragment" />
 </navigation>

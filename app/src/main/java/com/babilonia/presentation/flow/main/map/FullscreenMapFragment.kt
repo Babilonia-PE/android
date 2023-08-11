@@ -76,6 +76,20 @@ class FullscreenMapFragment :
         }
     }
 
+    override fun startListenToEvents() {
+        super.startListenToEvents()
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+    }
+
+    override fun stopListenToEvents() {
+        super.stopListenToEvents()
+        viewModel.authFailedData.removeObservers(this)
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         googleMap.setOnMapClickListener {

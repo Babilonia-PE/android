@@ -7,10 +7,8 @@ open class UserJson {
     var id: Long? = null
     @SerializedName("phone_number")
     var phoneNumber: String? = null
-    @SerializedName("first_name")
-    var firstName: String? = null
-    @SerializedName("last_name")
-    var lastName: String? = null
+    @SerializedName("full_name")
+    var fullName: String? = null
     var avatar: ThumbsJson? = null
     var email: String? = null
 }

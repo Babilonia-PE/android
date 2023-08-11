@@ -5,8 +5,10 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,9 +25,12 @@ import com.babilonia.BuildConfig
 import com.babilonia.Constants
 import com.babilonia.Constants.CORNER_RADIUS
 import com.babilonia.Constants.MAX_LINES
+import com.babilonia.Constants.PUBLISHER_ROLE_OWNER
+import com.babilonia.Constants.PUBLISHER_ROLE_REALTOR
 import com.babilonia.EmptyConstants
 import com.babilonia.R
 import com.babilonia.databinding.ListingFragmentBinding
+import com.babilonia.domain.model.Contact
 import com.babilonia.domain.model.Facility
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.User
@@ -40,11 +45,13 @@ import com.babilonia.presentation.flow.main.listing.common.ListingImagesPagerAda
 import com.babilonia.presentation.flow.main.payment.PaymentActivity
 import com.babilonia.presentation.flow.main.search.map.common.ListingUtilsDelegateImpl
 import com.babilonia.presentation.utils.DateFormatter
+import com.babilonia.presentation.utils.NetworkUtil
 import com.babilonia.presentation.view.CustomTypefaceSpan
 import com.babilonia.presentation.view.dialog.StyledAlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.listing_fragment.*
 import java.text.NumberFormat
 import java.util.*
@@ -57,21 +64,33 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
 
     private var progressDialog: AlertDialog? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.viewLoadedData.value = false
+    }
+
     override fun viewCreated() {
         showProgress()
         if (viewModel.listingId == EmptyConstants.EMPTY_LONG) {
             viewModel.displayMode = args.mode
             viewModel.listingId = args.id
         }
+
         binding.mode = viewModel.displayMode
-        viewModel.getListing(viewModel.displayMode)
         binding.viewModel = viewModel
         binding.ivFavorite.setOnClickListener {
             viewModel.setFavorite(binding.ivFavorite.isChecked)
         }
-        observeViewModel()
-        viewModel.getUserId()
         setRecycler()
+        binding.fabWhatsapp.gone()
+        binding.btListingAction.gone()
+
+        viewModel.getUserId()
+        if (viewModel.viewLoadedData.value != true) {
+            viewModel.getListing(viewModel.displayMode)
+        }
+
+        viewModel.ipAddress = NetworkUtil.getIPAddress(requireContext()) ?: ""
     }
 
     override fun startListenToEvents() {
@@ -87,7 +106,7 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                 setImagesAdapter(listing)
                 setPublishDetails(listing)
                 setShowMore()
-                setUser(listing.user)
+                setUser(listing.user, listing.contact)
                 loadMap(listing)
                 setListingType(listing)
                 setListingIcon(listing)
@@ -96,27 +115,93 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                 setFloorNumber(listing)
                 setVisibilityForDetails(listing)
                 initBtnEdit(listing)
+                listenWhatsapp(listing)
+                listenShare(listing)
+                enableContact(listing)
                 viewModel.userIdLiveData.value?.let {
                     binding.ivFavorite.visibleOrGone(listing.user?.id != it)
                 }
                 hideProgress()
+                if (viewModel.viewLoadedData.value != true) {
+                    //viewModel.triggerView()
+                    viewModel.viewLoadedData.value = true
+                }
             }
         })
-        viewModel.contactOwnerLiveData.observe(this, Observer {
-            navigateToCallScreen(it)
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+        viewModel.userIdLiveData.observe(this, Observer { currentUserId ->
+            viewModel.listingLiveData.value?.let {
+                binding.ivFavorite.visibleOrGone(it.user?.id != currentUserId)
+                //viewModel.triggerView()
+            }
+        })
+        viewModel.onBackPressedLiveData.observe(this, Observer {
+            handleBackAction()
+        })
+        viewModel.listingCreatedLiveData.observe(this, Observer {
+            showSnackbar(R.string.listing_successfully_updated)
         })
     }
 
     override fun stopListenToEvents() {
         super.stopListenToEvents()
         viewModel.listingLiveData.removeObservers(this)
-        viewModel.contactOwnerLiveData.removeObservers(this)
+        viewModel.authFailedData.removeObservers(this)
+        viewModel.userIdLiveData.removeObservers(this)
+        viewModel.onBackPressedLiveData.removeObservers(this)
+        viewModel.listingCreatedLiveData.removeObservers(this)
+    }
+
+    private fun listenWhatsapp(listing: Listing?) {
+        binding.fabWhatsapp.setOnClickListener {
+            listing?.let{ mListing ->
+                    mListing.contact?.let{
+                        validateNumberPhoneWhatsapp(mListing.contact?.contactPhone, mListing)
+                    }?:run{ validateNumberPhoneWhatsapp(mListing.user?.phoneNumber, mListing) }
+            }?:run{ showSnackbar(R.string.phone_number_not_available) }
+        }
+    }
+
+    private fun validateNumberPhoneWhatsapp(numberPhone: String?, listing: Listing?){
+        numberPhone?.let{ mPhoneNumber ->
+            openWhatsapp(mPhoneNumber, listing)
+            listing?.id?.let{ mId ->
+                fbLogger.logEvent("Whatsapp")
+                viewModel.onWhatsappClicked(mId)
+            }?:run{ showSnackbar(R.string.phone_number_not_available) }
+        }?:run{ showSnackbar(R.string.phone_number_not_available) }
+    }
+
+    private fun listenShare(listing: Listing?) {
+        binding.shareButton.setOnClickListener {
+            this.shareListingDetail(listing)
+        }
+    }
+
+    private fun shareListingDetail(listing: Listing?) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        val title = activity?.getString(R.string.share) ?: ""
+        val message = activity?.getString(R.string.share_message) ?: ""
+        val url = BuildConfig.BASE_URL_WEB + listing?.url
+//        intent.putExtra(Intent.EXTRA_SUBJECT, message)
+        intent.putExtra(Intent.EXTRA_TEXT, "$message $url")
+        startActivity(Intent.createChooser(intent, title))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PAYMENT_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            showSnackbar(R.string.listing_published_successfully)
+            data?.let{ mData ->
+                val message = mData.extras?.getString(Constants.BUNDLE_PAYMENT_MESSAGE)?:resources.getString(R.string.listing_published_successfully)
+                showSnackbar(message)
+            }?:run{
+                showSnackbar(R.string.listing_published_successfully)
+            }
             viewModel.getListing(viewModel.displayMode)
         }
     }
@@ -135,27 +220,15 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
     }
 
     private fun handleBackAction() {
-        if (viewModel.displayMode == ListingDisplayMode.PUBLISHED ||
-            viewModel.displayMode == ListingDisplayMode.UNPUBLISHED) {
-            viewModel.navigateToListOfListings(viewModel.displayMode)
-        } else {
-            viewModel.resetListingId()
-            findNavController().navigateUp()
-        }
-    }
-
-    private fun observeViewModel() {
-        viewModel.userIdLiveData.observe(this, Observer { currentUserId ->
-            viewModel.listingLiveData.value?.let {
-                binding.ivFavorite.visibleOrGone(it.user?.id != currentUserId)
-            }
-        })
-        viewModel.onBackPressedLiveData.observe(this, Observer {
-            handleBackAction()
-        })
-        viewModel.listingCreatedLiveData.observe(this, Observer {
-            showSnackbar(R.string.listing_successfully_updated)
-        })
+//        if (viewModel.displayMode == ListingDisplayMode.PUBLISHED ||
+//            viewModel.displayMode == ListingDisplayMode.UNPUBLISHED) {
+//            viewModel.navigateToListOfListings(viewModel.displayMode)
+//        } else {
+//            viewModel.resetListingId()
+//            findNavController().navigateUp()
+//        }
+        viewModel.resetListingId()
+        findNavController().navigateUp()
     }
 
     private fun updateDisplayMode(listing: Listing) {
@@ -178,6 +251,48 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                     }
                 }
                 binding.mode = viewModel.displayMode
+            }
+        }
+    }
+
+    private fun enableContact(listing: Listing){
+        Log.i("RCS-MODE", viewModel.displayMode.toString())
+
+        when(viewModel.displayMode){
+            ListingDisplayMode.PUBLISHED ->{
+                binding.fabWhatsapp.gone()
+                binding.btListingAction.gone()
+            }
+            ListingDisplayMode.UNPUBLISHED->{
+                binding.fabWhatsapp.gone()
+                binding.btListingAction.visible()
+            }
+            ListingDisplayMode.PREVIEW->{
+                binding.fabWhatsapp.gone()
+                binding.btListingAction.visible()
+            }
+            ListingDisplayMode.IMPROPER_LISTING->{
+                listing.user?.id?.let{ currentUser ->
+                    viewModel.userIdLiveData.value?.let { localUserId ->
+                        if(localUserId == currentUser){
+                            binding.fabWhatsapp.gone()
+                            binding.btListingAction.gone()
+                        }else{
+                            binding.fabWhatsapp.visible()
+                            binding.btListingAction.visible()
+                        }
+                    }?: run{
+                        binding.fabWhatsapp.visible()
+                        binding.btListingAction.visible()
+                    }
+                }?: run{
+                    binding.fabWhatsapp.visible()
+                    binding.btListingAction.visible()
+                }
+            }
+            else ->{
+                binding.fabWhatsapp.gone()
+                binding.btListingAction.gone()
             }
         }
     }
@@ -323,6 +438,7 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
         }
     }
 
+    @SuppressLint("StringFormatMatches")
     private fun setFloorNumber(listing: Listing) {
         binding.tvFloorNumber.visibility = if (listing.floorNumber == null || listing.floorNumber == 0) {
             View.GONE
@@ -399,8 +515,29 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setUser(user: User?) {
-        binding.tvListingUserName.text = "${user?.firstName} ${user?.lastName?.get(0)}."
+    private fun setUser(user: User?, contact: Contact?) {
+        contact?.let{
+            val arr = it.contactName?.split(" ")
+            arr?.let{ mFullName ->
+                try {
+                    if(mFullName.size > 1) {
+                        var name = ""
+                        if(mFullName[0].isNotEmpty()) {
+                            name = mFullName[0]
+                        }
+                        if(mFullName[1].isNotEmpty()) {
+                            name = name + " " + mFullName[1][0] + "."
+                        }
+                        binding.tvListingUserName.text = name
+//                    binding.tvListingUserName.text = "${mFullName[0]} ${mFullName[1][0]}."
+                    } else binding.tvListingUserName.text = it.contactName?:""
+                } catch (ex: StringIndexOutOfBoundsException){
+                    print(ex.message)
+                }
+            }?:run{ binding.tvListingUserName.text = it.contactName?:"" }
+        }?:run{
+            binding.tvListingUserName.text = user?.fullName
+        }
         binding.tvListingAvatar.withGlide(user?.avatar, R.drawable.ic_profile_placeholder)
     }
 
@@ -434,7 +571,6 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
         }
     }
 
-
     private fun setRecycler() {
         binding.rcFacilitiesContainer.adapter = facilitiesAdapter
         binding.rvAdvancedDetailsContainer.adapter = advancedDetailsAdapter
@@ -442,7 +578,9 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
 
     private fun startPaymentFlow(listing: Listing) {
         val paymentIntent = Intent(context, PaymentActivity::class.java)
+        paymentIntent.putExtra(PaymentActivity.EXTRA_USER_ID, listing.user?.id)
         paymentIntent.putExtra(PaymentActivity.EXTRA_LISTING_ID, listing.id)
+        paymentIntent.putExtra(PaymentActivity.EXTRA_PUBLISHER_ROLE, listing.publisherRole)
         startActivityForResult(paymentIntent, PAYMENT_ACTIVITY_REQUEST_CODE)
     }
 
@@ -481,7 +619,6 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                 binding.tvListingTitle.text = getString(R.string.preview)
                 binding.tvListingSubtitle.invisible()
                 binding.tvListingActionText.text = getString(R.string.save)
-                binding.tvListingActionHint.invisible()
                 binding.btListingAction.setOnClickListener {
                     viewModel.createListing(false)
                 }
@@ -497,24 +634,34 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                     }
                 binding.tvListingSubtitle.visible()
                 binding.tvListingActionText.text = getString(R.string.publish)
-                binding.tvListingActionHint.invisible()
+
                 binding.btListingAction.setOnClickListener {
+
                     if (listing.publishState == PublishState.UNPUBLISHED) {
-                        showPublishConfirmationDialog(listing)
+                        when(listing.publisherRole?.trim()){
+                            PUBLISHER_ROLE_REALTOR -> {
+                                showSnackbar(R.string.action_must_be_done_from_web)
+                            }
+                            else -> {
+                                showPublishConfirmationDialog(listing)
+                            }
+                        }
                     } else {
                         startPaymentFlow(listing)
                     }
+
                 }
                 binding.btListingAction.visible()
             }
             ListingDisplayMode.IMPROPER_LISTING -> {
                 binding.tvListingActionText.text = getString(R.string.contact)
-                binding.tvListingActionHint.visible()
-                listing.user?.phoneNumber?.let { phoneNumber ->
-                    binding.btListingAction.setOnClickListener {
-                        showContactDialog(phoneNumber)
-                    }
+
+                listing.contact?.let{
+                    showContactDialog(it.contactPhone)
+                }?:run{
+                    showContactDialog(listing.user?.phoneNumber)
                 }
+
                 if (viewModel.userIdLiveData.value != null && viewModel.userIdLiveData.value == listing.user?.id) {
                     binding.btListingAction.invisible()
                 } else {
@@ -532,7 +679,6 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
 
     @SuppressLint("SetTextI18n")
     private fun setPriceSubtitle(it: Listing) {
-
         if (it.listingType == Constants.SALE) {
             binding.tvListingType.setBackgroundResource(R.drawable.listing_for_sale_shape)
             val numberFormat = NumberFormat.getInstance()
@@ -545,25 +691,30 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
         }
     }
 
-    private fun showContactDialog(phoneNumber: String) {
-        context?.let {
-            StyledAlertDialog.Builder(it)
-                .setTitleText(phoneNumber)
-                .setRightButton(getString(R.string.call)) {
-                    viewModel.contactOwner()
+    private fun showContactDialog(numberPhone: String?) {
+        numberPhone?.let{ mNumberPhone ->
+            binding.btListingAction.setOnClickListener(null)
+            binding.btListingAction.setOnClickListener {
+                viewModel.contactOwner()
+                fbLogger.logEvent("Contactenme")
+                context?.let {
+                    StyledAlertDialog.Builder(it)
+                        .setTitleText(mNumberPhone)
+                        .setRightButton(getString(R.string.call)) {
+                            navigateToCallScreen(mNumberPhone)
+                        }
+                        .setLeftButton(getString(R.string.cancel))
+                        .build()
+                        .show()
                 }
-                .setLeftButton(getString(R.string.cancel))
-                .build()
-                .show()
-        }
+            }
+        }?:run{ showSnackbar(R.string.phone_number_not_available) }
     }
 
     private fun navigateToCallScreen(phoneNumber: String) {
-        startActivity(
-            Intent(Intent.ACTION_DIAL).apply {
+        startActivity(Intent(Intent.ACTION_DIAL).apply {
                 data = Uri.parse("tel:$phoneNumber")
-            }
-        )
+        })
     }
 
     private fun initBtnEdit(listing: Listing) {
@@ -578,9 +729,11 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
             .inflate(R.layout.manage_listing_dialog, binding.root as ViewGroup, false)
         val tvOpen = v.findViewById<TextView>(R.id.tvOpen)
         val tvEdit = v.findViewById<TextView>(R.id.tvEdit)
+        val tvShare = v.findViewById<TextView>(R.id.tvShare)
         val tvUnpublish = v.findViewById<TextView>(R.id.tvUnpublish)
         val tvPublish = v.findViewById<TextView>(R.id.tvPublish)
         tvOpen.invisible()
+        tvShare.invisible()
         tvEdit.visible()
         if (listing.publishState == PublishState.PUBLISHED) {
             tvUnpublish.visible()
@@ -592,12 +745,32 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
             dialog.dismiss()
         }
         tvUnpublish.setOnClickListener {
-            showUnpublishConfirmationDialog(listing)
+
+            when(listing.publisherRole?.trim()){
+                PUBLISHER_ROLE_REALTOR -> {
+                    showUnpublishConfirmationDialog(listing)
+                    //showSnackbar(R.string.action_must_be_done_from_web)
+                }
+                PUBLISHER_ROLE_OWNER -> {
+                    showUnpublishConfirmationDialog(listing)
+                }
+                else -> {
+                    showUnpublishConfirmationDialog(listing)
+                }
+            }
             dialog.dismiss()
+
         }
         tvPublish.setOnClickListener {
             if (listing.publishState == PublishState.UNPUBLISHED) {
-                showPublishConfirmationDialog(listing)
+                when(listing.publisherRole?.trim()){
+                    PUBLISHER_ROLE_REALTOR -> {
+                        showSnackbar(R.string.action_must_be_done_from_web)
+                    }
+                    else -> {
+                        showPublishConfirmationDialog(listing)
+                    }
+                }
             } else {
                 startPaymentFlow(listing)
             }
@@ -630,6 +803,20 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
         progressDialog?.dismiss()
     }
 
+    private fun openWhatsapp(numberPhone: String, listing: Listing?) {
+        try {
+            val message = activity?.getString(R.string.whatsapp_message) ?: ""
+            val urlNotice = BuildConfig.BASE_URL_WEB + listing?.url
+            val url = "https://wa.me/$numberPhone?text=$message $urlNotice"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        }catch (e: Exception){
+            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
+            showSnackbar(R.string.whatsapp_not_installed)
+        }
+    }
 
     companion object {
         private const val PAYMENT_ACTIVITY_REQUEST_CODE = 9856

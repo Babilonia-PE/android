@@ -2,16 +2,16 @@ package com.babilonia.presentation.flow.auth.splash
 
 import android.net.Uri
 import com.babilonia.R
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.User
 import com.babilonia.domain.model.enums.LoginStatus
-import com.babilonia.domain.usecase.AuthUseCase
-import com.babilonia.domain.usecase.InitAppConfigUseCase
-import com.babilonia.domain.usecase.IsLoggedInUseCase
+import com.babilonia.domain.usecase.*
 import com.babilonia.presentation.base.BaseViewModel
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.utils.deeplink.DeeplinkHandler
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.subscribers.DisposableSubscriber
 import javax.inject.Inject
 
 
@@ -19,7 +19,8 @@ class SplashViewModel @Inject constructor(
     private val isLoggedInUseCase: IsLoggedInUseCase,
     private val authUseCase: AuthUseCase,
     private val initAppConfigUseCase: InitAppConfigUseCase,
-    private val deeplinkHandler: DeeplinkHandler
+    private val deeplinkHandler: DeeplinkHandler,
+    private val getUserUseCase: GetRemoteUserUseCase,
 ) : BaseViewModel() {
     val isLoggedInEvent = SingleLiveEvent<LoginStatus>()
     val navigateToRootLiveData = SingleLiveEvent<Unit>()
@@ -54,9 +55,9 @@ class SplashViewModel @Inject constructor(
         isLoggedInUseCase.execute(object : DisposableSingleObserver<LoginStatus>() {
             override fun onSuccess(status: LoginStatus) {
                 when (status) {
-                    LoginStatus.AUTHORIZED -> navigateToRoot()
+                    LoginStatus.AUTHORIZED -> getUser(false)
                     LoginStatus.UNAUTHORIZED -> isLoggedInEvent.postValue(status)
-                    LoginStatus.PARTIALLY -> navigateToCreateProfile()
+                    LoginStatus.PARTIALLY -> getUser(false)
                 }
             }
 
@@ -65,7 +66,25 @@ class SplashViewModel @Inject constructor(
             }
 
         }, Unit)
+    }
 
+    private fun getUser(toCreateProfile: Boolean) {
+        getUserUseCase.execute(object : DisposableSingleObserver<User>() {
+            override fun onSuccess(user: User) {
+                if (toCreateProfile)
+                    navigateToCreateProfile()
+                else
+                    navigateToRoot()
+            }
+
+            override fun onError(e: Throwable) {
+                if (e is AuthFailedException) {
+                    signOut {
+                        isLoggedInEvent.postValue(LoginStatus.UNAUTHORIZED)
+                    }
+                }
+            }
+        }, Unit)
     }
 
     fun loginWithFirebaseCode(code: String) {
@@ -86,6 +105,13 @@ class SplashViewModel @Inject constructor(
 
     }
 
+    fun navigateToSignUp() {
+        navigate(R.id.action_splashFragment_to_signUpFragment)
+    }
+
+    fun navigateToLogIn() {
+        navigate(R.id.action_splashFragment_to_logInFragment)
+    }
 
     override fun onCleared() {
         authUseCase.dispose()
@@ -94,7 +120,7 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun isNew(user: User): Boolean {
-        return user.firstName.isNullOrEmpty() && user.lastName.isNullOrEmpty()
+        return user.fullName.isNullOrEmpty()
     }
 
 }

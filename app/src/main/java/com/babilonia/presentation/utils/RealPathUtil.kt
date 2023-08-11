@@ -5,6 +5,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
@@ -40,7 +41,7 @@ object RealPathUtil {
                         )
                         return getDataColumn(context, contentUri, null, null)
                     } catch (e: NumberFormatException) {
-                        Log.i(TAG, e.message)
+                        e.message?.let { Log.i(TAG, it) }
                         return null
                     }
 

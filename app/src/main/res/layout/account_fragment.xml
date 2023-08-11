@@ -53,5 +53,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvLogOut" />
+
+        <TextView
+            android:id="@+id/tvDeleteAccount"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="8sp"
+            android:paddingStart="@dimen/create_listing_margin_left_right"
+            android:paddingEnd="@dimen/create_listing_margin_left_right"
+            android:text="@string/delete_account"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emailDivider" />
+
+        <View
+            android:id="@+id/deleteAccountDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/create_listing_margin_left_right"
+            android:background="@color/light_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDeleteAccount" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

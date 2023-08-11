@@ -5,11 +5,13 @@ import android.net.Uri
 import android.util.Patterns
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.data.network.error.EmailAlreadyTakenException
+import com.babilonia.domain.model.ListingImage
 import com.babilonia.domain.model.User
 import com.babilonia.domain.usecase.GetUserUseCase
 import com.babilonia.domain.usecase.UpdateUserUseCase
-import com.babilonia.domain.usecase.UploadUserAvatarUseCase
+import com.babilonia.domain.usecase.UploadImagesUseCase
 import com.babilonia.presentation.base.BaseViewModel
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.utils.ImageUtil
@@ -20,18 +22,19 @@ import javax.inject.Inject
 
 class CreateProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val uploadUserAvatarUseCase: UploadUserAvatarUseCase,
+    private val uploadImagesUseCase: UploadImagesUseCase,
     private val updateUserUseCase: UpdateUserUseCase
 ) : BaseViewModel() {
+    val authFailedData = SingleLiveEvent<Unit>()
     val userLiveData = MutableLiveData<User>()
     val photoUploadProgressLiveData = MutableLiveData<Boolean>(false)
     val emailAlreadyTakenLiveData = SingleLiveEvent<Unit>()
     val navigateToRootLiveData = SingleLiveEvent<Unit>()
+    val updateUserSuccessLiveData = SingleLiveEvent<Unit>()
     var avatarUri: Uri? = null
     var updateCreateProfileValidator = object : ObservableBoolean() {
         override fun get(): Boolean {
-            return userLiveData.value?.firstName?.trim().isNullOrEmpty().not()
-                    && userLiveData.value?.lastName?.trim().isNullOrEmpty().not()
+            return userLiveData.value?.fullName?.trim().isNullOrEmpty().not()
                     && isEmailValid()
         }
     }
@@ -43,30 +46,69 @@ class CreateProfileViewModel @Inject constructor(
 
     fun updateUser(context: Context) {
         userLiveData.value?.let { user ->
-            user.firstName = user.firstName?.trim()
-            user.lastName = user.lastName?.trim()
+            user.fullName = user.fullName?.trim()
             updateUserUseCase.execute(object : DisposableSingleObserver<User>() {
                 override fun onSuccess(user: User) {
-                    if (avatarUri == null) {
+                    updateUserSuccessLiveData.call()
+                    navigateToMain()
+                    /*if (avatarUri == null) {
                         navigateToMain()
                     } else {
                         avatarUri?.let {
                             compressImageAndUpload(context, it)
                         }
-                    }
+                    }*/
                 }
 
                 override fun onError(e: Throwable) {
-                    if (e is EmailAlreadyTakenException) {
-                        emailAlreadyTakenLiveData.call()
-                    } else {
-                        dataError.postValue(e)
+                    when (e) {
+                        is AuthFailedException -> {
+                            authFailedData.call()
+                        }
+                        is EmailAlreadyTakenException -> {
+                            emailAlreadyTakenLiveData.call()
+                        }
+                        else -> {
+                            dataError.postValue(e)
+                        }
                     }
                 }
-            }, user)
+            }, UpdateUserUseCase.Params(user, null, null))
         }
     }
 
+    fun updateUser(photoId: Int?) {
+        userLiveData.value?.let { user ->
+            user.fullName = user.fullName?.trim()
+            updateUserUseCase.execute(object : DisposableSingleObserver<User>() {
+                override fun onSuccess(user: User) {
+                    updateUserSuccessLiveData.call()
+                    navigateToMain()
+                    /*if (avatarUri == null) {
+                        navigateToMain()
+                    } else {
+                        avatarUri?.let {
+                            compressImageAndUpload(context, it)
+                        }
+                    }*/
+                }
+
+                override fun onError(e: Throwable) {
+                    when (e) {
+                        is AuthFailedException -> {
+                            authFailedData.call()
+                        }
+                        is EmailAlreadyTakenException -> {
+                            emailAlreadyTakenLiveData.call()
+                        }
+                        else -> {
+                            dataError.postValue(e)
+                        }
+                    }
+                }
+            }, UpdateUserUseCase.Params(user, null, photoId))
+        }
+    }
 
     fun getUser() {
         getUserUseCase.execute(object : DisposableSubscriber<User>() {
@@ -79,7 +121,10 @@ class CreateProfileViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    authFailedData.call()
+                } else
+                    dataError.postValue(e)
             }
         }, Unit)
     }
@@ -107,18 +152,23 @@ class CreateProfileViewModel @Inject constructor(
 
     private fun uploadImage(path: String) {
         userLiveData.value?.let {
-            uploadUserAvatarUseCase.execute(object : DisposableSingleObserver<User>() {
+            uploadImagesUseCase.execute(object : DisposableSingleObserver<List<ListingImage>>() {
                 override fun onError(e: Throwable) {
-                    photoUploadProgressLiveData.value = false
-                    dataError.postValue(e)
+                    if (e is AuthFailedException) {
+                        authFailedData.call()
+                    } else {
+                        photoUploadProgressLiveData.value = false
+                        dataError.postValue(e)
+                    }
                 }
 
-                override fun onSuccess(user: User) {
+                override fun onSuccess(images: List<ListingImage>) {
                     photoUploadProgressLiveData.value = false
-                    navigateToMain()
+                    //navigateToMain()
+                    updateUser(images[0].id)
                 }
 
-            }, UploadUserAvatarUseCase.Params(path, it.firstName, it.lastName, it.email))
+            }, UploadImagesUseCase.Params(path, "profile"))
         }
 
     }

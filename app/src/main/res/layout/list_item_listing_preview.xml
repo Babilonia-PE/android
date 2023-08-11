@@ -147,14 +147,17 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vpImages"
-            tools:text="$100,100" />
+            tools:text="$100,000,000" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSubPrice"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:paddingEnd="5dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_color_listing_sub_price"
             app:layout_constraintBottom_toBottomOf="@+id/tvPrice"
             app:layout_constraintEnd_toStartOf="@+id/tvListingBeds"
@@ -228,9 +231,9 @@
             android:paddingBottom="4dp"
             android:fontFamily="@font/avenit_medium"
             android:lineSpacingExtra="6sp"
-            android:text="@{model.locationAttributes.address}"
             android:textColor="@color/gunmetal"
             android:textSize="14sp"
+            app:validateLocationString="@{model.locationAttributes}"
             app:layout_constraintEnd_toStartOf="@id/ivPlanIcon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPrice"

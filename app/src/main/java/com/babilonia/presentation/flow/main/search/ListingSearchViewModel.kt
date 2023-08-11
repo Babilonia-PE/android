@@ -3,15 +3,17 @@ package com.babilonia.presentation.flow.main.search
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import com.babilonia.Constants
-import com.babilonia.EmptyConstants
+import com.babilonia.Constants.LIMA_LAT
+import com.babilonia.Constants.LIMA_LON
 import com.babilonia.R
 import com.babilonia.android.exceptions.GpsUnavailableException
 import com.babilonia.android.system.AppSystemProvider
 import com.babilonia.data.model.DataResult
-import com.babilonia.data.network.error.NoNetworkException
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.*
 import com.babilonia.domain.model.enums.FacilityDataType
 import com.babilonia.domain.model.enums.ListingAction
@@ -22,7 +24,6 @@ import com.babilonia.domain.usecase.*
 import com.babilonia.domain.usecase.ar.NeedToShowArOnboardingUseCase
 import com.babilonia.presentation.base.BaseViewModel
 import com.babilonia.presentation.base.SingleLiveEvent
-import com.babilonia.presentation.extension.safeLet
 import com.babilonia.presentation.flow.main.common.ListingActionsListener
 import com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode
 import com.babilonia.presentation.flow.main.publish.createlisting.ID
@@ -30,14 +31,14 @@ import com.babilonia.presentation.flow.main.publish.createlisting.MODE
 import com.babilonia.presentation.flow.main.publish.facilities.common.FacilityChangeListener
 import com.babilonia.presentation.flow.main.search.common.FiltersDelegate
 import com.babilonia.presentation.flow.main.search.common.FiltersDelegateImpl
-import com.babilonia.presentation.flow.main.search.map.AndroidLocation
 import com.babilonia.presentation.flow.main.search.model.FiltersVisibility
 import com.babilonia.presentation.flow.main.search.model.ListingsMetadata
+import com.babilonia.presentation.utils.SvgUtil.updateCoordinateLocation
+import com.babilonia.presentation.utils.SvgUtil.updateILocation
+import com.babilonia.presentation.utils.SvgUtil.updatePlaceLocation
 import com.babilonia.presentation.view.priceview.BarEntry
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.gms.maps.model.LatLngBounds
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
@@ -48,34 +49,34 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 class ListingSearchViewModel @Inject constructor(
     private val getListingsUseCase: GetListingsUseCase,
     private val listingActionUseCase: ListingActionUseCase,
     private val getLocationUseCase: GetLastKnownLocationUseCase,
-    private val getPlaceByIdUseCase: GetPlaceByIdUseCase,
-    private val getPlacesByQueryUseCase: GetPlacesByQueryUseCase,
     private val getCurrentPlaceUseCase: GetCurrentPlaceUseCase,
     private val getListingsMetadataUseCase: GetListingsMetadataUseCase,
     private val getPriceRangeUseCase: GetPriceRangeUseCase,
-    private val getDefaultLocationUseCase: GetDefaultLocationUseCase,
     private val getFacilitiesUseCase: GetFacilitiesUseCase,
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val getUserIdUseCase: GetUserIdUseCase,
     private val getTopListingsUseCase: GetTopListingsUseCase,
     private val appSystemProvider: AppSystemProvider,
-    private val needToShowArOnboardingUseCase: NeedToShowArOnboardingUseCase
-) : BaseViewModel(), ListingActionsListener, FiltersDelegate by FiltersDelegateImpl(), FacilityChangeListener {
-
+    private val needToShowArOnboardingUseCase: NeedToShowArOnboardingUseCase,
+    private val getDataLocationSearchedUseCase: GetDataLocationSearchedUseCase
+) : BaseViewModel(), ListingActionsListener, FiltersDelegate by FiltersDelegateImpl(),
+    FacilityChangeListener {
+    val authFailedData = SingleLiveEvent<Unit>()
     val topListingsLiveData = MutableLiveData<List<Listing>>()
     val listings = MutableLiveData<List<Listing>>()
     val locationLiveData = MutableLiveData<ILocation>()
     val priceRangeLiveData = MutableLiveData<List<BarEntry>>()
-    val suggestions = MutableLiveData<List<Place>>()
+    val suggestions = MutableLiveData<List<Location>>()
     val recentSearches = MutableLiveData<List<RecentSearch>>()
     val onFocusChangeEvent = MutableLiveData<Boolean>()
     val filtersVisibilityLiveData = MutableLiveData<FiltersVisibility>(FiltersVisibility.All())
     val topListingsVisibilityLiveData = MutableLiveData<Boolean>(true)
+    val clearSearchFromMapLiveData = MutableLiveData<Boolean>(false)
+    val notClearSearchLiveData = MutableLiveData<Boolean>(false)
 
     val onPlaceFoundEvent = SingleLiveEvent<PlaceLocation>()
     val currentPlace = SingleLiveEvent<PlaceLocation>()
@@ -94,12 +95,21 @@ class ListingSearchViewModel @Inject constructor(
     var needToResetAdapter = false
     var topListingsSavedState: Parcelable? = null
 
-    private var sessionToken = AutocompleteSessionToken.newInstance()
-
     var searchingByCurrentPlace = true
     var sortingBy = SortType.MOST_RELEVANT.ordinal
-    var currentZoom = 15f
+    var currentZoom = 6f
     var searchRadius = Constants.DEFAULT_RADIUS
+
+    val isGPSLocationLiveData = MutableLiveData<Boolean>(false)
+    val isShowScreenMapLiveData = MutableLiveData<Boolean>(false)
+    val isSearchWithSwipeLiveData = MutableLiveData<Boolean>(false)
+    val isSearchByBoundsLiveData = MutableLiveData<Boolean>(false)
+    val isSearchByAutocompleteLiveData = MutableLiveData<Boolean>(false)
+    val isForcedLocationGPSLiveData = MutableLiveData<Boolean>(false)
+
+    val placeLocationGPSLiveData = SingleLiveEvent<PlaceLocation>()
+
+    var ipAddress = ""
 
     init {
         subscribeToListingMetadata()
@@ -112,25 +122,50 @@ class ListingSearchViewModel @Inject constructor(
             ListingActionMode.DELETE
         }
 
-        listingActionUseCase.execute(object : DisposableCompletableObserver() {
-            override fun onComplete() {
-            }
+        listingActionUseCase.execute(
+            object : DisposableCompletableObserver() {
+                override fun onComplete() {
+                }
 
-            override fun onError(e: Throwable) {
-                dataError.postValue(e)
-            }
+                override fun onError(e: Throwable) {
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else
+                        dataError.postValue(e)
+                }
 
-        }, ListingActionUseCase.Params(id, ListingAction.FAVOURITE, mode))
-    }
-
-    override fun onPreviewClicked(id: Long) {
-        navigateGlobal(
-            R.id.action_global_listingFragment,
-            bundleOf(
-                ID to id,
-                MODE to ListingDisplayMode.IMPROPER_LISTING
+            }, ListingActionUseCase.Params(
+                id,
+                ListingAction.FAVOURITE,
+                mode,
+                ipAddress,
+                "android",
+                "email"
             )
         )
+    }
+
+    override fun onPreviewClicked(listing: Listing) {
+        val mode = if (listing.user?.id == userIdLiveData.value) {
+            if (listing.status == Constants.HIDDEN)
+                ListingDisplayMode.UNPUBLISHED
+            else
+                ListingDisplayMode.PUBLISHED
+        } else {
+            ListingDisplayMode.IMPROPER_LISTING
+        }
+
+        listing.id?.let { id ->
+            navigateGlobal(
+                R.id.action_global_listingFragment,
+                bundleOf(
+                    ID to id,
+                    MODE to mode
+                )
+            )
+        }
     }
 
     override fun onChange(value: Facility?) {
@@ -154,94 +189,70 @@ class ListingSearchViewModel @Inject constructor(
     }
 
     fun applyFiltersAndBack(context: Context) {
+        setSearchByBounds(true)
+        setIsForcedLocationGPS(true)
         needToResetPaginator = true
         applyFilters(context.resources)
         navigateBack()
     }
 
-    fun getListings() {
-        val chosenLocation = locationLiveData.value
-        if (chosenLocation != null) {
-            getListings(chosenLocation)
-        } else {
-            getLocation()
-        }
-    }
-
-    fun getListings(location: ILocation, radius: Int = searchRadius, pageSize: Int = Constants.PER_PAGE) {
-        sessionToken = AutocompleteSessionToken.newInstance()
-        disposables.clear()
-
-        val disposable = paginator.onBackpressureDrop().subscribe { pageIndex ->
-            getListingsUseCase.execute(object : DisposableSingleObserver<List<Listing>>() {
-                override fun onSuccess(list: List<Listing>) {
-                    lastLoadedPageIndex = pageIndex
-                    updateTopListingsVisibility()
-                    listings.postValue(list)
-                    getRecentSearches()
-                }
-
-                override fun onError(e: Throwable) {
-                    dataError.postValue(e)
-                }
-
-            }, GetListingsUseCase.Params(
-                lat = location.latitude.toFloat(),
-                lon = location.longitude.toFloat(),
-                queryText = if (location.address.isNullOrEmpty()) null else location.address,
-                placeId = if (location is PlaceLocation) location.googlePlaceId else null,
-                page = pageIndex,
-                radius = radius,
-                sortType = SortType.getByPosition(sortingBy),
-                filters = getFilters(),
-                facilities = getFacilities(),
-                pageSize = pageSize
-            ))
-        }
-        val pageIndex = if (needToResetPaginator) {
-            needToResetPaginator = false
-            needToResetAdapter = true
-
-            Constants.FIRST_PAGE
-        } else {
-            lastLoadedPageIndex
-        }
-        paginator.onNext(pageIndex)
-        disposables.add(disposable)
-    }
-
     fun getListingsWithLocationPermission(isPermissionGranted: Boolean) {
+        startLoading()
         if (locationLiveData.value == null) {
             if (isPermissionGranted) {
                 getLocation()
             } else {
                 getDefaultPlace()
             }
+        } else {
+            stopLoading()
         }
     }
 
     fun getLocation(onLocationFound: ((location: ILocation) -> Unit)? = null) {
         searchingByCurrentPlace = true
+        setIsGPSLocation(true)
         getLocationUseCase.execute(object : DisposableSingleObserver<DataResult<ILocation>>() {
             override fun onSuccess(result: DataResult<ILocation>) {
                 when (result) {
+                    is DataResult.Success -> {
+                        stopLoading()
+                        val mLocation = updateILocation(result.data)
+                        onLocationFound?.invoke(mLocation)
+                        locationLiveData.postValue(mLocation)
+                        onPlaceFoundEvent.postValue(
+                            PlaceLocation(
+                                mLocation.latitude,
+                                mLocation.longitude,
+                                mLocation.altitude,
+                                mLocation.address,
+                                LatLngBounds(
+                                    LatLng(mLocation.latitude, mLocation.longitude),
+                                    LatLng(mLocation.latitude, mLocation.longitude)
+                                ),
+                                null,
+                                mLocation.department,
+                                mLocation.province,
+                                mLocation.district,
+                                mLocation.zipCode,
+                                mLocation.country
+                            )
+                        )
+                        metadataUpdateSubject.onNext(false)
+                    }
                     is DataResult.Error -> {
                         getDefaultPlace()
                         if (result.throwable is GpsUnavailableException) {
                             gpsUnavailableError.call()
                         } else {
-                            dataError.postValue(result.throwable)
+                            //  dataError.postValue(result.throwable)
                         }
-                    }
-                    is DataResult.Success -> {
-                        onLocationFound?.invoke(result.data)
-                        locationLiveData.postValue(result.data)
-                        metadataUpdateSubject.onNext(false)
                     }
                 }
             }
 
             override fun onError(e: Throwable) {
+                stopLoading()
                 dataError.postValue(e)
             }
 
@@ -249,25 +260,27 @@ class ListingSearchViewModel @Inject constructor(
     }
 
     fun getDefaultPlace() {
-        searchingByCurrentPlace = true
-        val request = FindAutocompletePredictionsRequest.builder()
-            .setSessionToken(sessionToken)
-            .setCountries(Constants.COUNTRY_CODE_PERU, Constants.COUNTRY_CODE_UKRAINE)
-            .setTypeFilter(TypeFilter.REGIONS)
-            .setQuery(Constants.LIMA_DEFAULT_REQUEST)
-            .build()
-        getPlacesByQueryUseCase.execute(object : DisposableSingleObserver<List<Place>>() {
-            override fun onSuccess(places: List<Place>) {
-                if (places.isNotEmpty()) {
-                    getDefaultPlaceLocation(places[0].id)
-                }
-            }
-
-            override fun onError(e: Throwable) {
-                handleApiError(e)
-            }
-
-        }, request)
+        authStorageLocal.setValidateDefaultLocation(true)
+        setIsGPSLocation(true)
+        val mLocation = updatePlaceLocation(
+            PlaceLocation(
+                LIMA_LAT,
+                LIMA_LON,
+                0.0,
+                null,
+                LatLngBounds(LatLng(LIMA_LAT, LIMA_LON), LatLng(LIMA_LAT, LIMA_LON)),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+        )
+        stopLoading()
+        locationLiveData.postValue(mLocation)
+        onPlaceFoundEvent.postValue(mLocation)
+        metadataUpdateSubject.onNext(false)
     }
 
     fun getFacilities(type: String) {
@@ -281,7 +294,12 @@ class ListingSearchViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.value = e
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.value = e
             }
 
         }, GetFacilitiesUseCase.Params(FacilityDataType.FACILITY, type.toLowerCase(Locale.ROOT)))
@@ -297,55 +315,27 @@ class ListingSearchViewModel @Inject constructor(
         getFacilities().forEach { addFacility(it) }
     }
 
-    private fun getDefaultPlaceLocation(placeId: String) {
-        getPlaceByIdUseCase.execute(object : DisposableSingleObserver<PlaceLocation>() {
-            override fun onSuccess(location: PlaceLocation) {
-                location.googlePlaceId = null
-                safeLet(location.viewport?.center, location.viewport?.northeast) { center, bounds ->
-                    searchRadius = calculateRadius(center, bounds)
+    fun getPlaces(address: String, page: Int, perPage: Int) {
+        getDataLocationSearchedUseCase.execute(
+            object : DisposableSingleObserver<DataLocation>() {
+                override fun onSuccess(dataLocation: DataLocation) {
+                    suggestions.postValue(dataLocation.location ?: emptyList())
                 }
-                currentPlace.value = location
-                onPlaceFoundEvent.postValue(location)
-                locationLiveData.postValue(location)
-            }
 
-            override fun onError(e: Throwable) {
-                handleApiError(e)
-            }
+                override fun onError(e: Throwable) {
+                    //dataError.postValue(e)
+                }
 
-        }, placeId)
-    }
-
-    private fun handleApiError(e: Throwable) {
-        val msg = e.message
-        if (msg != null && msg.contains("NoConnectionError")) {
-            dataError.postValue(NoNetworkException(e))
-        } else {
-            dataError.postValue(e)
-        }
-    }
-
-    fun getPlaces(query: String) {
-        val request = FindAutocompletePredictionsRequest.builder()
-            .setCountries(Constants.COUNTRY_CODE_PERU, Constants.COUNTRY_CODE_UKRAINE)
-            .setTypeFilter(TypeFilter.REGIONS)
-            .setSessionToken(sessionToken)
-            .setQuery(query)
-            .build()
-        getPlacesByQueryUseCase.execute(object : DisposableSingleObserver<List<Place>>() {
-            override fun onSuccess(places: List<Place>) {
-                suggestions.postValue(places)
-            }
-
-            override fun onError(e: Throwable) {
-                handleApiError(e)
-            }
-
-        }, request)
+            }, GetDataLocationSearchedUseCase.Params(
+                address = address,
+                page = page,
+                perPage = perPage
+            )
+        )
     }
 
     fun getPriceRange(shouldUseTmpFilters: Boolean = true) {
-        if (shouldUseTmpFilters)  {
+        if (shouldUseTmpFilters) {
             getPriceRange(getTempFilters(), getTempFacilities())
         } else {
             getPriceRange(getFilters(), getFacilities())
@@ -364,10 +354,15 @@ class ListingSearchViewModel @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        dataError.postValue(e)
+                        if (e is AuthFailedException) {
+                            signOut {
+                                authFailedData.call()
+                            }
+                        } else
+                            dataError.postValue(e)
                     }
                 },
-                GetListingsMetadataUseCase.Params(
+                GetPriceRangeUseCase.Params(
                     it.latitude.toFloat(),
                     it.longitude.toFloat(),
                     searchRadius,
@@ -382,58 +377,29 @@ class ListingSearchViewModel @Inject constructor(
         navigate(R.id.action_searchRootFragment_to_listingFiltersFragment)
     }
 
-    fun setLocationFromMapPosition(lat: Double, lon: Double, radius: Int) {
+    fun setLocationFromMapPosition(lat: Double, lon: Double): ILocation {
+        setSearchWithSwipeMap(true)
         val location = Location().apply {
             latitude = lat
             longitude = lon
         }
         locationLiveData.postValue(location)
+        return updateILocation(location)
     }
 
     fun getRecentSearches() {
-        getRecentSearchesUseCase.execute(object : DisposableSingleObserver<List<RecentSearch>>(){
+        getRecentSearchesUseCase.execute(object : DisposableSingleObserver<List<RecentSearch>>() {
             override fun onSuccess(newRecentSearches: List<RecentSearch>) {
                 recentSearches.postValue(newRecentSearches)
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
-            }
-        }, Unit)
-    }
-
-    fun getPlaceById(googlePlaceId: String) {
-        searchingByCurrentPlace = false
-        getPlaceByIdUseCase.execute(object : DisposableSingleObserver<PlaceLocation>() {
-            override fun onSuccess(location: PlaceLocation) {
-                safeLet(location.viewport?.center, location.viewport?.northeast) { center, bounds ->
-                    searchRadius = calculateRadius(center, bounds)
-                }
-                onPlaceFoundEvent.postValue(location)
-                locationLiveData.postValue(location)
-            }
-
-            override fun onError(e: Throwable) {
-                dataError.postValue(e)
-            }
-
-        }, googlePlaceId)
-    }
-
-    fun getCurrentPlace() {
-        searchingByCurrentPlace = true
-        getCurrentPlaceUseCase.execute(object : DisposableSingleObserver<PlaceLocation>() {
-            override fun onSuccess(location: PlaceLocation) {
-                location.googlePlaceId = null
-                searchRadius = Constants.DEFAULT_RADIUS
-                onPlaceFoundEvent.postValue(location)
-                currentPlace.postValue(location)
-                locationLiveData.postValue(location)
-            }
-
-            override fun onError(e: Throwable) {
-                dataError.postValue(e)
-
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, Unit)
     }
@@ -445,7 +411,12 @@ class ListingSearchViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, Unit)
     }
@@ -489,11 +460,15 @@ class ListingSearchViewModel @Inject constructor(
                     }
                 },
                 GetListingsMetadataUseCase.Params(
-                    it.latitude.toFloat(),
-                    it.longitude.toFloat(),
-                    searchRadius,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) it.latitude.toFloat() else null,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) it.longitude.toFloat() else null,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) Constants.DEFAULT_RADIUS else null,
                     filters,
-                    facilities
+                    facilities,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) null else it.department,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) null else it.province,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) null else it.district,
+                    if (getIsGPSLocation() || getIsShowScreenMap()) null else it.address
                 )
             )
         }
@@ -505,7 +480,7 @@ class ListingSearchViewModel @Inject constructor(
             .subscribe { shouldUseTmpFilters ->
                 val filters: List<Filter>
                 val facilities: List<Facility>
-                if (shouldUseTmpFilters)  {
+                if (shouldUseTmpFilters) {
                     filters = getTempFilters()
                     facilities = getTempFacilities()
                 } else {
@@ -513,62 +488,411 @@ class ListingSearchViewModel @Inject constructor(
                     facilities = getFacilities()
                 }
                 getListingsMetadata(filters, facilities)
-                getPriceRange(filters, facilities)
+                //getPriceRange(filters, facilities)
             }
-    }
-
-    private fun calculateRadius(center: LatLng, bounds: LatLng): Int {
-        val from = AndroidLocation(EmptyConstants.EMPTY_STRING).apply {
-            latitude = center.latitude
-            longitude = center.longitude
-        }
-        val to = AndroidLocation(EmptyConstants.EMPTY_STRING).apply {
-            latitude = bounds.latitude
-            longitude = bounds.longitude
-        }
-        val radius = from.distanceTo(to).toInt()
-        return radius
-    }
-
-    private fun getDefaultLocation() {
-        getDefaultLocationUseCase.execute(object : DisposableSingleObserver<Location>() {
-            override fun onSuccess(location: Location) {
-                locationLiveData.postValue(location)
-            }
-
-            override fun onError(e: Throwable) {
-                dataError.postValue(e)
-            }
-
-        }, Unit)
     }
 
     fun getTopListings(location: ILocation, radius: Int = Constants.MAX_RADIUS) {
-        if (isTopListingVisible().not()) return
+        if (isTopListingVisible().not()) {
+            return
+        } else {
+            Log.i("RCS-ENTER ", "getTopListings")
+        }
 
-        getTopListingsUseCase.execute(object : DisposableSingleObserver<List<Listing>>(){
-            override fun onSuccess(topListings: List<Listing>) {
-                topListingsLiveData.value = topListings
-            }
+        getTopListingsUseCase.execute(
+            object : DisposableSingleObserver<List<Listing>>() {
+                override fun onSuccess(topListings: List<Listing>) {
+                    topListingsLiveData.value = topListings
+                }
 
-            override fun onError(e: Throwable) {
-                dataError.postValue(e)
-                e.printStackTrace()
-            }
-        }, GetTopListingsUseCase.Params(
-            location.latitude.toFloat(),
-            location.longitude.toFloat(),
-            radius
-        ))
+                override fun onError(e: Throwable) {
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else {
+                        dataError.postValue(e)
+                        e.printStackTrace()
+                    }
+                }
+            }, GetTopListingsUseCase.Params(
+                location.latitude.toFloat(),
+                location.longitude.toFloat(),
+                radius
+            )
+        )
+    }
+
+    fun getTopListingsLoading(location: ILocation, radius: Int = Constants.MAX_RADIUS) {
+        startLoading()
+        if (isTopListingVisible().not()) {
+            //   listings.postValue(listOf())
+            stopLoading()
+            return
+        } else {
+            Log.i("RCS-ENTER ", "getTopListingsLoading")
+        }
+
+        getTopListingsUseCase.execute(
+            object : DisposableSingleObserver<List<Listing>>() {
+                override fun onSuccess(topListings: List<Listing>) {
+                    stopLoading()
+                    //  listings.postValue(listOf())
+                    topListingsLiveData.value = topListings
+                }
+
+                override fun onError(e: Throwable) {
+                    if (e is AuthFailedException) {
+                        signOut {
+                            authFailedData.call()
+                        }
+                    } else {
+                        stopLoading()
+                        //     listings.postValue(listOf())
+                        dataError.postValue(e)
+                        e.printStackTrace()
+                    }
+                }
+            }, GetTopListingsUseCase.Params(
+                location.latitude.toFloat(),
+                location.longitude.toFloat(),
+                radius
+            )
+        )
     }
 
     private fun updateTopListingsVisibility() {
         topListingsVisibilityLiveData.value = isTopListingVisible()
     }
 
-    private fun isTopListingVisible() : Boolean {
+    private fun isTopListingVisible(): Boolean {
         val visibleByFilters = hasFilters().not()
         return visibleByFilters && searchingByCurrentPlace
+    }
+
+    fun getListings() {
+        val chosenLocation = locationLiveData.value
+        if (chosenLocation != null) {
+            getListings(chosenLocation)
+        } else {
+            getLocation()
+        }
+    }
+
+    fun getListings(location: ILocation, pageSize: Int = Constants.PER_PAGE) {
+        startLoading()
+        disposables.clear()
+
+        val disposable = paginator.onBackpressureDrop().subscribe { pageIndex ->
+            getListingsUseCase.execute(
+                object : DisposableSingleObserver<List<Listing>>() {
+                    override fun onSuccess(list: List<Listing>) {
+                        if (!authStorageLocal.isValidateDefaultLocation() && list.isNullOrEmpty() && pageIndex == 1) {
+                            authStorageLocal.setValidateDefaultLocation(true)
+                            getDefaultPlace()
+                        } else {
+                            stopLoading()
+                            authStorageLocal.setValidateDefaultLocation(true)
+                            restartMetadata()
+                            lastLoadedPageIndex = pageIndex
+                            updateTopListingsVisibility()
+                            getRecentSearches()
+                            listings.postValue(list)
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        if (e is AuthFailedException) {
+                            signOut {
+                                authFailedData.call()
+                            }
+                        } else {
+                            stopLoading()
+                            authStorageLocal.setValidateDefaultLocation(true)
+                            if (pageIndex <= 1) {
+                                listings.postValue(emptyList())
+                                updateTopListingsVisibility()
+                                getRecentSearches()
+                            }
+                            dataError.postValue(e)
+                        }
+                    }
+
+                }, GetListingsUseCase.Params(
+                    lat = if (getIsGPSLocation() || getIsShowScreenMap()) location.latitude.toFloat() else null,
+                    lon = if (getIsGPSLocation() || getIsShowScreenMap()) location.longitude.toFloat() else null,
+                    queryText = if (location.address.isNullOrEmpty()) null else location.address,
+                    placeId = if (location is PlaceLocation) location.googlePlaceId else null,
+                    page = pageIndex,
+                    radius = if (getIsGPSLocation() || getIsShowScreenMap()) Constants.DEFAULT_RADIUS else null,
+                    sortType = SortType.getByPosition(sortingBy),
+                    filters = getFilters(),
+                    facilities = getFacilities(),
+                    pageSize = pageSize,
+                    department = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.department,
+                    province = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.province,
+                    district = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.district,
+                    address = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.address
+                )
+            )
+        }
+
+        val pageIndex = if (needToResetPaginator) {
+            needToResetPaginator = false
+            needToResetAdapter = true
+
+            Constants.FIRST_PAGE
+        } else {
+            lastLoadedPageIndex
+        }
+
+        paginator.onNext(pageIndex)
+        disposables.add(disposable)
+    }
+
+    fun getListingsFromMapWithCoordinate(location: ILocation, pageSize: Int = Constants.PER_PAGE) {
+        startLoading()
+        disposables.clear()
+        val disposable = paginator.onBackpressureDrop().subscribe { pageIndex ->
+            getListingsUseCase.execute(
+                object : DisposableSingleObserver<List<Listing>>() {
+                    override fun onSuccess(list: List<Listing>) {
+                        stopLoading()
+                        restartMetadata()
+                        setSearchWithSwipeMap(true)
+                        setIsGPSLocation(true)
+                        setSearchByBounds(false)
+                        lastLoadedPageIndex = pageIndex
+                        updateTopListingsVisibility()
+                        listings.postValue(list)
+                        getRecentSearches()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        if (e is AuthFailedException) {
+                            signOut {
+                                authFailedData.call()
+                            }
+                        } else {
+                            stopLoading()
+                            setSearchWithSwipeMap(false)
+                            if (pageIndex <= 1) {
+                                listings.postValue(emptyList())
+                                updateTopListingsVisibility()
+                                getRecentSearches()
+                            }
+                            //dataError.postValue(e)
+                        }
+                    }
+
+                }, GetListingsUseCase.Params(
+                    lat = if (getIsGPSLocation() || getSearchWithSwipeMap()) location.latitude.toFloat() else null,
+                    lon = if (getIsGPSLocation() || getSearchWithSwipeMap()) location.longitude.toFloat() else null,
+                    queryText = if (location.address.isNullOrEmpty()) null else location.address,
+                    placeId = if (location is PlaceLocation) location.googlePlaceId else null,
+                    page = pageIndex,
+                    radius = if (getIsGPSLocation() || getSearchWithSwipeMap()) Constants.DEFAULT_RADIUS else null,
+                    sortType = SortType.getByPosition(sortingBy),
+                    filters = getFilters(),
+                    facilities = getFacilities(),
+                    pageSize = pageSize,
+                    department = if (getIsGPSLocation() || getSearchWithSwipeMap()) null else location.department,
+                    province = if (getIsGPSLocation() || getSearchWithSwipeMap()) null else location.province,
+                    district = if (getIsGPSLocation() || getSearchWithSwipeMap()) null else location.district,
+                    address = if (getIsGPSLocation() || getSearchWithSwipeMap()) null else location.address
+                )
+            )
+        }
+
+        val pageIndex = if (needToResetPaginator) {
+            needToResetPaginator = false
+            needToResetAdapter = true
+
+            Constants.FIRST_PAGE
+        } else {
+            lastLoadedPageIndex
+        }
+
+        paginator.onNext(pageIndex)
+        disposables.add(disposable)
+    }
+
+    fun getListingsFromMapNoCoordinate(location: ILocation, pageSize: Int = Constants.PER_PAGE) {
+        startLoading()
+        disposables.clear()
+        val disposable = paginator.onBackpressureDrop().subscribe { pageIndex ->
+            getListingsUseCase.execute(
+                object : DisposableSingleObserver<List<Listing>>() {
+                    override fun onSuccess(list: List<Listing>) {
+                        stopLoading()
+                        restartMetadata()
+                        setSearchWithSwipeMap(false)
+                        setIsGPSLocation(false)
+                        setSearchByBounds(true)
+                        lastLoadedPageIndex = pageIndex
+                        updateTopListingsVisibility()
+                        listings.postValue(list)
+                        getRecentSearches()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        if (e is AuthFailedException) {
+                            signOut {
+                                authFailedData.call()
+                            }
+                        } else {
+                            stopLoading()
+                            setSearchWithSwipeMap(false)
+                            if (pageIndex <= 1) {
+                                listings.postValue(emptyList())
+                                updateTopListingsVisibility()
+                                getRecentSearches()
+                            }
+                            //dataError.postValue(e)
+                        }
+                    }
+
+                }, GetListingsUseCase.Params(
+                    lat = if (getIsGPSLocation()) location.latitude.toFloat() else null,
+                    lon = if (getIsGPSLocation()) location.longitude.toFloat() else null,
+                    queryText = if (location.address.isNullOrEmpty()) null else location.address,
+                    placeId = if (location is PlaceLocation) location.googlePlaceId else null,
+                    page = pageIndex,
+                    radius = if (getIsGPSLocation()) Constants.DEFAULT_RADIUS else null,
+                    sortType = SortType.getByPosition(sortingBy),
+                    filters = getFilters(),
+                    facilities = getFacilities(),
+                    pageSize = pageSize,
+                    department = if (getIsGPSLocation()) null else location.department,
+                    province = if (getIsGPSLocation()) null else location.province,
+                    district = if (getIsGPSLocation()) null else location.district,
+                    address = if (getIsGPSLocation()) null else location.address
+                )
+            )
+        }
+
+        val pageIndex = if (needToResetPaginator) {
+            needToResetPaginator = false
+            needToResetAdapter = true
+
+            Constants.FIRST_PAGE
+        } else {
+            lastLoadedPageIndex
+        }
+
+        paginator.onNext(pageIndex)
+        disposables.add(disposable)
+    }
+
+    fun getCurrentPlace() {
+        searchingByCurrentPlace = true
+        startLoading()
+        getCurrentPlaceUseCase.execute(object : DisposableSingleObserver<PlaceLocation>() {
+            override fun onSuccess(location: PlaceLocation) {
+                location.googlePlaceId = null
+                searchRadius = Constants.DEFAULT_RADIUS
+                setIsGPSLocation(true)
+                val placeLocation = updatePlaceLocation(location)
+                searchingByCurrentPlace = true
+                currentPlace.postValue(placeLocation)
+                locationLiveData.postValue(placeLocation)
+                onPlaceFoundEvent.postValue(placeLocation)
+            }
+
+            override fun onError(e: Throwable) {
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else {
+                    dataError.postValue(e)
+                    stopLoading()
+                }
+            }
+        }, Unit)
+    }
+
+    fun getLocationSelected(location: Location, mSearchingByCurrentPlace: Boolean) {
+        searchingByCurrentPlace = mSearchingByCurrentPlace
+        setIsGPSLocation(false)
+        setIsSearchByAutocomplete(true)
+        val mLocation = updateCoordinateLocation(location, listings.value)
+        locationLiveData.postValue(mLocation)
+        onPlaceFoundEvent.postValue(
+            PlaceLocation(
+                mLocation.latitude,
+                mLocation.longitude,
+                mLocation.altitude,
+                mLocation.address,
+                mLocation.viewport,
+                null,
+                mLocation.department,
+                mLocation.province,
+                mLocation.district,
+                mLocation.zipCode,
+                mLocation.country
+            )
+        )
+    }
+
+    fun clearSearchFromMap(isCleared: Boolean) {
+        clearSearchFromMapLiveData.postValue(isCleared)
+    }
+
+    fun notClearSearchFromMap() {
+        notClearSearchLiveData.postValue(true)
+    }
+
+    fun setIsGPSLocation(status: Boolean) {
+        isGPSLocationLiveData.value = status
+    }
+
+    fun getIsGPSLocation(): Boolean {
+        return isGPSLocationLiveData.value ?: false
+    }
+
+    fun setIsSearchByAutocomplete(status: Boolean) {
+        isSearchByAutocompleteLiveData.value = status
+    }
+
+    fun getIsSearchByAutocomplete(): Boolean {
+        return isSearchByAutocompleteLiveData.value ?: false
+    }
+
+    fun setIsShowScreenMap(status: Boolean) {
+        isShowScreenMapLiveData.value = status
+    }
+
+    fun getIsShowScreenMap(): Boolean {
+        return isShowScreenMapLiveData.value ?: false
+    }
+
+    fun setSearchWithSwipeMap(status: Boolean) {
+        isSearchWithSwipeLiveData.value = status
+    }
+
+    fun getSearchWithSwipeMap(): Boolean {
+        return isSearchWithSwipeLiveData.value ?: false
+    }
+
+    fun restartMetadata() {
+        metadataUpdateSubject.onNext(true)
+    }
+
+    fun setSearchByBounds(status: Boolean) {
+        isSearchByBoundsLiveData.value = status
+    }
+
+    fun getSearchByBounds(): Boolean {
+        return isSearchByBoundsLiveData.value ?: false
+    }
+
+    fun setIsForcedLocationGPS(status: Boolean) {
+        isForcedLocationGPSLiveData.value = status
+    }
+
+    fun getIsForcedLocationGPS(): Boolean {
+        return isForcedLocationGPSLiveData.value ?: false
     }
 }
 

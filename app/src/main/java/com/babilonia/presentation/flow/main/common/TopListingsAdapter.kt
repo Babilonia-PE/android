@@ -90,7 +90,7 @@ class TopListingsAdapter(private val listener: ListingActionsListener) :
                 }
 
                 itemView.setOnClickListener {
-                    listing.id?.let { id -> listener.onPreviewClicked(id) }
+                    listener.onPreviewClicked(listing)
                 }
             }
         }

@@ -22,6 +22,12 @@
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right"
             app:popUpTo="@+id/splashFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
@@ -35,4 +41,13 @@
             android:id="@+id/action_createProfileFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
     </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.babilonia.presentation.flow.auth.signup.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/sign_up_fragment" />
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.babilonia.presentation.flow.auth.login.LogInFragment"
+        android:label="LogInFragment" />
 </navigation>

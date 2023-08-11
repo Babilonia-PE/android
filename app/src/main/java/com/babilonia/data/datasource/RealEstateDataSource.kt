@@ -6,5 +6,5 @@ import io.reactivex.Observable
 
 interface RealEstateDataSource {
     //TODO Add and use some kind of model which will describe the real estate object instead of ILocation
-    fun getRealEstateList(currentLocation: ILocation): Observable<List<Listing>>
+    fun getRealEstateList(currentLocation: ILocation, filtersMap: Map<String, String>): Observable<List<Listing>>
 }

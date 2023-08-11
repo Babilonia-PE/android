@@ -27,6 +27,7 @@ import com.babilonia.presentation.extension.getLayoutRes
 import com.babilonia.presentation.flow.auth.AuthActivity
 import com.babilonia.presentation.flow.main.MainActivity
 import com.babilonia.presentation.flow.main.publish.common.BaseCreateListingFragment
+import com.facebook.appevents.AppEventsLogger
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import java.lang.reflect.ParameterizedType
@@ -41,6 +42,9 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : DaggerFra
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     protected lateinit var binding: B
+
+    @Inject
+    lateinit var fbLogger: AppEventsLogger
 
     abstract fun viewCreated()
 
@@ -101,7 +105,11 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : DaggerFra
         viewModel.dataError.observe(this, Observer {
             when (it) {
                 is NoNetworkException, is ServerUnreachableException -> showError(getString(R.string.no_internet_connection))
-                is RefreshTokenException -> viewModel.signOut(true)
+                is RefreshTokenException -> {
+                    context?.let { _context ->
+                        viewModel.signOut(true, _context)
+                    }
+                }
                 else -> showError(it.localizedMessage)
             }
 
@@ -113,6 +121,12 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : DaggerFra
         viewModel.navigationCommands.removeObservers(this)
         viewModel.dataError.removeObservers(this)
         viewModel.messageEvent.removeObservers(this)
+    }
+
+    protected fun showSnackbar(message: String) {
+        view?.let {
+            Snackbar.make(it, message, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     protected fun showSnackbar(message: Int) {
@@ -168,6 +182,13 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : DaggerFra
             val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    protected fun requireAuth() {
+        val intent = Intent(activity?.applicationContext, AuthActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        activity?.finish()
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -14,11 +14,16 @@ import java.net.UnknownHostException
 //Flowable
 fun <T> Flowable<T>.mapNetworkErrors(): Flowable<T> =
     this.onErrorResumeNext { error: Throwable ->
-        when (error) {
-            is SocketTimeoutException -> Flowable.error(NoNetworkException(error))
-            is UnknownHostException -> Flowable.error(ServerUnreachableException(error))
-            is HttpException -> Flowable.error(HttpCallFailureException(error))
-            else -> Flowable.error(error)
+        if (error is HttpException && error.code() == 401) {
+            val msg = mapHttpToBaseError(error)?.getMessage() ?: error.message()
+            Flowable.error(AuthFailedException(msg))
+        } else {
+            when (error) {
+                is SocketTimeoutException -> Flowable.error(NoNetworkException(error))
+                is UnknownHostException -> Flowable.error(ServerUnreachableException(error))
+                is HttpException -> Flowable.error(HttpCallFailureException(error))
+                else -> Flowable.error(error)
+            }
         }
     }
 
@@ -37,11 +42,16 @@ inline fun <T> Flowable<T>.mapErrors(): Flowable<T> =
 //Single
 fun <T> Single<T>.mapNetworkErrors(): Single<T> =
     this.onErrorResumeNext { error ->
-        when (error) {
-            is SocketTimeoutException -> Single.error(NoNetworkException(error))
-            is UnknownHostException -> Single.error(ServerUnreachableException(error))
-            is HttpException -> Single.error(error)
-            else -> Single.error(error)
+        if (error is HttpException && error.code() == 401) {
+            val msg = mapHttpToBaseError(error)?.getMessage() ?: error.message()
+            Single.error(AuthFailedException(msg))
+        } else {
+            when (error) {
+                is SocketTimeoutException -> Single.error(NoNetworkException(error))
+                is UnknownHostException -> Single.error(ServerUnreachableException(error))
+                is HttpException -> Single.error(error)
+                else -> Single.error(error)
+            }
         }
     }
 
@@ -61,15 +71,21 @@ fun <T> Single<T>.mapErrors(): Single<T> =
                 Single.error<T>(error)
             }
         }
+
 //Completable
 
 fun Completable.mapNetworkErrors(): Completable =
     this.onErrorResumeNext { error ->
-        when (error) {
-            is SocketTimeoutException -> Completable.error(NoNetworkException(error))
-            is UnknownHostException -> Completable.error(ServerUnreachableException(error))
-            is HttpException -> Completable.error(HttpCallFailureException(error))
-            else -> Completable.error(error)
+        if (error is HttpException && error.code() == 401) {
+            val msg = mapHttpToBaseError(error)?.getMessage() ?: error.message()
+            Completable.error(AuthFailedException(msg))
+        } else {
+            when (error) {
+                is SocketTimeoutException -> Completable.error(NoNetworkException(error))
+                is UnknownHostException -> Completable.error(ServerUnreachableException(error))
+                is HttpException -> Completable.error(HttpCallFailureException(error))
+                else -> Completable.error(error)
+            }
         }
     }
 

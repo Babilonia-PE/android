@@ -13,15 +13,26 @@ class GetListingsMetadataUseCase @Inject constructor(private val listingReposito
     ObservableUseCase<ListingsMetadata, GetListingsMetadataUseCase.Params>() {
     override fun buildUseCaseObservable(params: Params): Observable<ListingsMetadata> {
         return listingRepository.getListingsMetadata(
-            params.lat, params.lon, params.radius, params.filters, params.facilities
-        )
+            params.lat,
+            params.lon,
+            params.radius,
+            params.filters,
+            params.facilities,
+            params.department,
+            params.province,
+            params.district,
+            params.address)
     }
 
     class Params(
-        val lat: Float,
-        val lon: Float,
-        val radius: Int,
+        val lat: Float?,
+        val lon: Float?,
+        val radius: Int?,
         val filters: List<Filter>,
-        val facilities: List<Facility>
+        val facilities: List<Facility>,
+        val department: String?,
+        val province: String?,
+        val district: String?,
+        val address: String?
     )
 }

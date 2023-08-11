@@ -80,12 +80,17 @@ class ListingStorageLocal @Inject constructor(private val config: RealmConfigura
         }
     }
 
-    override fun getMyListings(): Single<List<ListingDto>> {
+    override fun getMyListings(state: String): Single<List<ListingDto>> {
         return Single.create<List<ListingDto>> { single ->
             Realm.getInstance(config)
                 .use {
                     val userId = it.where(UserDto::class.java).findFirst()?.id ?: EmptyConstants.EMPTY_LONG
-                    val listingDto = it.where(ListingDto::class.java).equalTo("user.id", userId).findAll()
+                    val listingDto = it.where(ListingDto::class.java)
+                        .equalTo("user.id", userId)
+                        .findAll()
+                        .where()
+                        .equalTo("publishState", state)
+                        .findAll()
                     if (listingDto != null) {
                         single.onSuccess(it.copyFromRealm(listingDto))
                     }
@@ -93,11 +98,16 @@ class ListingStorageLocal @Inject constructor(private val config: RealmConfigura
         }
     }
 
-    override fun getDraftListings(): Single<List<ListingDto>> {
+    override fun getDraftListings(state: String): Single<List<ListingDto>> {
         return Single.create<List<ListingDto>> { single ->
             Realm.getInstance(config)
                 .use {
-                    val listingDto = it.where(ListingDto::class.java).equalTo("draft", true).findAll()
+                    val listingDto = it.where(ListingDto::class.java)
+                        .equalTo("draft", true)
+                        .findAll()
+                        .where()
+                        .equalTo("publishState", state)
+                        .findAll()
                     if (listingDto != null) {
                         single.onSuccess(it.copyFromRealm(listingDto))
                     } else {

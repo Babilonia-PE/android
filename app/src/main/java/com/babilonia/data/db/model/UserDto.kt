@@ -8,8 +8,7 @@ open class UserDto : RealmObject() {
     @PrimaryKey
     var id: Long? = null
     var phoneNumber: String? = null
-    var firstName: String? = null
-    var lastName: String? = null
+    var fullName: String? = null
     var avatar: ThumbsDto? = null
     var email: String? = null
 }

@@ -26,12 +26,14 @@ import com.babilonia.R
 import com.babilonia.databinding.CreateProfileFragmentBinding
 import com.babilonia.presentation.base.BaseFragment
 import com.babilonia.presentation.flow.main.MainActivity
+import com.babilonia.presentation.utils.PathFinder
 import com.babilonia.presentation.utils.RealPathUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.marchinram.rxgallery.RxGallery
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.yalantis.ucrop.UCrop
@@ -77,7 +79,16 @@ class CreateProfileFragment : BaseFragment<CreateProfileFragmentBinding, CreateP
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             activity?.finish()
-        })}
+        })
+        viewModel.updateUserSuccessLiveData.observe(this, Observer {
+            fbLogger.logEvent("CompleteRegistration")
+        })
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
+        })
+    }
 
     override fun stopListenToEvents() {
         super.stopListenToEvents()
@@ -85,13 +96,22 @@ class CreateProfileFragment : BaseFragment<CreateProfileFragmentBinding, CreateP
         viewModel.userLiveData.removeObservers(this)
         viewModel.photoUploadProgressLiveData.removeObservers(this)
         viewModel.navigateToRootLiveData.removeObservers(this)
+        viewModel.authFailedData.removeObservers(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_FROM_GALLERY) {
             data?.data?.let {
-                cropImage(RealPathUtil.getRealPathFromURI(requireContext(), it))
+                //cropImage(RealPathUtil.getRealPathFromURI(requireContext(), it))
+                var realPath = PathFinder.getFilePathV1(requireActivity(), it)
+                if(realPath==null) realPath = PathFinder.getFilePathV2(requireActivity(), it)
+                realPath?.let{ path ->
+                    cropImage(path)
+                }?:run{
+                    FirebaseCrashlytics.getInstance().setCustomKey("ERROR:", "ERROR PATH")
+                    showSnackbar(R.string.image_could_not_be_obtained)
+                }
             }
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             currentPhotoPath?.let {
@@ -168,12 +188,18 @@ class CreateProfileFragment : BaseFragment<CreateProfileFragmentBinding, CreateP
 
     @SuppressLint("CheckResult")
     private fun pickImageFromGallery() {
-        RxGallery.gallery(requireActivity(), false, RxGallery.MimeType.IMAGE)
+        val intent = Intent()
+        intent.action = Intent.ACTION_OPEN_DOCUMENT //ACTION_GET_CONTENT
+        intent.type = Constants.TYPE_IMAGE
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        val chooser = Intent.createChooser(intent, getString(R.string.select_an_image))
+        startActivityForResult(chooser, PICK_IMAGE_FROM_GALLERY)
+        /*RxGallery.gallery(requireActivity(), false, RxGallery.MimeType.IMAGE)
             .subscribe(
                 { uris ->
                     cropImage(RealPathUtil.getRealPathFromURI(requireContext(), uris.first()))
                 },
-                { throwable -> Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show() })
+                { throwable -> Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show() })*/
     }
 
     @SuppressLint("CheckResult")
@@ -188,29 +214,12 @@ class CreateProfileFragment : BaseFragment<CreateProfileFragmentBinding, CreateP
     }
 
     private fun setErrorListeners() {
-        binding.etFirstName.addTextChangedListener(object : TextWatcher {
+        binding.etFullName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s?.trim().isNullOrEmpty()) {
-                    binding.tyFirstName.error = getString(R.string.first_name_empty)
+                    binding.tyFullName.error = getString(R.string.first_name_empty)
                 } else {
-                    binding.tyFirstName.error = null
-                }
-                viewModel.updateCreateProfileValidator.notifyChange()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
-
-        binding.etLastName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.trim().isNullOrEmpty()) {
-                    binding.tyLastName.error = getString(R.string.last_name_empty)
-                } else {
-                    binding.tyLastName.error = null
+                    binding.tyFullName.error = null
                 }
                 viewModel.updateCreateProfileValidator.notifyChange()
             }
@@ -251,13 +260,17 @@ class CreateProfileFragment : BaseFragment<CreateProfileFragmentBinding, CreateP
     private fun setToolbar() {
         binding.toolbar.setNavigationIcon(R.drawable.ic_close_listing)
         binding.toolbar.setNavigationOnClickListener {
-            viewModel.signOut(true)
+            context?.let { _context ->
+                viewModel.signOut(true, _context)
+            }
         }
     }
 
     override fun setOnBackPressedDispatcher() {
         requireActivity().onBackPressedDispatcher.addCallback {
-            viewModel.signOut(true)
+            context?.let { _context ->
+                viewModel.signOut(true, _context)
+            }
         }
     }
 

@@ -41,6 +41,10 @@ fun View.invisible() {
     this.visibility = View.GONE
 }
 
+fun View.gone() {
+    this.visibility = View.GONE
+}
+
 fun View.visibleOrGone(isVisible: Boolean) = if (isVisible) visible() else invisible()
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View =
@@ -115,7 +119,7 @@ fun Fragment.hideKeyboard() {
 }
 
 fun Activity.hideKeyboard() {
-    hideKeyboard(if (currentFocus == null) View(this) else currentFocus)
+    if (currentFocus == null) View(this) else currentFocus?.let { hideKeyboard(it) }
 }
 
 fun Context?.hideKeyboard(view: View) {
@@ -153,4 +157,3 @@ open class ConvertableVar<T>(initialValue: T) : ReadWriteProperty<Any?, T> {
         onChange(property, oldValue, value)
     }
 }
-

@@ -11,6 +11,7 @@ import com.babilonia.presentation.flow.main.privacy.PrivacyFragment
 import com.babilonia.presentation.flow.main.profile.ProfileFragment
 import com.babilonia.presentation.flow.main.profile.account.AccountFragment
 import com.babilonia.presentation.flow.main.profile.email.ProfileEmailFragment
+import com.babilonia.presentation.flow.main.profile.phone.ProfilePhoneFragment
 import com.babilonia.presentation.flow.main.profile.username.UserNameProfileFragment
 import com.babilonia.presentation.flow.main.publish.advanced.AdvancedDetailsFragment
 import com.babilonia.presentation.flow.main.publish.createlisting.CreateListingContainerFragment
@@ -86,6 +87,9 @@ abstract class MainActivityFragmentsModule {
 
     @ContributesAndroidInjector
     abstract fun contributeProfileEmailFragment(): ProfileEmailFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeProfilePhoneFragment(): ProfilePhoneFragment
 
     @ContributesAndroidInjector
     abstract fun contributeProfileUserNameFragment(): UserNameProfileFragment

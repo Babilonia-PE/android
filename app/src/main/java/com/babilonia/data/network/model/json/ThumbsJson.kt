@@ -6,12 +6,10 @@ import com.google.gson.annotations.SerializedName
 class ThumbsJson {
     @SerializedName("url")
     var url: String? = null
-    @SerializedName("thumb_min")
+    @SerializedName("url_min")
     var thumbMin: String? = null
-    @SerializedName("thumb_middle")
+    @SerializedName("url_middle")
     var thumbMiddle: String? = null
-    @SerializedName("thumb_large")
+    @SerializedName("url_large")
     var thumbLarge: String? = null
-
-
 }

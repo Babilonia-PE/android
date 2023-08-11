@@ -13,11 +13,30 @@ class ListingActionUseCase @Inject constructor(private val listingRepository: Li
     CompletableUseCase<ListingActionUseCase.Params>() {
     override fun buildUseCaseCompletable(params: Params): Completable {
         return if (params.mode == ListingActionMode.SET) {
-            listingRepository.setListingAction(params.id.toString(), params.action.name.toLowerCase(Locale.ROOT))
+            listingRepository.setListingAction(
+                params.id ?: 0,
+                params.action.name.toLowerCase(Locale.ROOT),
+                params.ipAddress,
+                params.userAgent,
+                params.signProvider
+            )
         } else {
-            listingRepository.deleteListingAction(params.id.toString(), params.action.name.toLowerCase(Locale.ROOT))
+            listingRepository.deleteListingAction(
+                params.id ?: 0,
+                params.action.name.toLowerCase(Locale.ROOT),
+                params.ipAddress,
+                params.userAgent,
+                params.signProvider
+            )
         }
     }
 
-    class Params(val id: Long?, val action: ListingAction, val mode: ListingActionMode)
+    class Params(
+        val id: Long?,
+        val action: ListingAction,
+        val mode: ListingActionMode,
+        val ipAddress: String,
+        val userAgent: String,
+        val signProvider: String
+    )
 }

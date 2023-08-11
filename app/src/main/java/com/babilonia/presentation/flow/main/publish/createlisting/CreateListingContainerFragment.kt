@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.babilonia.R
 import com.babilonia.databinding.CreateListingContainerFragmentBinding
+import com.babilonia.domain.model.Contact
 import com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode
 import com.babilonia.presentation.flow.main.publish.advanced.AdvancedDetailsFragment
 import com.babilonia.presentation.flow.main.publish.common.BaseCreateListingFragment
@@ -40,6 +41,11 @@ class CreateListingContainerFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedViewModel.mode = args.mode
+
+ //       binding.viewModelContainer = viewModel
+ //       binding.lifecycleOwner = this.viewLifecycleOwner
+ //       binding.executePendingBindings()
+
         when (args.mode) {
             NewListingOpenMode.DRAFT -> viewModel.getListingsById(args.id)
             NewListingOpenMode.EDIT -> viewModel.getListingsById(args.id, ListingDisplayMode.UNPUBLISHED)
@@ -47,13 +53,15 @@ class CreateListingContainerFragment :
         }
     }
 
-
     override fun viewCreated() {
         initToolbar()
         initViewPager()
         initClicks()
         setupPageChanges()
         binding.model = sharedViewModel
+
+        binding.viewModelContainer = viewModel
+
         setOnBackPressedDispatcher()
     }
 
@@ -67,6 +75,16 @@ class CreateListingContainerFragment :
     override fun onResume() {
         super.onResume()
         shouldSaveAsDraft = true
+
+        viewModel.userLiveData.observe(this, Observer {
+            sharedViewModel.contact.value = Contact(it.fullName, it.email, it.phoneNumber)
+        })
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        viewModel.userLiveData.removeObservers(this)
     }
 
     override fun setOnBackPressedDispatcher() {
@@ -111,6 +129,13 @@ class CreateListingContainerFragment :
         viewModel.gotListingEvent.observe(this, Observer {
             sharedViewModel.status = it.status
             sharedViewModel.setDraft(it, args.mode)
+            if (it.contact == null || it.contact?.contactName == null || it.contact?.contactEmail == null || it.contact?.contactPhone == null)
+                viewModel.getUser()
+        })
+        viewModel.authFailedData.observe(this, Observer {
+            context?.let {
+                requireAuth()
+            }
         })
     }
 
@@ -120,6 +145,7 @@ class CreateListingContainerFragment :
         viewModel.imageUploadedEvent.removeObservers(this)
         viewModel.loadingEvent.removeObservers(this)
         viewModel.gotListingEvent.removeObservers(this)
+        viewModel.authFailedData.removeObservers(this)
     }
 
     override fun onClick(v: View) {
@@ -139,6 +165,7 @@ class CreateListingContainerFragment :
             } else {
                 val params = sharedViewModel.mapLiveDataToParams()
                 if (args.mode == NewListingOpenMode.EDIT) {
+                    params.status = null
                     viewModel.updateListing(params)
                 } else {
                     shouldSaveAsDraft = false

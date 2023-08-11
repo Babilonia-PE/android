@@ -36,7 +36,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tyFirstName"
+            android:id="@+id/tyFullName"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,39 +50,13 @@
             app:layout_constraintTop_toBottomOf="@+id/appBar">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFirstName"
+                android:id="@+id/etFullName"
                 style="@style/createListingInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName|textCapWords"
                 android:maxLength="20"
-                android:text="@={model.userLiveData.firstName}"
-                tools:text="test@test.com" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tyLastName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/create_listing_margin_left_right"
-            android:layout_marginTop="@dimen/create_listing_margin_left_right"
-            android:layout_marginEnd="@dimen/create_listing_margin_left_right"
-            android:hint="@string/last_name"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tyFirstName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLastName"
-                style="@style/createListingInputStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLength="20"
-                android:text="@={model.userLiveData.lastName}"
+                android:text="@={model.userLiveData.fullName}"
                 tools:text="test@test.com" />
 
         </com.google.android.material.textfield.TextInputLayout>

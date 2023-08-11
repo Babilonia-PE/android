@@ -1,5 +1,6 @@
 package com.babilonia.presentation.flow.main.privacy
 
+import android.util.Log
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import androidx.lifecycle.Observer
@@ -26,10 +27,20 @@ class PrivacyFragment : BaseFragment<FragmentPrivacyBinding, PrivacyViewModel>()
     private fun setWebViewUrl(url: String) {
         binding.wvPrivacy.apply {
             isVerticalScrollBarEnabled = true
-            settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+//            settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+            settings.javaScriptEnabled = true
+            settings.setSupportZoom(true)
             webViewClient = WebViewClient()
 
-            loadUrl(url)
+            var finalUrl = url
+            if (finalUrl.endsWith(".pdf"))
+                finalUrl = "https://docs.google.com/gview?embedded=true&url=$finalUrl"
+
+            try {
+                loadUrl(finalUrl)
+            } catch (e: Exception) {
+                Log.e("TAG", "setWebViewUrl: ", e)
+            }
         }
     }
 

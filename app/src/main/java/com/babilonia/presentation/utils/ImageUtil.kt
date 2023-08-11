@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.babilonia.Constants
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -86,6 +87,7 @@ object ImageUtil {
         try {
             parcelFileDescriptor = context.contentResolver.openFileDescriptor(Uri.fromFile(File(sourceUri.path)), "r")
         } catch (e: FileNotFoundException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Timber.e(e)
             return null
         }
@@ -101,6 +103,7 @@ object ImageUtil {
         try {
             bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options)
         } catch (exception: OutOfMemoryError) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
             exception.printStackTrace()
         }
 
@@ -124,6 +127,7 @@ object ImageUtil {
                     bmp.height, matrix, true
                 )
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
         }

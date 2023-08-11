@@ -9,9 +9,10 @@ import java.util.*
 open class ListingDto : RealmObject() {
     @PrimaryKey
     var id: Long = UUID.randomUUID().hashCode().toLong()
+    var url: String? = null
     var listingType: String? = null
     var propertyType: String? = null
-    var price: Int? = null
+    var price: Long? = null
     var description: String? = null
     var bathroomsCount: Int? = null
     var bedroomsCount: Int? = null
@@ -30,6 +31,7 @@ open class ListingDto : RealmObject() {
     var imageIds: RealmList<Int> = RealmList()
     var primaryImageId: Int? = null
     var user: UserDto? = null
+    var contact: ContactDto? = null
 
     var facilities: RealmList<FacilityDto> = RealmList()
     var advancedDetails: RealmList<FacilityDto> = RealmList()
@@ -43,6 +45,7 @@ open class ListingDto : RealmObject() {
 
     var adPlan: String? = null
     var publishState: String? = null
+    var publisherRole: String? = null
     var createdAt: String? = null
     var updatedAt: String? = null
     var adPurchasedAt: String? = null

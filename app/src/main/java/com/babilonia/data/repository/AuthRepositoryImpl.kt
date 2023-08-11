@@ -4,13 +4,13 @@ import com.babilonia.data.datasource.AuthDataSourceLocal
 import com.babilonia.data.datasource.AuthDataSourceRemote
 import com.babilonia.data.db.model.TokensDto
 import com.babilonia.data.mapper.ConfigMapper
+import com.babilonia.data.mapper.ListingImageMapper
 import com.babilonia.data.mapper.UserMapper
 import com.babilonia.data.network.error.mapErrors
 import com.babilonia.data.network.error.mapNetworkErrors
 import com.babilonia.data.network.model.AuthRequest
-import com.babilonia.data.network.model.json.UpdateUserJson
-import com.babilonia.domain.model.AppConfig
-import com.babilonia.domain.model.User
+import com.babilonia.data.network.model.BaseResponse
+import com.babilonia.domain.model.*
 import com.babilonia.domain.model.enums.LoginStatus
 import com.babilonia.domain.repository.AuthRepository
 import io.reactivex.Completable
@@ -23,7 +23,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val authDataSourceRemote: AuthDataSourceRemote,
     private val authDataSourceLocal: AuthDataSourceLocal,
     private val userMapper: UserMapper,
-    private val configMapper: ConfigMapper
+    private val configMapper: ConfigMapper,
+    private val listingImageMapper: ListingImageMapper
 ) :
     AuthRepository {
     override fun getAppConfig(): Single<AppConfig> {
@@ -40,23 +41,32 @@ class AuthRepositoryImpl @Inject constructor(
         return authDataSourceLocal.signOut()
     }
 
-    override fun updateUser(user: User): Single<User> {
-        val userJson = UpdateUserJson(user.phoneNumber, user.firstName, user.lastName, user.email)
-        return authDataSourceRemote.updateUser(userJson)
+    override fun deleteAccount(): Single<BaseResponse<Any>> {
+        return authDataSourceRemote.deleteAccount()
+    }
+
+    override fun updateUser(user: User, password: String?, photoId: Int?): Single<User> {
+        return authDataSourceRemote.updateUser(
+            user.fullName ?: "",
+            user.email ?: "",
+            user.phoneNumber ?: "",
+            password,
+            photoId
+        )
             .mapNetworkErrors()
             .mapErrors()
             .doOnSuccess { authDataSourceLocal.saveUser(userMapper.mapRemoteToLocal(it)) }
             .map { userMapper.mapRemoteToDomain(it) }
     }
 
-    override fun uploadUserAvatar(
-        avatar: String, firstName: String, lastName: String, email: String
-    ): Single<User> {
-        return authDataSourceRemote.uploadUserAvatar(avatar, firstName, lastName, email)
+    override fun uploadImages(
+        image: String, type: String
+    ): Single<List<ListingImage>> {
+        return authDataSourceRemote.uploadImages(image, type)
             .mapNetworkErrors()
             .mapErrors()
-            .doOnSuccess { authDataSourceLocal.saveUser(userMapper.mapRemoteToLocal(it)) }
-            .map { userMapper.mapRemoteToDomain(it) }
+            //.doOnSuccess { authDataSourceLocal.saveUser(userMapper.mapRemoteToLocal(it)) }
+            .map { it.map { listingImageMapper.mapRemoteToDomain(it) } }
     }
 
     override fun getUser(): Flowable<User> {
@@ -70,6 +80,14 @@ class AuthRepositoryImpl @Inject constructor(
             .mapErrors()
     }
 
+    override fun getRemoteUser(): Single<User> {
+        return authDataSourceRemote.getUser()
+            .mapNetworkErrors()
+            .mapErrors()
+            .doOnSuccess { authDataSourceLocal.saveUser(userMapper.mapRemoteToLocal(it)) }
+            .map { userMapper.mapRemoteToDomain(it) }
+    }
+
     override fun authenticate(code: String): Single<User> {
         return authDataSourceRemote.authenticate(AuthRequest(code))
             .doOnSuccess {
@@ -81,7 +99,74 @@ class AuthRepositoryImpl @Inject constructor(
             .mapNetworkErrors()
             .mapErrors()
             .map { userMapper.mapRemoteToDomain(it.user) }
+    }
 
+    override fun signUp(signUp: SignUp): Single<User> {
+        return authDataSourceRemote.signUp(
+            signUp.fullName,
+            signUp.email,
+            signUp.password,
+            signUp.phoneNumber,
+            signUp.ipa,
+            signUp.ua,
+            signUp.sip
+        )
+            .doOnSuccess {
+                val user = User(
+                    it.userId,
+                    "",
+                    signUp.fullName,
+                    null,
+                    signUp.email
+                )
+                val tokenDto = TokensDto(it.authorization, "")
+                authDataSourceLocal.saveTokens(tokenDto)
+                authDataSourceLocal.saveUser(userMapper.mapDomainToLocal(user))
+            }
+            .mapNetworkErrors()
+            .mapErrors()
+            .map {
+                User(
+                    it.userId,
+                    signUp.phoneNumber,
+                    signUp.fullName,
+                    null,
+                    signUp.email
+                )
+            }
+    }
+
+    override fun logIn(logIn: LogIn): Single<User> {
+        return authDataSourceRemote.logIn(
+            logIn.email,
+            logIn.password,
+            logIn.ipa,
+            logIn.ua,
+            logIn.sip
+        )
+            .doOnSuccess {
+                val user = User(
+                    it.tokens.userId,
+                    null,
+                    "",
+                    null,
+                    logIn.email
+                )
+                val tokenDto = TokensDto("${it.tokens.type} ${it.tokens.authentication}", "")
+                authDataSourceLocal.saveTokens(tokenDto)
+                authDataSourceLocal.saveUser(userMapper.mapDomainToLocal(user))
+            }
+            .mapNetworkErrors()
+            .mapErrors()
+            .map {
+                User(
+                    it.tokens.userId,
+                    null,
+                    "",
+                    null,
+                    logIn.email
+                )
+            }
     }
 
     override fun isLoggedIn(): Single<LoginStatus> {

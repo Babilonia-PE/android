@@ -12,7 +12,7 @@ class TokenInterceptor @Inject constructor(private val authStorageLocal: AuthDat
         val builder = request.newBuilder()
         val token = authStorageLocal.getToken()
         if (token != null) {
-            builder.header("Authorization", "Token token=$token")
+            builder.header("Authorization", "$token")
         }
         return chain.proceed(builder.build())
     }

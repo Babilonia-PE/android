@@ -1,11 +1,7 @@
 package com.babilonia.data.di
 
-
 import com.babilonia.BuildConfig
-import com.babilonia.data.network.LocaleInterceptor
-import com.babilonia.data.network.TokenAuthenticator
-import com.babilonia.data.network.TokenInterceptor
-import com.babilonia.data.network.TokenServiceHolder
+import com.babilonia.data.network.*
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -15,8 +11,8 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
-
 
 /**
  * Module for network
@@ -68,15 +64,14 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideGsonConverterFactor(): GsonConverterFactory {
-        val gson = GsonBuilder()
-            .create()
+        val gson = GsonBuilder().create()
         return GsonConverterFactory.create(gson)
     }
 
-
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient, gsonConverterFactory: GsonConverterFactory): Retrofit {
+    @Named(BuildConfig.BASE_URL)
+    fun provideRetrofit1(okHttpClient: OkHttpClient, gsonConverterFactory: GsonConverterFactory): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -85,5 +80,37 @@ class NetworkModule {
             .build()
     }
 
+    @Singleton
+    @Provides
+    @Named(BuildConfig.BASE_URL_SERVICES)
+    fun provideRetrofit2(@Named(BuildConfig.BASE_URL_SERVICES) okHttpClient: OkHttpClient, gsonConverterFactory: GsonConverterFactory): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL_SERVICES)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+    }
 
+    @Singleton
+    @Provides
+    @Named(BuildConfig.BASE_URL_SERVICES)
+    fun provideHttpClientV2(
+        loggingInterceptor: HttpLoggingInterceptor,
+        tokenInterceptor: TokenInterceptor,
+        localeInterceptor: LocaleInterceptor
+    ): OkHttpClient {
+        val httpClient = OkHttpClient.Builder()
+            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .addInterceptor(tokenInterceptor)
+            .addInterceptor(localeInterceptor)
+            .followRedirects(false)
+
+        if (BuildConfig.DEBUG) {
+            httpClient.addInterceptor(loggingInterceptor)
+        }
+        return httpClient.build()
+    }
 }

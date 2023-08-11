@@ -34,6 +34,6 @@ class ListingImageMapper @Inject constructor() : Mapper<ImageDto, ImageJson, Lis
     override fun mapLocalToDomain(from: ImageDto) = ListingImage(from.photo?.thumbMiddle, false, from.id)
 
     override fun mapRemoteToDomain(from: ImageJson): ListingImage =
-        ListingImage(from.photo?.thumbMiddle, false, from.id)
+        ListingImage(from.photo?.url, false, from.id)
 
 }

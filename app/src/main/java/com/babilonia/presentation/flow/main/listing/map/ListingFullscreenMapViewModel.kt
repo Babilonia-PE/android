@@ -6,6 +6,7 @@ import com.babilonia.Constants
 import com.babilonia.android.exceptions.GpsUnavailableException
 import com.babilonia.data.model.DataResult
 import com.babilonia.data.model.geo.LocationRequest
+import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.Location
 import com.babilonia.domain.model.geo.ILocation
@@ -22,7 +23,7 @@ class ListingFullscreenMapViewModel @Inject constructor(
     private val getListingUseCase: GetListingUseCase,
     private val locationUseCase: CurrentLocationSubscriberUseCase
 ) : BaseViewModel() {
-
+    val authFailedData = SingleLiveEvent<Unit>()
     private val listingLiveData = MutableLiveData<Listing>()
     private val gpsUnavailableErrorLiveData = SingleLiveEvent<Unit>()
     var currentLocation: ILocation = Location(Constants.LIMA_LAT, Constants.LIMA_LON)
@@ -37,7 +38,12 @@ class ListingFullscreenMapViewModel @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                dataError.postValue(e)
+                if (e is AuthFailedException) {
+                    signOut {
+                        authFailedData.call()
+                    }
+                } else
+                    dataError.postValue(e)
             }
         }, GetListingUseCase.Params(id, ListingDisplayMode.IMPROPER_LISTING, true))
     }

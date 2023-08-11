@@ -53,31 +53,27 @@ class AppSystemProvider @Inject constructor(val context: Context) : SystemProvid
         val subject = PublishSubject.create<Location>()
         val locationListener = getLocationListener(subject)
         return subject.doOnSubscribe {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                interval,
-                minDistance,
-                locationListener
-            )
+            locationListener?.let { it1 ->
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    interval,
+                    minDistance,
+                    it1
+                )
+            }
         }.doOnDispose {
-            locationManager.removeUpdates(locationListener)
+            locationListener?.let { locationManager.removeUpdates(it) }
         }
             .subscribeOn(AndroidSchedulers.mainThread())
     }
 
     private fun getLocationListener(subject: PublishSubject<Location>): LocationListener? {
         return object : LocationListener {
-                override fun onLocationChanged(location: Location?) {
-                    location?.let { subject.onNext(it) }
+                override fun onLocationChanged(location: Location) {
+                   subject.onNext(location)
                 }
 
                 override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                }
-
-                override fun onProviderEnabled(provider: String?) {
-                }
-
-                override fun onProviderDisabled(provider: String?) {
                 }
             }
     }

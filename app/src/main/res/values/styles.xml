@@ -194,4 +194,14 @@
     <style name="CheckboxCustomStyle" parent="Theme.AppCompat">
         <item name="android:textColorSecondary">@color/white</item>
     </style>
+
+    <style name="ProgressPrimary">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="elevation">3dp</item>
+    </style>
+
+    <style name="ErrorAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorError</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
