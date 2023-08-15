@@ -91,7 +91,7 @@ class ListingStorageRemote @Inject constructor(
     }
 
     override fun getFavouriteListings(): Single<List<ListingJson>> {
-        return newListingsService.getFavouriteListings().map { it.data.records }
+        return newListingsService.getFavouriteListings().map { it.data.records.listings }
     }
 
     override fun setListingAction(
@@ -178,9 +178,9 @@ class ListingStorageRemote @Inject constructor(
         request.imageIds = listingDto.imageIds
         request.primaryImageId = listingDto.primaryImageId
         request.user = listingDto.user
-        request.contactName = listingDto.contact?.contactName
-        request.contactEmail = listingDto.contact?.contactEmail
-        request.contactPhone = listingDto.contact?.contactPhone
+        request.contactName = listingDto.contacts.first().contactName
+        request.contactEmail = listingDto.contacts.first().contactEmail
+        request.contactPhone = listingDto.contacts.first().contactPhone
         request.facilities = listingDto.facilities
         request.advancedDetails = listingDto.advancedDetails
         request.images = listingDto.images

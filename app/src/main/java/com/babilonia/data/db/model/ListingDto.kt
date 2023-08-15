@@ -9,7 +9,7 @@ import java.util.*
 open class ListingDto : RealmObject() {
     @PrimaryKey
     var id: Long = UUID.randomUUID().hashCode().toLong()
-    var url: String? = null
+    var url: UrlDto? = null
     var listingType: String? = null
     var propertyType: String? = null
     var price: Long? = null
@@ -31,7 +31,7 @@ open class ListingDto : RealmObject() {
     var imageIds: RealmList<Int> = RealmList()
     var primaryImageId: Int? = null
     var user: UserDto? = null
-    var contact: ContactDto? = null
+    var contacts: RealmList<ContactDto> = RealmList()
 
     var facilities: RealmList<FacilityDto> = RealmList()
     var advancedDetails: RealmList<FacilityDto> = RealmList()

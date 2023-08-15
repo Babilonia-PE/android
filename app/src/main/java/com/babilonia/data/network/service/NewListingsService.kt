@@ -17,7 +17,7 @@ interface NewListingsService {
     @GET("me/listing_detail")
     fun getMyListing(@Query("id") listingId: String) : Single<BaseResponse<ListingJson>>
 
-    @GET("me/listings")
+    @GET("me/listing/listings")
     fun getMyListing(
         @Query("page") page: Int,
         @Query("per_page") perPage: Int = Constants.PER_PAGE_MAX,
@@ -83,7 +83,7 @@ interface NewListingsService {
         @Query("data[property_type]") type: String?): Single<BaseResponse<GetFacilitiesResponse>>
 
     @GET("me/favourite_listings")
-    fun getFavouriteListings(@Query("per_page") perPage: Int = Constants.PER_PAGE_MAX): Single<BaseResponse<GetMyListingsResponse>>
+    fun getFavouriteListings(@Query("per_page") perPage: Int = Constants.PER_PAGE_MAX): Single<BaseResponse<GetMyRecordsResponse>>
 
     @GET("public/last_viewed_listings")
     fun getTopListing(

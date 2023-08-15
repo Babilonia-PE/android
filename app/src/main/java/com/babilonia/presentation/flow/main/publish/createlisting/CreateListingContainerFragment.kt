@@ -129,8 +129,10 @@ class CreateListingContainerFragment :
         viewModel.gotListingEvent.observe(this, Observer {
             sharedViewModel.status = it.status
             sharedViewModel.setDraft(it, args.mode)
-            if (it.contact == null || it.contact?.contactName == null || it.contact?.contactEmail == null || it.contact?.contactPhone == null)
-                viewModel.getUser()
+            it.contacts?.first()?.let { contact ->
+                if (contact.contactName == null || contact.contactEmail == null || contact.contactPhone == null)
+                    viewModel.getUser()
+            }
         })
         viewModel.authFailedData.observe(this, Observer {
             context?.let {

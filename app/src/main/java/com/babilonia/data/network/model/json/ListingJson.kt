@@ -11,7 +11,7 @@ open class ListingJson {
     var id: Long = UUID.randomUUID().hashCode().toLong()
 
     @SerializedName("url")
-    var url: String? = null
+    var url: UrlJson? = null
 
     @SerializedName("listing_type")
     var listingType: String? = null
@@ -76,8 +76,8 @@ open class ListingJson {
     @SerializedName("user")
     var user: UserJson? = null
 
-    @SerializedName("contact")
-    var contact: ContactJson? = null
+    @SerializedName("contacts")
+    var contacts: List<ContactJson> = mutableListOf()
 
     @SerializedName("facilities")
     var facilities: List<FacilityJson> = mutableListOf()

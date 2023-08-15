@@ -4,11 +4,14 @@ import com.babilonia.Constants
 import com.babilonia.data.db.model.FacilityDto
 import com.babilonia.data.db.model.ImageDto
 import com.babilonia.data.db.model.ListingDto
+import com.babilonia.data.db.model.UrlDto
 import com.babilonia.data.network.model.json.FacilityJson
 import com.babilonia.data.network.model.json.ImageJson
 import com.babilonia.data.network.model.json.ListingJson
+import com.babilonia.data.network.model.json.UrlJson
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.Location
+import com.babilonia.domain.model.Url
 import com.babilonia.domain.model.enums.PaymentPlanKey
 import com.babilonia.domain.model.enums.PublishState
 import io.realm.RealmList
@@ -34,7 +37,10 @@ class ListingMapper @Inject constructor(
     override fun mapDomainToLocal(from: Listing): ListingDto {
         return ListingDto().apply {
             id = from.id ?: 0
-            url = from.url
+            url = UrlDto().apply {
+                main = from.url?.main
+                share = from.url?.share
+            }
             listingType = from.listingType
             propertyType = from.propertyType
             price = from.price
@@ -73,7 +79,7 @@ class ListingMapper @Inject constructor(
             }
             images = imagesRealm
             user = from.user?.let { userMapper.mapDomainToLocal(it) }
-            contact = from.contact?.let { contactMapper.mapDomainToLocal(it) }
+            from.contacts?.map { contactMapper.mapDomainToLocal(it) }
             draft = from.isDraft
             status = from.status
             favourited = from.isFavourite
@@ -93,7 +99,7 @@ class ListingMapper @Inject constructor(
     override fun mapDomainToRemote(from: Listing): ListingJson {
         return ListingJson().apply {
             id = from.id ?: 0
-            url = from.url
+            url = UrlJson(from.url?.main, from.url?.share)
             listingType = from.listingType
             propertyType = from.propertyType
             price = from.price
@@ -128,7 +134,7 @@ class ListingMapper @Inject constructor(
                 imageIds = it.map { it.id }
             }
             user = from.user?.let { userMapper.mapDomainToRemote(it) }
-            contact = from.contact?.let{ contactMapper.mapDomainToRemote(it) }
+            from.contacts.let { it?.map { contactMapper.mapDomainToRemote(it) } }
             status = from.status
             favourited = from.isFavourite
             viewsCount = from.viewsCount
@@ -175,7 +181,7 @@ class ListingMapper @Inject constructor(
                 }
             }.sortedByDescending { it.id == from.primaryImageId },
             from.user?.let { userMapper.mapLocalToDomain(it) },
-            from.contact?.let{ contactMapper.mapLocalToDomain(it) },
+            from.contacts.map { contactMapper.mapLocalToDomain(it) },
             from.status ?: Constants.HIDDEN,
             from.draft,
             from.favourited,
@@ -189,7 +195,7 @@ class ListingMapper @Inject constructor(
             from.updatedAt,
             from.adPurchasedAt,
             from.adExpiresAt,
-            from.url
+            Url(from.url?.main, from.url?.share)
         )
     }
 
@@ -222,7 +228,7 @@ class ListingMapper @Inject constructor(
                 }
             }.sortedByDescending { it.id == from.primaryImageId },
             from.user?.let { userMapper.mapRemoteToDomain(it) },
-            from.contact?.let { contactMapper.mapRemoteToDomain(it) },
+            from.contacts.map { contactMapper.mapRemoteToDomain(it) },
             from.status ?: Constants.HIDDEN,
             false,
             from.favourited,
@@ -236,7 +242,7 @@ class ListingMapper @Inject constructor(
             from.updatedAt,
             from.adPurchasedAt,
             from.adExpiresAt,
-            from.url
+            Url(from.url?.main, from.url?.share)
         )
     }
 }
