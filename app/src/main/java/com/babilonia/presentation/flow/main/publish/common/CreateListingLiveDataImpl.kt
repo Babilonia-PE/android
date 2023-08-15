@@ -98,7 +98,7 @@ class CreateListingLivedataImpl : CreateListingLivedataDelegate {
         id = model.id
         description.value = model.description
         location.value = model.locationAttributes
-        contact.value = model.contact
+        contact.value = model.contacts?.first()
         area.value = model.area?.toString()
         builtArea.value = model.builtArea?.toString()
         property.value = model.propertyType?.substring(0, 1)?.toUpperCase()?.plus(model.propertyType?.substring(1))

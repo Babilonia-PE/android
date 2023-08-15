@@ -29,7 +29,7 @@ data class Listing(
     var advancedDetails: List<Facility>?,
     var images: List<ListingImage>?,
     var user: User? = null,
-    var contact: Contact? = null,
+    var contacts: List<Contact>? = null,
     var status: String? = null,
     var isDraft: Boolean = false,
     var isFavourite: Boolean,
@@ -157,7 +157,7 @@ data class Listing(
         facilities = another.facilities
         images = another.images
         user = another.user
-        contact = another.contact
+        contacts = another.contacts
         status = another.status
         isDraft = another.isDraft
         isFavourite = another.isFavourite

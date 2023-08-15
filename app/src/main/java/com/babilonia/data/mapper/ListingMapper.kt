@@ -76,7 +76,7 @@ class ListingMapper @Inject constructor(
             }
             images = imagesRealm
             user = from.user?.let { userMapper.mapDomainToLocal(it) }
-            contact = from.contact?.let { contactMapper.mapDomainToLocal(it) }
+            from.contacts?.map { contactMapper.mapDomainToLocal(it) }
             draft = from.isDraft
             status = from.status
             favourited = from.isFavourite
@@ -134,7 +134,7 @@ class ListingMapper @Inject constructor(
                 imageIds = it.map { it.id }
             }
             user = from.user?.let { userMapper.mapDomainToRemote(it) }
-            contact = from.contact?.let{ contactMapper.mapDomainToRemote(it) }
+            from.contacts.let { it?.map { contactMapper.mapDomainToRemote(it) } }
             status = from.status
             favourited = from.isFavourite
             viewsCount = from.viewsCount
@@ -181,7 +181,7 @@ class ListingMapper @Inject constructor(
                 }
             }.sortedByDescending { it.id == from.primaryImageId },
             from.user?.let { userMapper.mapLocalToDomain(it) },
-            from.contact?.let{ contactMapper.mapLocalToDomain(it) },
+            from.contacts.map { contactMapper.mapLocalToDomain(it) },
             from.status ?: Constants.HIDDEN,
             from.draft,
             from.favourited,
@@ -231,7 +231,7 @@ class ListingMapper @Inject constructor(
                 }
             }.sortedByDescending { it.id == from.primaryImageId },
             from.user?.let { userMapper.mapRemoteToDomain(it) },
-            from.contact?.let { contactMapper.mapRemoteToDomain(it) },
+            from.contacts.map { contactMapper.mapRemoteToDomain(it) },
             from.status ?: Constants.HIDDEN,
             false,
             from.favourited,

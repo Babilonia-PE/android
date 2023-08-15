@@ -107,7 +107,7 @@ class CreateListingSharedViewModel : ViewModel(),
             advancedDetails.value?.filter { it.isChecked },
             images.value,
             null,
-            contactDto,
+            listOf(contactDto),
             status,
             isDraft = true,
             isFavourite = false

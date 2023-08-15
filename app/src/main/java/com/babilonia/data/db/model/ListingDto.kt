@@ -33,7 +33,7 @@ open class ListingDto : RealmObject() {
     var imageIds: RealmList<Int> = RealmList()
     var primaryImageId: Int? = null
     var user: UserDto? = null
-    var contact: ContactDto? = null
+    var contacts: RealmList<ContactDto> = RealmList()
 
     var facilities: RealmList<FacilityDto> = RealmList()
     var advancedDetails: RealmList<FacilityDto> = RealmList()

@@ -106,7 +106,7 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                 setImagesAdapter(listing)
                 setPublishDetails(listing)
                 setShowMore()
-                setUser(listing.user, listing.contact)
+                setUser(listing.user, listing.contacts?.first())
                 loadMap(listing)
                 setListingType(listing)
                 setListingIcon(listing)
@@ -159,9 +159,9 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
     private fun listenWhatsapp(listing: Listing?) {
         binding.fabWhatsapp.setOnClickListener {
             listing?.let{ mListing ->
-                    mListing.contact?.let{
-                        validateNumberPhoneWhatsapp(mListing.contact?.contactPhone, mListing)
-                    }?:run{ validateNumberPhoneWhatsapp(mListing.user?.phoneNumber, mListing) }
+                    mListing.contacts?.first().let{
+                        validateNumberPhoneWhatsapp(mListing.contacts?.first()?.contactPhone, mListing)
+                    }
             }?:run{ showSnackbar(R.string.phone_number_not_available) }
         }
     }
@@ -656,8 +656,8 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
             ListingDisplayMode.IMPROPER_LISTING -> {
                 binding.tvListingActionText.text = getString(R.string.contact)
 
-                listing.contact?.let{
-                    showContactDialog(it.contactPhone)
+                listing.contacts?.first().let{
+                    showContactDialog(it?.contactPhone)
                 }?:run{
                     showContactDialog(listing.user?.phoneNumber)
                 }
