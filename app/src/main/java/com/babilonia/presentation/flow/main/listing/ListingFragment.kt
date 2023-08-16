@@ -106,7 +106,9 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
                 setImagesAdapter(listing)
                 setPublishDetails(listing)
                 setShowMore()
-                setUser(listing.user, listing.contacts?.first())
+                if (!listing.contacts.isNullOrEmpty()) {
+                    setUser(listing.user, listing.contacts?.first())
+                }
                 loadMap(listing)
                 setListingType(listing)
                 setListingIcon(listing)
@@ -656,9 +658,9 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
             ListingDisplayMode.IMPROPER_LISTING -> {
                 binding.tvListingActionText.text = getString(R.string.contact)
 
-                listing.contacts?.first().let{
-                    showContactDialog(it?.contactPhone)
-                }?:run{
+                if (!listing.contacts.isNullOrEmpty()) {
+                    showContactDialog(listing.contacts?.first()?.contactPhone)
+                } else {
                     showContactDialog(listing.user?.phoneNumber)
                 }
 
