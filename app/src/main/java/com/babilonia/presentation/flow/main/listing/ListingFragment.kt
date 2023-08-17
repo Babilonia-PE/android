@@ -160,11 +160,18 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
 
     private fun listenWhatsapp(listing: Listing?) {
         binding.fabWhatsapp.setOnClickListener {
-            listing?.let{ mListing ->
-                    mListing.contacts?.first().let{
-                        validateNumberPhoneWhatsapp(mListing.contacts?.first()?.contactPhone, mListing)
+            listing?.let { mListing ->
+                if (!mListing.contacts.isNullOrEmpty()) {
+                    mListing.contacts?.first().let {
+                        validateNumberPhoneWhatsapp(
+                            mListing.contacts?.first()?.contactPhone,
+                            mListing
+                        )
                     }
-            }?:run{ showSnackbar(R.string.phone_number_not_available) }
+                } else {
+                    showSnackbar(R.string.phone_number_not_available)
+                }
+            } ?: run { showSnackbar(R.string.phone_number_not_available) }
         }
     }
 
