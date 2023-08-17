@@ -3,7 +3,6 @@ package com.babilonia.presentation.flow.main.publish.mylistings.common
 import android.content.Context
 import android.content.res.ColorStateList
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
 import com.babilonia.Constants
 import com.babilonia.R
 import com.babilonia.databinding.ListItemMyListingBinding
@@ -16,14 +15,21 @@ import com.babilonia.presentation.extension.invisible
 import com.babilonia.presentation.extension.visible
 import com.babilonia.presentation.extension.visibleOrGone
 import com.babilonia.presentation.extension.withGlide
+import com.babilonia.presentation.flow.main.search.map.common.AutoUpdatableAdapter
 import com.babilonia.presentation.flow.main.search.map.common.ListingUtilsDelegateImpl
 import com.babilonia.presentation.flow.main.search.map.common.ListingsUtilsDelegate
 import com.babilonia.presentation.utils.DateFormatter
+import kotlin.properties.Delegates
 
 // Created by Anton Yatsenko on 21.06.2019.
 class MyListingsRecyclerAdapter(private val listingNavigationListener: ListingNavigationListener) :
-    BaseRecyclerAdapter<ListItemMyListingBinding>(), ListingsUtilsDelegate by ListingUtilsDelegateImpl {
-    private var data = mutableListOf<Listing>()
+    BaseRecyclerAdapter<ListItemMyListingBinding>(),
+    ListingsUtilsDelegate by ListingUtilsDelegateImpl, AutoUpdatableAdapter {
+
+    private var data: MutableList<Listing> by Delegates.observable(arrayListOf()) { _, old, new ->
+        autoNotify(old, new) { o, n -> o == n }
+    }
+
     override fun bindItem(holder: BaseViewHolder<ListItemMyListingBinding>, position: Int) {
         val context = holder.itemView.context
         val listing = data[position]
@@ -61,18 +67,24 @@ class MyListingsRecyclerAdapter(private val listingNavigationListener: ListingNa
 
         holder.binding.tvCreatedAt.text = if (listing.isDraft ||
             listing.publishState == PublishState.NOT_PUBLISHED ||
-            listing.publishState == PublishState.EXPIRED) {
+            listing.publishState == PublishState.EXPIRED
+        ) {
             DateFormatter.toFullDate(listing.createdAt)
         } else {
             DateFormatter.toFullDate(listing.adPurchasedAt)
         }
 
         if (listing.publishState == PublishState.PUBLISHED ||
-            listing.publishState == PublishState.UNPUBLISHED) {
+            listing.publishState == PublishState.UNPUBLISHED
+        ) {
             listing.adExpiresAt?.let { adExpiresAt ->
                 val daysLeft = DateFormatter.daysLeft(adExpiresAt)
                 holder.binding.tvDaysLeft.text =
-                    context.resources.getQuantityString(R.plurals.days_left_plural, daysLeft, daysLeft)
+                    context.resources.getQuantityString(
+                        R.plurals.days_left_plural,
+                        daysLeft,
+                        daysLeft
+                    )
                 holder.binding.tvDaysLeft.visible()
             }
 
@@ -81,10 +93,12 @@ class MyListingsRecyclerAdapter(private val listingNavigationListener: ListingNa
                     holder.binding.ivPlanIcon.setImageResource(R.drawable.ic_payment_plan_plus_yellow_24)
                     holder.binding.ivPlanIcon.visible()
                 }
+
                 PaymentPlanKey.PREMIUM -> {
                     holder.binding.ivPlanIcon.setImageResource(R.drawable.ic_payment_plan_premium_blue_24)
                     holder.binding.ivPlanIcon.visible()
                 }
+
                 else -> holder.binding.ivPlanIcon.invisible()
             }
         } else {
@@ -99,9 +113,7 @@ class MyListingsRecyclerAdapter(private val listingNavigationListener: ListingNa
     override fun getItemCount(): Int = data.size
 
     fun add(newData: List<Listing>) {
-        val diffUtils = DiffUtil.calculateDiff(ListingsDiffUtils(data, newData))
         data = newData.toMutableList()
-        diffUtils.dispatchUpdatesTo(this)
     }
 
     fun remove(listing: Listing) {
@@ -124,7 +136,8 @@ class MyListingsRecyclerAdapter(private val listingNavigationListener: ListingNa
                 binding.tvListingStatus.backgroundTintList =
                     ColorStateList.valueOf(ContextCompat.getColor(context, R.color.light_gray))
             }
-            listing.status == Constants.HIDDEN  || listing.publishState == PublishState.EXPIRED -> {
+
+            listing.status == Constants.HIDDEN || listing.publishState == PublishState.EXPIRED -> {
                 if (listing.publishState == PublishState.NOT_PUBLISHED) {
                     binding.tvListingStatus.text = context.getString(R.string.not_published)
                 } else {
@@ -134,8 +147,14 @@ class MyListingsRecyclerAdapter(private val listingNavigationListener: ListingNa
                 binding.tvListingStatus.backgroundTintList =
                     ColorStateList.valueOf(ContextCompat.getColor(context, R.color.light_gray))
             }
+
             else -> {
-                binding.tvListingStatus.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                binding.tvListingStatus.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        android.R.color.white
+                    )
+                )
                 binding.tvListingStatus.text = context.getString(R.string.published)
                 binding.tvListingStatus.backgroundTintList =
                     ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))
