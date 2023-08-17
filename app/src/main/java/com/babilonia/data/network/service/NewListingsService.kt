@@ -14,7 +14,7 @@ interface NewListingsService {
     @POST("me/validation_data")
     fun createListing(@Body data: CreateListingRequest): Single<ListingBaseResponse<ListingJson>>
 
-    @GET("me/listing_detail")
+    @GET("me/listing/detail")
     fun getMyListing(@Query("id") listingId: String) : Single<BaseResponse<ListingJson>>
 
     @GET("me/listing/listings")
@@ -111,7 +111,7 @@ interface NewListingsService {
         @Query("province") province: String? = null): Single<BaseResponse<GetListUbigeoResponse>>
 
 
-    @GET("public/listing_detail")
+    @GET("public/listing/detail")
     fun getListing(@Query("id") listingId: String) : Single<BaseResponse<ListingJson>>
 
     @GET("public/search_metadata")
