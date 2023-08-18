@@ -1,6 +1,7 @@
 package com.babilonia.data.mapper
 
 import com.babilonia.Constants
+import com.babilonia.data.db.model.ContactDto
 import com.babilonia.data.db.model.FacilityDto
 import com.babilonia.data.db.model.ImageDto
 import com.babilonia.data.db.model.ListingDto
@@ -79,7 +80,13 @@ class ListingMapper @Inject constructor(
             }
             images = imagesRealm
             user = from.user?.let { userMapper.mapDomainToLocal(it) }
-            from.contacts?.map { contactMapper.mapDomainToLocal(it) }
+
+            val realmContacts = RealmList<ContactDto>()
+            from.contacts?.let { contacts ->
+                realmContacts.addAll(contacts.map { contactMapper.mapDomainToLocal(it) })
+            }
+            contacts = realmContacts
+
             draft = from.isDraft
             status = from.status
             favourited = from.isFavourite
