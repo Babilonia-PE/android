@@ -211,7 +211,7 @@
     <string name="apply_filters">Aplicar filtros</string>
     <string name="apply_filters_count">%d inmuebles encontrados</string>
     <string name="all_facilities">Todas las comodidades</string>
-    <string name="listings_found_count">Encontramos %d inmuebles</string>
+    <string name="listings_found_count">Se encontraron %d inmuebles</string>
     <string name="price_range">Rango de precio:</string>
     <string name="listing_location">Ubicación del inmueble</string>
     <string name="realtor_constructor_alert">Para publicar como agente o constructora, por favor visite nuestra web</string>

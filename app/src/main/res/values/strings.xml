@@ -213,7 +213,7 @@
     <string name="district">District</string>
     <string name="country">Country</string>
 
-    <string name="listings_found_count">Found %d Listings</string>
+    <string name="listings_found_count">%d properties found</string>
     <string name="price_range">Price range:</string>
     <string-array name="status">
         <item>General</item>
