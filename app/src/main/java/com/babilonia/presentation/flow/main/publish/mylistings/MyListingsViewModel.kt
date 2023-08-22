@@ -75,21 +75,18 @@ class MyListingsViewModel @Inject constructor(
     }
 
     fun getMyListings() {
-        getMyPublishedListings { publishedListings ->
-            getMyUnpublishedListings { unpublishedListings ->
-                val result = publishedListings+unpublishedListings
-                myListings.postValue(result)
-            }
-        }
+        getMyPublishedListings()
     }
 
-    private fun getMyPublishedListings(callback: (List<Listing>) -> Unit){
+    private fun getMyPublishedListings() {
+        val publishedListings = mutableListOf<Listing>()
         getMyListingsUseCase.execute(object : DisposableSubscriber<List<Listing>>() {
             override fun onComplete() {
+                getMyUnpublishedListings(publishedListings)
             }
 
             override fun onNext(t: List<Listing>) {
-                callback(t)
+                publishedListings.addAll(t)
             }
 
             override fun onError(t: Throwable?) {
@@ -104,13 +101,15 @@ class MyListingsViewModel @Inject constructor(
         }, GetMyListingsUseCase.Params(state = "published"))
     }
 
-    private fun getMyUnpublishedListings(callback: (List<Listing>) -> Unit){
+    private fun getMyUnpublishedListings(publishedListings: List<Listing>) {
+        val unpublishedListings = mutableListOf<Listing>()
         getMyListingsUseCase.execute(object : DisposableSubscriber<List<Listing>>() {
             override fun onComplete() {
+                myListings.postValue(publishedListings + unpublishedListings)
             }
 
             override fun onNext(t: List<Listing>) {
-                callback(t)
+                unpublishedListings.addAll(t)
             }
 
             override fun onError(t: Throwable?) {
