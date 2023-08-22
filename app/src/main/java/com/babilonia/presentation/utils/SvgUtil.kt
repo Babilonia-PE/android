@@ -176,29 +176,38 @@ object SvgUtil {
         )
     }
 
-    fun concatString(address: String?,
-                     district: String?,
-                     province: String?,
-                     department: String?):String{
+    fun concatString(
+        address: String?,
+        district: String?,
+        province: String?,
+        department: String?
+    ): String {
+        address?.let {
+            if (address.isEmpty()) {
+                val listString =
+                    listOf(district?.trim() ?: "", province?.trim() ?: "", department?.trim() ?: "")
+                val listUbigeo = mutableListOf<String>()
+                for (ubigeo in listString) {
+                    if (ubigeo.isNotBlank())
+                        listUbigeo.add(ubigeo.trim())
+                }
 
-        val mAddress = refactorAddress(address)
-        val listString = listOf(mAddress, district?.trim()?:"", province?.trim()?:"", department?.trim()?:"")
-        val listUbigeo = mutableListOf<String>()
-        for (ubigeo in listString){
-            if(ubigeo.isNotBlank())
-                listUbigeo.add(ubigeo.trim())
+                var concatString = ""
+
+                val lastIndex = listUbigeo.size - 1
+                for ((index, value) in listUbigeo.withIndex()) {
+                    concatString = if (index != lastIndex)
+                        "$concatString$value, "
+                    else "$concatString$value"
+                }
+
+                return concatString.trim()
+            } else {
+                return address
+            }
+        } ?: run {
+            return ""
         }
-
-        var concatString=""
-
-        val lastIndex = listUbigeo.size-1
-        for ((index, value) in listUbigeo.withIndex()) {
-            concatString = if(index!=lastIndex)
-                "$concatString$value, "
-            else "$concatString$value"
-        }
-
-        return concatString.trim()
     }
 
     fun refactorAddress(address: String?): String{
