@@ -22,8 +22,8 @@ class AuthStorageRemote @Inject constructor(
     private var authService: AuthService,
     private var newAuthService: NewAuthService,
 ) : AuthDataSourceRemote {
-    override fun getAppConfig(): Single<AppConfigJson> {
-        return newAuthService.getAppConfig().map { it.data }
+    override fun getAppConfig(version: Int): Single<AppConfigJson> {
+        return newAuthService.getAppConfig(version = version).map { it.data }
     }
 
     override fun getUser(): Single<UserJson> {

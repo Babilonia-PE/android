@@ -14,12 +14,12 @@
         style="@style/materialDialogStyle.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="none"
-        android:maxLines="3"
-        android:singleLine="false"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
+        android:ellipsize="none"
+        android:maxLines="3"
+        android:singleLine="false"
         tools:text="Title" />
 
     <TextView

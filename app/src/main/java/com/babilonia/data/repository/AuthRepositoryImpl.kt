@@ -32,8 +32,8 @@ class AuthRepositoryImpl @Inject constructor(
             .map { configMapper.mapLocalToDomain(it) }
     }
 
-    override fun initAppConfig(): Completable {
-        return authDataSourceRemote.getAppConfig()
+    override fun initAppConfig(version: Int): Completable {
+        return authDataSourceRemote.getAppConfig(version)
             .flatMapCompletable { authDataSourceLocal.saveConfig(configMapper.mapRemoteToLocal(it)) }
     }
 

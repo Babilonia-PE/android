@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -18,6 +19,7 @@ class StyledAlertDialog private constructor(context: Context) : Dialog(context) 
     private lateinit var body: TextView
     private lateinit var leftButton: TextView
     private lateinit var rightButton: TextView
+    private lateinit var dividerView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,12 +60,18 @@ class StyledAlertDialog private constructor(context: Context) : Dialog(context) 
     private fun setLeftButton(
         text: String,
         @ColorRes textColor: Int = R.color.black,
-        onClick: (() -> Unit)? = null) {
-        leftButton.text = text
-        leftButton.setTextColor(ContextCompat.getColor(context, textColor))
-        leftButton.setOnClickListener {
-            onClick?.invoke()
-            dismiss()
+        onClick: (() -> Unit)? = null
+    ) {
+        if (text.isEmpty()) {
+            leftButton.visibility = View.GONE
+            dividerView.visibility = View.GONE
+        } else {
+            leftButton.text = text
+            leftButton.setTextColor(ContextCompat.getColor(context, textColor))
+            leftButton.setOnClickListener {
+                onClick?.invoke()
+                dismiss()
+            }
         }
     }
 
@@ -78,8 +86,9 @@ class StyledAlertDialog private constructor(context: Context) : Dialog(context) 
         body = findViewById(R.id.tvBody)
         rightButton = findViewById(R.id.btnPositive)
         leftButton = findViewById(R.id.btnNegative)
+        dividerView = findViewById(R.id.divider)
     }
-    
+
     class Builder(private var context: Context) {
         private var titleText: String = EmptyConstants.EMPTY_STRING
         private var bodyText: String = EmptyConstants.EMPTY_STRING

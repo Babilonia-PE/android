@@ -10,11 +10,13 @@ import javax.inject.Inject
 // Created by Anton Yatsenko on 15.07.2019.
 class ConfigMapper @Inject constructor(private val locationMapper: LocationMapper) :
     Mapper<AppConfigDto, AppConfigJson, AppConfig> {
+
     override fun mapDomainToLocal(from: AppConfig): AppConfigDto {
         return AppConfigDto().apply {
             locationDto = from.locationDto?.let { locationMapper.mapDomainToLocal(it) }
             terms = from.terms
             privacyPolicy = from.privacyPolicy
+            newVersionDto = from.newVersion?.mapDomainToLocal()
         }
     }
 
@@ -22,20 +24,24 @@ class ConfigMapper @Inject constructor(private val locationMapper: LocationMappe
         return AppConfigJson().apply {
             location = from.locationDto?.let { locationMapper.mapDomainToRemote(it) }
             urls = UrlsJson(from.terms, from.privacyPolicy)
+            newVersion = from.newVersion?.mapDomainToRemote()
         }
     }
 
     override fun mapLocalToDomain(from: AppConfigDto): AppConfig {
         val locationDto = from.locationDto?.let { locationMapper.mapLocalToDomain(it) }
-        return AppConfig(locationDto, from.privacyPolicy, from.terms)
+        val newVersionDto = from.newVersionDto?.mapLocalToDomain()
+        return AppConfig(locationDto, from.privacyPolicy, from.terms, newVersionDto)
     }
 
     override fun mapRemoteToDomain(from: AppConfigJson): AppConfig {
         val locationDto = from.location?.let { locationMapper.mapRemoteToDomain(it) }
+        val newVersion = from.newVersion?.mapRemoteToDomain()
         return AppConfig(
             locationDto,
             from.urls?.privacyPolicy ?: EmptyConstants.EMPTY_STRING,
-            from.urls?.termsOfUse ?: EmptyConstants.EMPTY_STRING
+            from.urls?.termsOfUse ?: EmptyConstants.EMPTY_STRING,
+            newVersion
         )
     }
 

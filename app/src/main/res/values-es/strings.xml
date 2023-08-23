@@ -169,7 +169,7 @@
     <string name="invalid_phonenumber">El formato de teléfono no es valido</string>
     <string name="field_should_not_be_empty">Este campo no debe estar vacío</string>
     <string name="sing_out_title">¿Desea cerrar sesión?</string>
-    <string name="sign_out_message">No podrás buscar propiedades ni recibirnotificaciones</string>
+    <string name="sign_out_message">No podrás buscar propiedades ni recibir notificaciones</string>
     <string name="sign_out">Cerrar sesión</string>
     <string name="delete_account_title">¿Eliminar cuenta?</string>
     <string name="delete_account_message">Tu cuenta será eliminada permanentemente</string>
@@ -403,4 +403,9 @@
         <item quantity="one">%d foto</item>
         <item quantity="other">%d fotos</item>
     </plurals>
+
+    <!-- Force update pop up -->
+    <string name="forceUpdate_popUp_title">Aviso</string>
+    <string name="forceUpdate_popUp_body">Tenemos una actualización disponible</string>
+    <string name="forceUpdate_popUp_buttonText">Descargar</string>
 </resources>

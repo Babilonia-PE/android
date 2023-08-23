@@ -449,4 +449,9 @@
     </plurals>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Force update pop up -->
+    <string name="forceUpdate_popUp_title">Notice</string>
+    <string name="forceUpdate_popUp_body">We have an update available</string>
+    <string name="forceUpdate_popUp_buttonText">Download</string>
 </resources>
