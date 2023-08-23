@@ -11,4 +11,5 @@ open class AppConfigDto : RealmObject() {
     var locationDto: LocationDto? = null
     var privacyPolicy: String = EmptyConstants.EMPTY_STRING
     var terms: String = EmptyConstants.EMPTY_STRING
+    var newVersionDto: NewVersionDto? = null
 }

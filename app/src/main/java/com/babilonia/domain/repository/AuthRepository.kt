@@ -19,7 +19,7 @@ interface AuthRepository {
     fun updateUser(user: User, password: String?, photoId: Int?): Single<User>
     fun signOut(): Completable
     fun getAppConfig(): Single<AppConfig>
-    fun initAppConfig(): Completable
+    fun initAppConfig(version: Int): Completable
     fun getUserId(): Single<Long>
     fun deleteAccount(): Single<BaseResponse<Any>>
 }

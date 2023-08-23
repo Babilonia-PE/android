@@ -10,7 +10,10 @@ import retrofit2.http.*
 
 interface NewAuthService {
     @GET("public/app_config")
-    fun getAppConfig(): Single<BaseResponse<AppConfigJson>>
+    fun getAppConfig(
+        @Query("platform") platform: String = "android",
+        @Query("version") version: Int
+    ): Single<BaseResponse<AppConfigJson>>
 
     @POST("auth/signup")
     fun signUp(

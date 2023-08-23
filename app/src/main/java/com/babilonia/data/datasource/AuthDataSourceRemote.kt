@@ -42,6 +42,6 @@ interface AuthDataSourceRemote {
         photoId: Int?
     ): Single<UserJson>
     fun getUser(): Single<UserJson>
-    fun getAppConfig(): Single<AppConfigJson>
+    fun getAppConfig(version: Int): Single<AppConfigJson>
     fun deleteAccount(): Single<BaseResponse<Any>>
 }

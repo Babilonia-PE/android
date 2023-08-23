@@ -4,5 +4,6 @@ package com.babilonia.domain.model
 data class AppConfig(
     var locationDto: Location?,
     var privacyPolicy: String,
-    var terms: String
+    var terms: String,
+    var newVersion: NewVersion?
 )

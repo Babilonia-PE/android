@@ -1,17 +1,22 @@
 package com.babilonia.presentation.flow.auth.splash
 
 import android.net.Uri
+import com.babilonia.BuildConfig
 import com.babilonia.R
 import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.domain.model.User
 import com.babilonia.domain.model.enums.LoginStatus
-import com.babilonia.domain.usecase.*
+import com.babilonia.domain.model.NewVersion
+import com.babilonia.domain.usecase.AuthUseCase
+import com.babilonia.domain.usecase.GetRemoteUserUseCase
+import com.babilonia.domain.usecase.InitAppConfigUseCase
+import com.babilonia.domain.usecase.IsLoggedInUseCase
+import com.babilonia.domain.usecase.IsNewVersionUseCase
 import com.babilonia.presentation.base.BaseViewModel
 import com.babilonia.presentation.base.SingleLiveEvent
 import com.babilonia.presentation.utils.deeplink.DeeplinkHandler
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.subscribers.DisposableSubscriber
 import javax.inject.Inject
 
 
@@ -21,9 +26,11 @@ class SplashViewModel @Inject constructor(
     private val initAppConfigUseCase: InitAppConfigUseCase,
     private val deeplinkHandler: DeeplinkHandler,
     private val getUserUseCase: GetRemoteUserUseCase,
+    private val isNewVersionUseCase: IsNewVersionUseCase,
 ) : BaseViewModel() {
     val isLoggedInEvent = SingleLiveEvent<LoginStatus>()
     val navigateToRootLiveData = SingleLiveEvent<Unit>()
+    val navigateToPlayStore = SingleLiveEvent<Unit>()
 
     fun navigateToCreateProfile() {
         navigate(R.id.action_splashFragment_to_createProfileFragment)
@@ -40,14 +47,30 @@ class SplashViewModel @Inject constructor(
     fun initAppConfig() {
         initAppConfigUseCase.execute(object : DisposableCompletableObserver() {
             override fun onComplete() {
-                isLoggedIn()
+                validateVersion()
             }
 
             override fun onError(e: Throwable) {
                 //User should be able to login even if we cant get app config
-                isLoggedIn()
+                validateVersion()
             }
 
+        }, InitAppConfigUseCase.Params(version = BuildConfig.VERSION_CODE))
+    }
+
+    fun validateVersion() {
+        isNewVersionUseCase.execute(object : DisposableSingleObserver<NewVersion>() {
+            override fun onSuccess(t: NewVersion) {
+                if (t.android) {
+                    navigateToPlayStore.postValue(Unit)
+                } else {
+                    isLoggedIn()
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                isLoggedIn()
+            }
         }, Unit)
     }
 

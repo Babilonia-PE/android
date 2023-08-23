@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.lifecycle.Observer
 import com.babilonia.R
 import com.babilonia.presentation.base.BaseFragment
+import com.babilonia.presentation.extension.openPlayStore
 import com.babilonia.presentation.extension.visible
 import com.babilonia.presentation.flow.main.MainActivity
+import com.babilonia.presentation.view.dialog.StyledAlertDialog
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -17,9 +19,13 @@ private const val APP_REQUEST_CODE = 99
 
 class SplashFragment : BaseFragment<com.babilonia.databinding.SplashFragmentBinding, SplashViewModel>() {
 
+    override fun onResume() {
+        super.onResume()
+        checkDeepLinks()
+    }
+
     override fun viewCreated() {
         setupClicks()
-        checkDeepLinks()
     }
 
     override fun onActivityResult(
@@ -50,12 +56,16 @@ class SplashFragment : BaseFragment<com.babilonia.databinding.SplashFragmentBind
             startActivity(intent)
             activity?.finish()
         })
+        viewModel.navigateToPlayStore.observe(this, Observer {
+            showNewVersionDialog()
+        })
     }
 
     override fun stopListenToEvents() {
         super.stopListenToEvents()
         viewModel.isLoggedInEvent.removeObservers(this)
         viewModel.navigateToRootLiveData.removeObservers(this)
+        viewModel.navigateToPlayStore.removeObservers(this)
     }
 
     private fun setupClicks() {
@@ -117,5 +127,18 @@ class SplashFragment : BaseFragment<com.babilonia.databinding.SplashFragmentBind
                     activity?.finish()
                 }
             }
+    }
+
+    private fun showNewVersionDialog() {
+        context?.let { _context ->
+            StyledAlertDialog.Builder(_context)
+                .setTitleText(getString(R.string.forceUpdate_popUp_title))
+                .setBodyText(getString(R.string.forceUpdate_popUp_body))
+                .setRightButton(getString(R.string.forceUpdate_popUp_buttonText), R.color.black) {
+                    _context.openPlayStore()
+                }
+                .build()
+                .show()
+        }
     }
 }
