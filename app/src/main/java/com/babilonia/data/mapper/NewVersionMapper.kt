@@ -5,23 +5,23 @@ import com.babilonia.data.network.model.json.NewVersionJson
 import com.babilonia.domain.model.NewVersion
 
 fun NewVersion.mapDomainToLocal(): NewVersionDto {
-    val android = android
+    val update = update
     return NewVersionDto().apply {
-        this.android = android
+        this.update = update
     }
 }
 
 fun NewVersion.mapDomainToRemote() =
     NewVersionJson(
-        android
+        update
     )
 
 fun NewVersionDto.mapLocalToDomain() =
     NewVersion(
-        android ?: false
+        update ?: false
     )
 
 fun NewVersionJson.mapRemoteToDomain() =
     NewVersion(
-        android ?: false
+        update ?: false
     )
