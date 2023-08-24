@@ -61,7 +61,7 @@ class SplashViewModel @Inject constructor(
     fun validateVersion() {
         isNewVersionUseCase.execute(object : DisposableSingleObserver<NewVersion>() {
             override fun onSuccess(t: NewVersion) {
-                if (t.android) {
+                if (t.update) {
                     navigateToPlayStore.postValue(Unit)
                 } else {
                     isLoggedIn()
