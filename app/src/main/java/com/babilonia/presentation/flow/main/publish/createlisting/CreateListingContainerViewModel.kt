@@ -50,6 +50,9 @@ class CreateListingContainerViewModel @Inject constructor(
     private val _isLoadingListingEvent = SingleLiveEvent<Boolean>().apply { value = false }
     val isLoadingListingEvent: LiveData<Boolean> = _isLoadingListingEvent
 
+    private val _disableComponentsEvent = SingleLiveEvent<Boolean>().apply { value = false }
+    val disableComponentsEvent: LiveData<Boolean> = _disableComponentsEvent
+
     val listDepartments = SingleLiveEvent<List<String>>()
     val listProvinces   = SingleLiveEvent<List<String>>()
     val listDistricts   = SingleLiveEvent<List<String>>()
@@ -124,6 +127,8 @@ class CreateListingContainerViewModel @Inject constructor(
     }
 
     fun updateListing(params: Listing) {
+        _isLoadingListingEvent.postValue(true)
+        _disableComponentsEvent.postValue(true)
         updateListingUseCase.execute(object : DisposableSingleObserver<Listing>() {
             override fun onSuccess(updatedListing: Listing) {
                 navigateBack()
@@ -134,8 +139,11 @@ class CreateListingContainerViewModel @Inject constructor(
                     signOut {
                         authFailedData.call()
                     }
-                } else
+                } else {
                     dataError.postValue(e)
+                    _isLoadingListingEvent.postValue(false)
+                    _disableComponentsEvent.postValue(false)
+                }
             }
 
         }, params)

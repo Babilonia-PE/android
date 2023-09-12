@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.babilonia.R
 import com.babilonia.databinding.CreateListingContainerFragmentBinding
 import com.babilonia.domain.model.Contact
+import com.babilonia.presentation.extension.visibleOrGone
 import com.babilonia.presentation.flow.main.listing.common.ListingDisplayMode
 import com.babilonia.presentation.flow.main.publish.advanced.AdvancedDetailsFragment
 import com.babilonia.presentation.flow.main.publish.common.BaseCreateListingFragment
@@ -139,6 +140,10 @@ class CreateListingContainerFragment :
                 requireAuth()
             }
         })
+        viewModel.disableComponentsEvent.observe(this, Observer {
+            binding.btContinue.isEnabled = !it
+            binding.statusView.visibleOrGone(!it)
+        })
     }
 
     override fun stopListenToEvents() {
@@ -148,6 +153,7 @@ class CreateListingContainerFragment :
         viewModel.loadingEvent.removeObservers(this)
         viewModel.gotListingEvent.removeObservers(this)
         viewModel.authFailedData.removeObservers(this)
+        viewModel.disableComponentsEvent.removeObservers(this)
     }
 
     override fun onClick(v: View) {
