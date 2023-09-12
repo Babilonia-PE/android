@@ -73,13 +73,13 @@ class ListingStorageRemote @Inject constructor(
         address: String?
     ): Single<List<ListingJson>> {
         return newListingsService.getListings(
-            lat,
-            lon,
-            if (placeId.isNullOrEmpty()) null else queryText,
-            placeId,
-            page,
+            lat = lat,
+            lon = lon,
+            queryText = if (placeId.isNullOrEmpty()) null else queryText,
+            placeId = placeId,
+            page = page,
             limit = pageSize,
-            radius,
+            radius = radius,
             sort = sortType.value,
             order = sortType.order,
             filters = filtersMap,

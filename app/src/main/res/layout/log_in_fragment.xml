@@ -155,7 +155,7 @@
             android:alpha="@{model.logInValidator ? 1f : 0.5f}"
             android:enabled="@{model.logInValidator}"
             android:onClick="@{()-> model.onLogIn(context)}"
-            android:text="@string/save"
+            android:text="@string/log_in"
             app:backgroundTint="@color/colorAccent"
             app:cornerRadius="6dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -141,7 +141,12 @@ class ListingMapper @Inject constructor(
                 imageIds = it.map { it.id }
             }
             user = from.user?.let { userMapper.mapDomainToRemote(it) }
-            from.contacts.let { it?.map { contactMapper.mapDomainToRemote(it) } }
+            val realmContacts = RealmList<ContactJson>()
+            from.contacts?.let {
+                realmContacts.addAll(it.map { contactMapper.mapDomainToRemote(it) })
+            }
+            contacts = realmContacts
+            //from.contacts.let { it?.map { contactMapper.mapDomainToRemote(it) } }
             status = from.status
             favourited = from.isFavourite
             viewsCount = from.viewsCount
