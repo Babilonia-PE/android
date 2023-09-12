@@ -32,6 +32,7 @@ interface NewListingsService {
 
     @GET("public/listing/listings")
     fun getListings(
+        @Query("source") platform: String = "android",
         @Query("area[latitude]") lat: Float?,
         @Query("area[longitude]") lon: Float?,
         @Query("query_string") queryText: String?,
@@ -51,6 +52,7 @@ interface NewListingsService {
 
     @GET("public/listing/listings")
     fun getArListings(
+        @Query("source") platform: String = "android",
         @Query("area[latitude]") lat: Float,
         @Query("area[longitude]") lon: Float,
         @Query("area[radius]") radius: Int = Constants.MAX_RADIUS,

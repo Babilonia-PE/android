@@ -6,6 +6,7 @@ import com.babilonia.data.db.model.FacilityDto
 import com.babilonia.data.db.model.ImageDto
 import com.babilonia.data.db.model.ListingDto
 import com.babilonia.data.db.model.UrlDto
+import com.babilonia.data.network.model.json.ContactJson
 import com.babilonia.data.network.model.json.FacilityJson
 import com.babilonia.data.network.model.json.ImageJson
 import com.babilonia.data.network.model.json.ListingJson
@@ -141,7 +142,12 @@ class ListingMapper @Inject constructor(
                 imageIds = it.map { it.id }
             }
             user = from.user?.let { userMapper.mapDomainToRemote(it) }
-            from.contacts.let { it?.map { contactMapper.mapDomainToRemote(it) } }
+            val realmContacts = RealmList<ContactJson>()
+            from.contacts?.let {
+                realmContacts.addAll(it.map { contactMapper.mapDomainToRemote(it) })
+            }
+            contacts = realmContacts
+            //from.contacts.let { it?.map { contactMapper.mapDomainToRemote(it) } }
             status = from.status
             favourited = from.isFavourite
             viewsCount = from.viewsCount

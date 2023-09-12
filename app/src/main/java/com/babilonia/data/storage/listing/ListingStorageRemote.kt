@@ -72,13 +72,13 @@ class ListingStorageRemote @Inject constructor(
         address: String?
     ): Single<List<ListingJson>> {
         return newListingsService.getListings(
-            lat,
-            lon,
-            if (placeId.isNullOrEmpty()) null else queryText,
-            placeId,
-            page,
+            lat = lat,
+            lon = lon,
+            queryText = if (placeId.isNullOrEmpty()) null else queryText,
+            placeId = placeId,
+            page = page,
             limit = pageSize,
-            radius,
+            radius = radius,
             sort = sortType.value,
             order = sortType.order,
             filters = filtersMap,
@@ -157,6 +157,7 @@ class ListingStorageRemote @Inject constructor(
     private fun parseToRequestListingJson(listingDto: ListingJson): CreateListingRequest {
         val request = CreateListingRequest()
         request.id = listingDto.id
+        request.ids = listOf(listingDto.id)
         request.listingType = listingDto.listingType
         request.propertyType = listingDto.propertyType
         request.price = listingDto.price

@@ -28,10 +28,10 @@ class RealEstateDataSourceImpl @Inject constructor(
         filtersMap: Map<String, String>,
     ): Single<List<ListingJson>> {
         return newListingsService.getArListings(
-            lat,
-            lon,
-            radius,
-            filtersMap
+            lat = lat,
+            lon = lon,
+            radius = radius,
+            filters = filtersMap
         ).map { it.data.records }
     }
 

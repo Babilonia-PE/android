@@ -388,20 +388,7 @@ class ListingSearchViewModel @Inject constructor(
     }
 
     fun getRecentSearches() {
-        getRecentSearchesUseCase.execute(object : DisposableSingleObserver<List<RecentSearch>>() {
-            override fun onSuccess(newRecentSearches: List<RecentSearch>) {
-                recentSearches.postValue(newRecentSearches)
-            }
 
-            override fun onError(e: Throwable) {
-                if (e is AuthFailedException) {
-                    signOut {
-                        authFailedData.call()
-                    }
-                } else
-                    dataError.postValue(e)
-            }
-        }, Unit)
     }
 
     fun getUserId() {
