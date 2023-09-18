@@ -817,7 +817,8 @@ open class SimpleRangeView @JvmOverloads constructor(
             ViewCompat.postInvalidateOnAnimation(this@SimpleRangeView)
         }
         addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
                 value.value = normalValue
                 removeAllListeners()
                 removeAllUpdateListeners()
@@ -835,7 +836,8 @@ open class SimpleRangeView @JvmOverloads constructor(
         }
 
         addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
                 value.value = 0f
                 removeAllListeners()
                 removeAllUpdateListeners()

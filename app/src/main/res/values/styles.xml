@@ -139,7 +139,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="MonthPickerDialogStyle" parent="materialDialogStyle">
+    <!-- <style name="MonthPickerDialogStyle" parent="materialDialogStyle">
         <item name="monthBgColor">@android:color/white</item>
         <item name="monthBgSelectedColor">@color/colorAccent</item>
         <item name="monthFontColorSelected">@android:color/white</item>
@@ -150,7 +150,7 @@
         <item name="headerFontColorNormal">#85FFFFFF</item>
         <item name="headerTitleColor">#fff</item>
         <item name="dialogActionButtonColor">@color/black</item>
-    </style>
+    </style> -->
 
     <style name="PriceStyle" parent="TextAppearance.MaterialComponents.Body2">
         <item name="fontFamily">@font/samsungsharpsans_bold</item>
