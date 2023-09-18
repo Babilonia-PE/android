@@ -105,7 +105,7 @@ object SvgUtil {
         val geocoder = Geocoder(App.applicationContext(), Locale.getDefault())
         return try {
             val addresses = geocoder.getFromLocation(iLocation.latitude, iLocation.longitude, 1)
-            if (addresses.isNotEmpty()) {
+            if (addresses?.isNotEmpty() == true) {
                 val obj = addresses[0]
                 iLocation.address    = refactorAddress(obj.getAddressLine(0))
                 iLocation.department = updateDepartment(obj.adminArea)
@@ -125,7 +125,7 @@ object SvgUtil {
         val geocoder = Geocoder(App.applicationContext(), Locale.getDefault())
         return try {
             val addresses = geocoder.getFromLocation(placeLocation.latitude, placeLocation.longitude, 1)
-            if (addresses.isNotEmpty()) {
+            if (addresses?.isNotEmpty() == true) {
                 val obj = addresses[0]
                 placeLocation.address    = refactorAddress(obj.getAddressLine(0))
                 placeLocation.department = updateDepartment(obj.adminArea)
@@ -224,7 +224,7 @@ object SvgUtil {
         val geocoder = Geocoder(App.applicationContext(), Locale.getDefault())
         return try {
             val addresses = geocoder.getFromLocationName(concatString(location.address, location.district, location.province, location.department), 1)
-            if (addresses.isNotEmpty()) {
+            if (addresses?.isNotEmpty() == true) {
                 val obj = addresses[0]
                 location.latitude  = obj.latitude
                 location.longitude = obj.longitude
