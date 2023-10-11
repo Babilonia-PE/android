@@ -2,7 +2,6 @@ package com.babilonia.presentation.flow.ar
 
 import android.Manifest
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -15,10 +14,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.transition.TransitionManager
 import com.babilonia.Constants
+import com.babilonia.Constants.KEY_FILTERS
 import com.babilonia.R
 import com.babilonia.ar.LocationHelper
 import com.babilonia.ar.base.ITag
@@ -26,6 +25,7 @@ import com.babilonia.ar.tag.ArTag
 import com.babilonia.data.model.ar.ArState
 import com.babilonia.data.model.ar.tag.MovableArObject
 import com.babilonia.databinding.ArSceneFragmentBinding
+import com.babilonia.domain.model.Filter
 import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.RouteStep
 import com.babilonia.domain.model.enums.FilterType
@@ -34,13 +34,17 @@ import com.babilonia.domain.model.enums.PropertyType
 import com.babilonia.domain.model.enums.SuccessMessageType
 import com.babilonia.domain.model.geo.ILocation
 import com.babilonia.presentation.base.BaseFragment
-import com.babilonia.presentation.extension.*
+import com.babilonia.presentation.extension.gone
+import com.babilonia.presentation.extension.invisible
+import com.babilonia.presentation.extension.parcelableArrayList
+import com.babilonia.presentation.extension.safeLet
+import com.babilonia.presentation.extension.visible
+import com.babilonia.presentation.extension.withGlide
 import com.babilonia.presentation.flow.ar.ArScreenMode.NAVIGATION
 import com.babilonia.presentation.flow.ar.ArScreenMode.SEARCH
 import com.babilonia.presentation.flow.main.listing.common.ListingImagesPagerAdapter
 import com.babilonia.presentation.flow.main.search.map.common.ListingUtilsDelegateImpl
 import com.babilonia.presentation.flow.main.search.model.DisplaybleFilter
-import com.babilonia.presentation.flow.main.search.model.PrefixedDisplayableFilter
 import com.babilonia.presentation.utils.NetworkUtil
 import com.babilonia.presentation.view.ArTagViewFactory
 import com.babilonia.presentation.view.dialog.StyledAlertDialog
@@ -48,29 +52,81 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
-import com.google.android.material.chip.Chip
-import com.google.android.material.shape.CornerFamily
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Dot
+import com.google.android.gms.maps.model.Gap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.log.logcat
-import io.fotoapparat.selector.*
+import io.fotoapparat.selector.autoFocus
+import io.fotoapparat.selector.back
+import io.fotoapparat.selector.continuousFocusPicture
+import io.fotoapparat.selector.firstAvailable
+import io.fotoapparat.selector.fixed
+import io.fotoapparat.selector.highestFps
+import io.fotoapparat.selector.off
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ar_filters_fragment.*
-import kotlinx.android.synthetic.main.ar_scene_bottom_details.*
-import kotlinx.android.synthetic.main.ar_scene_fragment.*
-import kotlinx.android.synthetic.main.layout_ar_navigation_preview.*
-import kotlinx.android.synthetic.main.layout_filters_ar.*
-import kotlinx.android.synthetic.main.layout_filters_general.*
-import kotlinx.android.synthetic.main.layout_filters_general.btRent
-import kotlinx.android.synthetic.main.layout_filters_general.btSale
-import kotlinx.android.synthetic.main.layout_filters_general.tiPropertyType
-import kotlinx.android.synthetic.main.layout_filters_general.tvListingTypeTitle
+import kotlinx.android.synthetic.main.ar_filters_fragment.btApplyFilters
+import kotlinx.android.synthetic.main.ar_filters_fragment.filterGeneral
+import kotlinx.android.synthetic.main.ar_filters_fragment.ivArrowHideFilters
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.btnContact
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.btnNavigate
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.btnShowDetails
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.cbFavorite
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.ivArrowHide
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.ivFirstDivider
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.ivPlanIcon
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.ivPropertyType
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.ivSecondDivider
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.pagerIndicator
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvAddress
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvCountBathroom
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvCountBedroom
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvImagesCount
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvListingType
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvPrice
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvPropertyType
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvSubPrice
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.tvTotalArea
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.vListingDetails
+import kotlinx.android.synthetic.main.ar_scene_bottom_details.vpImages
+import kotlinx.android.synthetic.main.ar_scene_fragment.arScene
+import kotlinx.android.synthetic.main.ar_scene_fragment.btnGoToMap
+import kotlinx.android.synthetic.main.ar_scene_fragment.cameraView
+import kotlinx.android.synthetic.main.ar_scene_fragment.circleLayoutMapContainer
+import kotlinx.android.synthetic.main.ar_scene_fragment.clBottomFilter
+import kotlinx.android.synthetic.main.ar_scene_fragment.clBottomListing
+import kotlinx.android.synthetic.main.ar_scene_fragment.clFilterRoot
+import kotlinx.android.synthetic.main.ar_scene_fragment.clNavigationPreview
+import kotlinx.android.synthetic.main.ar_scene_fragment.clRoot
+import kotlinx.android.synthetic.main.ar_scene_fragment.ivArrowDirection
+import kotlinx.android.synthetic.main.ar_scene_fragment.ivBack
+import kotlinx.android.synthetic.main.ar_scene_fragment.listingTypeButton
+import kotlinx.android.synthetic.main.ar_scene_fragment.propertyTypeButton
+import kotlinx.android.synthetic.main.ar_scene_fragment.tvMapDistance
+import kotlinx.android.synthetic.main.ar_scene_fragment.tvTitle
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.btnExitPreview
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.ivPreviewFirstDivider
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.ivPreviewPhoto
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.ivPreviewSecondDivider
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.tvPreviewAddress
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.tvPreviewCountBathroom
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.tvPreviewCountBedroom
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.tvPreviewPrice
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.tvPreviewPropertyType
+import kotlinx.android.synthetic.main.layout_ar_navigation_preview.tvPreviewTotalArea
+import kotlinx.android.synthetic.main.layout_filters_ar.listingTypeContainer
+import kotlinx.android.synthetic.main.layout_filters_ar.propertyTypeContainer
 import timber.log.Timber
 import java.lang.Math.toDegrees
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.atan2
 
@@ -170,6 +226,25 @@ class ArSceneFragment : BaseFragment<ArSceneFragmentBinding, ArSceneViewModel>()
             logger = logcat(),
             cameraErrorCallback = { it.printStackTrace() }
         )
+
+        if (viewModel.getFilters().isEmpty()) {
+            val filters: List<Filter> = requireActivity().intent.parcelableArrayList(KEY_FILTERS) ?: arrayListOf()
+            filters.forEach { filter ->
+                viewModel.addAndApplyFilter(filter)
+                filters.forEach { filter ->
+                    if (filter.value.isNotEmpty()) {
+                        when(filter.type) {
+                            FilterType.LISTING.type -> {
+                                listingTypeButton.text = filter.displayedName
+                            }
+                            FilterType.PROPERTY.type -> {
+                                propertyTypeButton.text = filter.displayedName
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         ivArrowHide.setOnClickListener { viewModel.unselectTag() }
         ivBack.setOnClickListener { requireActivity().onBackPressed() }

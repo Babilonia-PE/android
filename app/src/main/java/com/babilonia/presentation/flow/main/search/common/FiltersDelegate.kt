@@ -11,6 +11,7 @@ import com.babilonia.presentation.flow.main.search.model.DisplaybleFilter
 interface FiltersDelegate {
     val filtersLiveData: MutableLiveData<MutableList<DisplaybleFilter>>
     fun addFilter(type: FilterType, value: String, displayValue: String)
+    fun addAndApplyFilter(filter: Filter)
     fun applyFilters(resources: Resources)
     fun clearFilters()
     fun removeFilter(type: FilterType)

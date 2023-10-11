@@ -35,6 +35,11 @@ class FiltersDelegateImpl : FiltersDelegate {
         filtersMap[type.type] = Filter(displayValue, type.type, value)
     }
 
+    override fun addAndApplyFilter(filter: Filter) {
+        filtersMap[filter.type] = filter
+        filters = filtersMap.values.sortedByDescending { it.type == FilterType.LISTING.type }.toMutableList()
+    }
+
     override fun getFilters(): List<Filter> {
         return filters
     }

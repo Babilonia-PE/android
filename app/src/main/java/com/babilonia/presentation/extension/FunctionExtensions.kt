@@ -1,6 +1,11 @@
 package com.babilonia.presentation.extension
 
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.TypedValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,6 +13,7 @@ import com.babilonia.EmptyConstants
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
+import java.io.Serializable
 import java.util.*
 
 // Created by Anton Yatsenko on 26.02.2019.
@@ -83,4 +89,14 @@ fun String.capitalizeEachWord(): String {
         else concatWords.plus(" ").plus(words[index].capitalize(Locale.getDefault()))
     }
     return concatWords.trim()
+}
+
+inline fun <reified T : Parcelable> Bundle.parcelableArrayList(key: String): ArrayList<T>? = when {
+    SDK_INT >= 33 -> getParcelableArrayList(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelableArrayList(key)
+}
+
+inline fun <reified T : Parcelable> Intent.parcelableArrayList(key: String): ArrayList<T>? = when {
+    SDK_INT >= 33 -> getParcelableArrayListExtra(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelableArrayListExtra(key)
 }
