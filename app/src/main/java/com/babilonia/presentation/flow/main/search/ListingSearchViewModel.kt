@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import com.babilonia.Constants
+import com.babilonia.Constants.KEY_FILTERS
 import com.babilonia.Constants.LIMA_LAT
 import com.babilonia.Constants.LIMA_LON
 import com.babilonia.R
@@ -438,7 +439,12 @@ class ListingSearchViewModel @Inject constructor(
     }
 
     fun navigateToAr() {
-        navigateGlobal(R.id.action_global_ar)
+        navigateGlobal(
+            R.id.action_global_ar,
+            bundleOf(
+                KEY_FILTERS to getFilters()
+            )
+        )
     }
 
     fun isLocationEnabled() = appSystemProvider.isLocationEnabled()

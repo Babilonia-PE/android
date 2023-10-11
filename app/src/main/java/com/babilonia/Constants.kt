@@ -47,4 +47,9 @@ object Constants {
     const val TYPE_IMAGE = "image/*"
 
     const val BUNDLE_PAYMENT_MESSAGE   = "BUNDLE_PAYMENT_MESSAGE"
+
+    /**
+     * KEYS FOR EXTRAS
+     */
+    const val KEY_FILTERS = "KEY_FILTERS"
 }
