@@ -11,7 +11,7 @@ apply plugin: 'com.google.firebase.appdistribution'
 def versionMajor = 0
 def versionMinor = 3
 def versionPatch = 0
-def versionBuild = 7
+def versionBuild = 8
 
 
 android {
@@ -74,18 +74,6 @@ android {
             ext.enableCrashlytics = true
         }
 
-        qa {
-            signingConfig signingConfigs.release
-            debuggable true
-            //Need it here to restrict traffic sniffing through Charles for android versions > Nougat for only debuggable builds
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            shrinkResources false
-            minifyEnabled false
-            ext.enableCrashlytics = true
-            ext.betaDistributionReleaseNotes = getDate()
-            ext.betaDistributionEmails = "empty"
-        }
-
         flavorDimensions "hostname"
         productFlavors {
 
@@ -100,40 +88,6 @@ android {
                 buildConfigField "String", "ENV", '"dev/"'
                 buildConfigField "String", "CONFIG_PREFIX", '"api/"'
                 manifestPlaceholders.deeplinkHost = "babiloniadev.page.link"
-
-                firebaseAppDistribution {
-                    appId = babiloniaAppId
-                    groups = "QA"
-                    releaseNotes = getDate()
-                }
-            }
-
-            qaenv {
-                dimension "hostname"
-                versionName = android.defaultConfig.versionName + "-qa"
-                buildConfigField "String", "BASE_URL", '"https://qa.babilonia.io/"'
-                buildConfigField "String", "BASE_URL_WEB", '"https://qa.babilonia.io"'
-                buildConfigField "String", "BASE_URL_SERVICES", '"https://qa.babilonia.io/"'
-                buildConfigField "String", "ENV", '"qa/"'
-                buildConfigField "String", "CONFIG_PREFIX", '"qa/"'
-                manifestPlaceholders.deeplinkHost = "babiloniaqa.page.link"
-
-                firebaseAppDistribution {
-                    appId = babiloniaAppId
-                    groups = "QA"
-                    releaseNotes = getDate()
-                }
-            }
-
-            stage {
-                dimension "hostname"
-                versionName = android.defaultConfig.versionName + "-stage"
-                buildConfigField "String", "BASE_URL", '"https://staging.babilonia.io/"'
-                buildConfigField "String", "BASE_URL_WEB", '"https://staging.babilonia.io"'
-                buildConfigField "String", "BASE_URL_SERVICES", '"https://staging.babilonia.io/"'
-                buildConfigField "String", "ENV", '"stage/"'
-                buildConfigField "String", "CONFIG_PREFIX", '"stage/"'
-                manifestPlaceholders.deeplinkHost = "babiloniastage.page.link"
 
                 firebaseAppDistribution {
                     appId = babiloniaAppId
