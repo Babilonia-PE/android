@@ -9,9 +9,9 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.appdistribution'
 
 def versionMajor = 0
-def versionMinor = 0
-def versionPatch = 3
-def versionBuild = 2
+def versionMinor = 3
+def versionPatch = 0
+def versionBuild = 7
 
 
 android {
