@@ -11,7 +11,7 @@ open class ListingJson {
     var id: Long = UUID.randomUUID().hashCode().toLong()
 
     @SerializedName("url")
-    var url: String? = null
+    var url: UrlJson? = null
 
     @SerializedName("listing_type")
     var listingType: String? = null

@@ -30,7 +30,7 @@ interface NewListingsService {
     @PUT("me/validation_data")
     fun updateListingById(@Body listingRequest: CreateListingRequest): Single<ListingBaseResponse<ListingJson>>
 
-    @GET("public/listings")
+    @GET("public/listing/listings")
     fun getListings(
         @Query("area[latitude]") lat: Float?,
         @Query("area[longitude]") lon: Float?,
@@ -49,7 +49,7 @@ interface NewListingsService {
         @Query("location[address]") address: String?= null
     ): Single<BaseResponse<GetMyListingsResponse>>
 
-    @GET("public/listings")
+    @GET("public/listing/listings")
     fun getArListings(
         @Query("area[latitude]") lat: Float,
         @Query("area[longitude]") lon: Float,
