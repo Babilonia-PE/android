@@ -10,6 +10,7 @@ open class ListingDto : RealmObject() {
     @PrimaryKey
     var id: Long = UUID.randomUUID().hashCode().toLong()
     var url: String? = null
+    var urlShared: String? = null
     var listingType: String? = null
     var propertyType: String? = null
     var price: Long? = null

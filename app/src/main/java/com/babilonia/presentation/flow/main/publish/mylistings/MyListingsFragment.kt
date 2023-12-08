@@ -256,7 +256,7 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
         intent.type = "text/plain"
         val title = activity?.getString(R.string.share) ?: ""
         val message = activity?.getString(R.string.share_message) ?: ""
-        val url = BuildConfig.BASE_URL_WEB + "listings/"+id.toString()
+        val url = BuildConfig.BASE_URL_WEB +listing.urlShared.toString()
 //        intent.putExtra(Intent.EXTRA_SUBJECT, message)
         intent.putExtra(Intent.EXTRA_TEXT, "$message $url")
         startActivity(Intent.createChooser(intent, title))
