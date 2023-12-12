@@ -27,6 +27,7 @@ import com.babilonia.presentation.flow.main.payment.PaymentActivity
 import com.babilonia.presentation.flow.main.publish.mylistings.common.MyListingsPagerAdapter
 import com.babilonia.presentation.flow.main.publish.mylistings.common.NewListingOpenMode
 import com.babilonia.presentation.view.dialog.StyledAlertDialog
+import com.babilonia.presentation.view.dialog.StyledAlertUnPublishDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 
@@ -263,13 +264,23 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
     }
 
     private fun showUnpublishConfirmationDialog(listing: Listing) {
+        var rbSelectReason = ""
         context?.let {
-            StyledAlertDialog.Builder(it)
+            StyledAlertUnPublishDialog.Builder(it)
                 .setTitleText(getString(R.string.unpublish_confirmation_title))
+                .setBodyTextBabilonia(getString(R.string.unpublish_confirmation_rbBailonia))
+                .setBodyTextPortal(getString(R.string.unpublish_confirmation_rbPortal))
+                .setBodyTextSocial(getString(R.string.unpublish_confirmation_rbSocial))
+                .setBodyTextReferrals(getString(R.string.unpublish_confirmation_rbReferrals))
+                .setBodyTextSell(getString(R.string.unpublish_confirmation_rbSell))
                 .setBodyText(getString(R.string.unpublish_confirmation_body))
                 .setLeftButton(getString(R.string.cancel))
+                .setOnRadioButtonSelectedListener { selectedValue ->
+                    rbSelectReason = selectedValue
+                }
                 .setRightButton(getString(R.string.unpublish), R.color.colorAccent) {
                     listing.status = Constants.HIDDEN
+                    listing.reason = rbSelectReason
                     viewModel.updateListing(listing)
                 }
                 .build()
