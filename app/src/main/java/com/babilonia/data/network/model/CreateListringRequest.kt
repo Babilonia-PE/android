@@ -9,6 +9,15 @@ class CreateListingRequest(
     @SerializedName("source")
     var source: String = "android",
 
+    @SerializedName("type")
+    var type: String = "listing",
+
+    @SerializedName("reason")
+    var reason: String? = null,
+
+    @SerializedName("ids")
+    var ids: List<Int> = mutableListOf(),
+
     @SerializedName("id")
     var id: Long? = null,
 

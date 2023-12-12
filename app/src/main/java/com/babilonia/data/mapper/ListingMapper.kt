@@ -35,6 +35,7 @@ class ListingMapper @Inject constructor(
         return ListingDto().apply {
             id = from.id ?: 0
             url = from.url
+            reason = from.reason
             urlShared = from.urlShared
             listingType = from.listingType
             propertyType = from.propertyType
@@ -96,6 +97,7 @@ class ListingMapper @Inject constructor(
             id = from.id ?: 0
             url?.main = from.url
             url?.share = from.urlShared
+            reason = from.reason
             listingType = from.listingType
             propertyType = from.propertyType
             price = from.price
@@ -192,7 +194,8 @@ class ListingMapper @Inject constructor(
             from.adPurchasedAt,
             from.adExpiresAt,
             from.url,
-            from.urlShared
+            from.urlShared,
+            from.reason
         )
     }
 
@@ -239,6 +242,7 @@ class ListingMapper @Inject constructor(
             from.updatedAt,
             from.adPurchasedAt,
             from.adExpiresAt,
+            from.reason,
             from.url?.main,
             from.url?.share
         )

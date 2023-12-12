@@ -175,6 +175,11 @@
     <string name="edit_details">Edit details</string>
     <string name="unpublish">Unpublish</string>
     <string name="unpublish_confirmation_title">Unpublish listing?</string>
+    <string name="unpublish_confirmation_rbBailonia">I sold it with Babilonia</string>
+    <string name="unpublish_confirmation_rbPortal">I sold it with another portal</string>
+    <string name="unpublish_confirmation_rbSocial">I sold it on social networks</string>
+    <string name="unpublish_confirmation_rbReferrals">I sold it through referrals</string>
+    <string name="unpublish_confirmation_rbSell">I didnt get to sell it</string>
     <string name="unpublish_confirmation_body">You can publish it again later at anytime</string>
     <string name="publish_confirmation_body">Are you sure you want to publish the listing?</string>
     <string name="delete_confirmation_title">Delete listing?</string>

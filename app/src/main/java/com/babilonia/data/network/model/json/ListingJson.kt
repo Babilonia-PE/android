@@ -120,4 +120,7 @@ open class ListingJson {
 
     @SerializedName("ad_purchased_at")
     var adPurchasedAt: String? = null
+
+    @SerializedName("reason")
+    var reason: String? = null
 }

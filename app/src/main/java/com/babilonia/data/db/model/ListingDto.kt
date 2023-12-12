@@ -51,4 +51,5 @@ open class ListingDto : RealmObject() {
     var updatedAt: String? = null
     var adPurchasedAt: String? = null
     var adExpiresAt: String? = null
+    var reason: String? = null
 }

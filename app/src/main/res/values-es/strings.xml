@@ -185,6 +185,11 @@
     <string name="unpublish">Despublicar</string>
     <string name="unpublish_confirmation_title">¿Desea despublicar el aviso?</string>
     <string name="unpublish_confirmation_body">Podrá volver a publicarlo más tarde encualquier momento</string>
+    <string name="unpublish_confirmation_rbBailonia">Lo vendí con Babilonia</string>
+    <string name="unpublish_confirmation_rbPortal">Lo vendí con otro portal</string>
+    <string name="unpublish_confirmation_rbSocial">Lo vendí por redes sociales</string>
+    <string name="unpublish_confirmation_rbReferrals">Lo vendí por referidos</string>
+    <string name="unpublish_confirmation_rbSell">No lo llegue a vender</string>
     <string name="publish_confirmation_body">¿Desea publicar el aviso?</string>
     <string name="delete_confirmation_title">"¿Desea eliminar el borrador?</string>
     <string name="delete_confirmation_body">¿Está seguro que desea borrar esta información? La acción no se puede deshacer.</string>

@@ -157,6 +157,8 @@ class ListingStorageRemote @Inject constructor(
     private fun parseToRequestListingJson(listingDto: ListingJson): CreateListingRequest {
         val request = CreateListingRequest()
         request.id = listingDto.id
+        request.ids = mutableListOf(listingDto.id.toInt())
+        request.reason = listingDto.reason
         request.listingType = listingDto.listingType
         request.propertyType = listingDto.propertyType
         request.price = listingDto.price
