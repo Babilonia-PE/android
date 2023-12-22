@@ -1,5 +1,6 @@
 package com.babilonia.data.datasource
 
+import com.babilonia.data.network.model.BaseResponse
 import com.babilonia.data.network.model.json.*
 import com.babilonia.domain.model.enums.SortType
 import io.reactivex.Completable
@@ -54,6 +55,16 @@ interface ListingsDataSourceRemote {
         district: String?,
         address: String?
     ): Single<List<ListingJson>>
+
+    fun getListingsPage(
+        page: Int,
+        pageSize: Int,
+        sortType: SortType,
+        department: String?,
+        province: String?,
+        district: String?,
+        address: String?
+    ): Single<BaseResponse<DataCurrentPageJson>>
 
     fun getListingsMetadata(
         lat: Float?,

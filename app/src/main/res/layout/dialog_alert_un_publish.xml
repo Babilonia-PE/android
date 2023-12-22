@@ -11,16 +11,20 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        style="@style/materialDialogStyle.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="none"
         android:maxLines="3"
+        android:gravity="center"
+        android:fontFamily="@font/samsungsharpsans_bold"
         android:singleLine="false"
+        android:textColor="@color/black"
+        android:textSize="18sp"
         android:layout_marginTop="32dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         tools:text="Title" />
+
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
@@ -95,16 +99,17 @@
         android:singleLine="false"
         tools:text="Body" />
 
-    <View
-        android:id="@+id/dividerHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/toggle_gray" />
+<!--    <View-->
+<!--        android:id="@+id/dividerHorizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:background="@color/toggle_gray" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="30dp"
         android:gravity="center">
 
         <com.google.android.material.button.MaterialButton
@@ -122,11 +127,11 @@
             android:textSize="14sp"
             app:cornerRadius="0dp" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/toggle_gray" />
+<!--        <View-->
+<!--            android:id="@+id/divider"-->
+<!--            android:layout_width="1dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@color/toggle_gray" />-->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPositive"

@@ -62,7 +62,8 @@ class ListingSearchViewModel @Inject constructor(
     private val getTopListingsUseCase: GetTopListingsUseCase,
     private val appSystemProvider: AppSystemProvider,
     private val needToShowArOnboardingUseCase: NeedToShowArOnboardingUseCase,
-    private val getDataLocationSearchedUseCase: GetDataLocationSearchedUseCase
+    private val getDataLocationSearchedUseCase: GetDataLocationSearchedUseCase,
+    private val getDataListingsPageUseCase: GetListingsPageUseCase
 ) : BaseViewModel(), ListingActionsListener, FiltersDelegate by FiltersDelegateImpl(),
     FacilityChangeListener {
     val authFailedData = SingleLiveEvent<Unit>()
@@ -71,6 +72,7 @@ class ListingSearchViewModel @Inject constructor(
     val locationLiveData = MutableLiveData<ILocation>()
     val priceRangeLiveData = MutableLiveData<List<BarEntry>>()
     val suggestions = MutableLiveData<List<Location>>()
+    val currentPage = MutableLiveData<DataCurrentPage>()
     val recentSearches = MutableLiveData<List<RecentSearch>>()
     val onFocusChangeEvent = MutableLiveData<Boolean>()
     val filtersVisibilityLiveData = MutableLiveData<FiltersVisibility>(FiltersVisibility.All())
@@ -110,6 +112,9 @@ class ListingSearchViewModel @Inject constructor(
     val placeLocationGPSLiveData = SingleLiveEvent<PlaceLocation>()
 
     var ipAddress = ""
+    var total_pages = 0
+    var pagesInfo = 1
+    var per_pages = 0
 
     init {
         subscribeToListingMetadata()
@@ -330,6 +335,30 @@ class ListingSearchViewModel @Inject constructor(
                 address = address,
                 page = page,
                 perPage = perPage
+            )
+        )
+    }
+
+    fun getListingsPage(location: ILocation, pageSize: Int = Constants.PER_PAGE) {
+        getDataListingsPageUseCase.execute(
+            object : DisposableSingleObserver<DataCurrentPage>() {
+                override fun onSuccess(dataCurrentPage: DataCurrentPage) {
+                    currentPage.postValue(dataCurrentPage)
+                    total_pages = dataCurrentPage.pagination!!.totalPages
+                    per_pages = dataCurrentPage.pagination.perPage
+                }
+
+                override fun onError(e: Throwable) {
+                    //dataError.postValue(e)
+                }
+
+            }, GetListingsPageUseCase.Params(
+                page = pageSize,
+                sortType = SortType.getByPosition(sortingBy),
+                department = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.department,
+                province = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.province,
+                district = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.district,
+                address = if (getIsGPSLocation() || getIsShowScreenMap()) null else location.address
             )
         )
     }
@@ -587,6 +616,8 @@ class ListingSearchViewModel @Inject constructor(
             getListingsUseCase.execute(
                 object : DisposableSingleObserver<List<Listing>>() {
                     override fun onSuccess(list: List<Listing>) {
+                        getListingsPage(location, pagesInfo)
+
                         if (!authStorageLocal.isValidateDefaultLocation() && list.isNullOrEmpty() && pageIndex == 1) {
                             authStorageLocal.setValidateDefaultLocation(true)
                             getDefaultPlace()

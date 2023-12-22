@@ -5,6 +5,7 @@ import android.webkit.MimeTypeMap
 import com.babilonia.Constants
 import com.babilonia.EmptyConstants
 import com.babilonia.data.datasource.ListingsDataSourceRemote
+import com.babilonia.data.network.model.BaseResponse
 import com.babilonia.data.network.model.CreateListingRequest
 import com.babilonia.data.network.model.json.*
 import com.babilonia.data.network.service.ListingsService
@@ -265,6 +266,27 @@ class ListingStorageRemote @Inject constructor(
 
     override fun getDataLocationSearched(address: String, page: Int, perPage: Int): Single<DataLocationJson> {
         return newListingsService.getDataLocationSearched(address, page, perPage).map { it.data }
+    }
+
+    override fun getListingsPage(
+        page: Int,
+        pageSize: Int,
+        sortType: SortType,
+        department: String?,
+        province: String?,
+        district: String?,
+        address: String?
+    ): Single<BaseResponse<DataCurrentPageJson>> {
+        return newListingsService.getListingsPage(
+        page,
+        limit = pageSize,
+        sort = sortType.value,
+        order = sortType.order,
+        department = if(department.isNullOrBlank()) null else department,
+        province = if(province.isNullOrBlank()) null else province,
+        district = if(district.isNullOrBlank()) null else district,
+        address = if(address.isNullOrBlank()) null else address
+        ).map { it }
     }
 
     override fun getListUbigeo(type: String, department: String?, province: String?): Single<List<String>> {

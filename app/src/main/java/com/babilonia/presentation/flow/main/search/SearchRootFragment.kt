@@ -318,6 +318,11 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: EmptyConstants.EMPTY_STRING
+                if (text.isEmpty()){
+                    viewModel.pagesInfo = 1
+                    viewModel.total_pages = 0
+                    viewModel.per_pages = 0
+                }
                 if (text.length > 2) {
                     viewModel.getPlaces(text, 1, 10)
                 } else {

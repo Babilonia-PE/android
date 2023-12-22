@@ -40,7 +40,8 @@ class ListingRepositoryImpl @Inject constructor(
     private val filtersMapper: FiltersMapper,
     private val recentSearchMapper: RecentSearchMapper,
     private val listingsMetadataMapper: ListingsMetadataMapper,
-    private val dataLocationMapper: DataLocationMapper
+    private val dataLocationMapper: DataLocationMapper,
+    private val dataCurrentPageMapper: DataCurrentPageMapper
 ) : ListingRepository {
     override fun getListingsPriceRange(
         lat: Float,
@@ -379,6 +380,19 @@ class ListingRepositoryImpl @Inject constructor(
     override fun getDataLocationSearched(address: String, page: Int, perPage: Int): Single<DataLocation> {
         return listingDataSourceRemote.getDataLocationSearched(address, page, perPage)
             .map { dataLocationMapper.mapRemoteToDomain(it) }
+    }
+
+    override fun getListingsPage(
+        page: Int,
+        pageSize: Int,
+        sortType: SortType,
+        department: String?,
+        province: String?,
+        district: String?,
+        address: String?
+    ): Single<DataCurrentPage> {
+        return listingDataSourceRemote.getListingsPage(page, pageSize, sortType, department, province, district, address)
+            .map { dataCurrentPageMapper.mapRemoteToDomain(it) }
     }
 
     override fun getListUbigeo(type: String, department: String?, province: String?): Single<List<String>> {

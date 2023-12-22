@@ -5,15 +5,19 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
+import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.babilonia.R
 import com.babilonia.databinding.SearchFragmentBinding
+import com.babilonia.domain.model.Listing
 import com.babilonia.domain.model.enums.SortType
 import com.babilonia.domain.model.geo.ILocation
 import com.babilonia.presentation.base.BaseFragment
@@ -30,9 +34,11 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 
 class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewModel>() {
 
-
     private var adapter: ListingPreviewRecyclerAdapter? = null
     private var endlessScrollListener: EndlessScrollListener? = null
+    private var locationInfo: ILocation? = null
+    var listaAcumulativa: MutableList<Listing> = mutableListOf()
+    var listaNueva: MutableList<Listing> = mutableListOf()
 
     override fun viewCreated() {
         binding.model = viewModel
@@ -48,28 +54,53 @@ class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewMode
             viewModel.getListingsWithLocationPermission(isGranted)
         }
         setClicks()
+
+        binding.rcListingsContainer.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                    val totalItemCount = layoutManager.itemCount
+
+                    if (lastVisibleItemPosition == totalItemCount - 1) {
+                        onLoadMore()
+                    }
+                }
+        })
     }
 
     override fun startListenToEvents() {
         super.startListenToEvents()
         with(viewModel) {
             listings.observe(this@SearchFragment, Observer { listings ->
+                listaNueva = mutableListOf()
+                if (viewModel.pagesInfo == 1) {
+                    listaAcumulativa = listings.toMutableList()
+                } else {
+                    listaNueva = listings.toMutableList()
+                }
+                if (listaNueva.isNotEmpty()) {
+                    listaAcumulativa.addAll(listaNueva)
+                }
                 adapter?.let {
                     val resetAdapter: Boolean = viewModel.needToResetAdapter
                     if (resetAdapter) {
                         endlessScrollListener?.reset()
-                        it.addItems(listings, resetAdapter)
+                        it.addItems(listaAcumulativa, resetAdapter)
                         viewModel.needToResetAdapter = false
                         binding.rcListingsContainer.scrollToPosition(0)
                     } else {
-                        it.addItems(listings, resetAdapter)
+                        it.addItems(listaAcumulativa, resetAdapter)
                     }
                 }
                 updateEmptyStateVisibility()
                 updateSortingVisibility()
+                binding.constraintLayout.visibility = View.GONE
                 endlessScrollListener?.cancelLoading()
             })
             locationLiveData.observe(this@SearchFragment, Observer {
+                locationInfo = it
                 subscribeToMyLocation(it)
             })
             gpsUnavailableError.observe(this@SearchFragment, Observer {
@@ -286,5 +317,13 @@ class SearchFragment : BaseFragment<SearchFragmentBinding, ListingSearchViewMode
     private fun switchSortingToDefault() {
         viewModel.sortingBy = SortType.MOST_RELEVANT.ordinal
         updateSortingView()
+    }
+
+     fun onLoadMore() {
+        if (viewModel.pagesInfo < viewModel.total_pages) {
+            binding.constraintLayout.visibility = View.VISIBLE
+            viewModel.pagesInfo++
+            locationInfo?.let { viewModel.getListings(it, viewModel.pagesInfo) }
+        }
     }
 }

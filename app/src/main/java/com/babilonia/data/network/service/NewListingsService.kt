@@ -57,6 +57,18 @@ interface NewListingsService {
         @QueryMap filters: Map<String, String> = mutableMapOf(),
     ): Single<BaseResponse<GetMyListingsResponse>>
 
+    @GET("public/listing/listings")
+    fun getListingsPage(
+        @Query("page") page: Int,
+        @Query("per_page") limit: Int = Constants.PER_PAGE,
+        @Query("sort") sort: String = SortType.NEAREST.value,
+        @Query("direction") order: String = SortType.NEAREST.order,
+        @Query("location[department]") department: String?= null,
+        @Query("location[province]") province: String?= null,
+        @Query("location[district]") district: String?= null,
+        @Query("location[address]") address: String?= null
+    ): Single<BaseResponse<DataCurrentPageJson>>
+
     @GET("me/recent_searches")
     fun getRecentSearches(): Single<BaseResponse<GetRecentSearchesResponse>>
 

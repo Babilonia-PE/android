@@ -2,6 +2,7 @@ package com.babilonia.domain.repository
 
 import com.babilonia.data.network.model.BaseResponse
 import com.babilonia.data.network.model.GetAdPlansResponse
+import com.babilonia.data.network.model.json.DataCurrentPageJson
 import com.babilonia.domain.model.*
 import com.babilonia.domain.model.enums.FacilityDataType
 import com.babilonia.domain.model.enums.SortType
@@ -92,4 +93,15 @@ interface ListingRepository {
     fun getDataLocationSearched(address: String, page: Int, perPage:Int): Single<DataLocation>
 
     fun getListUbigeo(type: String, department: String?, province: String?): Single<List<String>>
+
+    fun getListingsPage(
+        page: Int,
+        pageSize: Int,
+        sortType: SortType,
+        department: String?,
+        province: String?,
+        district: String?,
+        address: String?
+    ): Single<DataCurrentPage>
+
 }
