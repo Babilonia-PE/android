@@ -616,7 +616,6 @@ class ListingSearchViewModel @Inject constructor(
             getListingsUseCase.execute(
                 object : DisposableSingleObserver<List<Listing>>() {
                     override fun onSuccess(list: List<Listing>) {
-                        getListingsPage(location, pagesInfo)
 
                         if (!authStorageLocal.isValidateDefaultLocation() && list.isNullOrEmpty() && pageIndex == 1) {
                             authStorageLocal.setValidateDefaultLocation(true)

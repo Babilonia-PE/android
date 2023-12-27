@@ -341,6 +341,7 @@ class SearchRootFragment : BaseFragment<SearchRootFragmentBinding, ListingSearch
                     viewModel.getCurrentPlace()
                 }
                 is Location -> { // autocomplete suggestion is clicked
+                    viewModel.getListingsPage(clickedItem, viewModel.pagesInfo)
                     viewModel.getLocationSelected(clickedItem, false)
                 }
                 is RecentSearch -> { // recent search item clicked
