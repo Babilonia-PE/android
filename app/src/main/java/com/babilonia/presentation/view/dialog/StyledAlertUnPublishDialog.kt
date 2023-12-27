@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextWatcher
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -91,7 +92,20 @@ class StyledAlertUnPublishDialog private constructor(
         etReason?.let {
             it.text = Editable.Factory.getInstance().newEditable(text)
             infoReason = it.text.toString()
+            it.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    infoReason = s.toString()
+                }
+            })
         }
+
+
     }
 
     private fun setBodyText(text: String) {

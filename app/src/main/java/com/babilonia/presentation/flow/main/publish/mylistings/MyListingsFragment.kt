@@ -285,7 +285,9 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
                     val priceExtract = extractNumbers(infoReason)
                     listing.status = Constants.HIDDEN
                     listing.reason = rbSelectReason
-                    listing.priceFinal = priceExtract.toInt()
+                    if (priceExtract.isNotEmpty()){
+                        listing.priceFinal = priceExtract.toInt()
+                    }
                     viewModel.updateListing(listing)
                 }
                 .build()
@@ -295,7 +297,13 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
 
     fun extractNumbers(cadena: String): String {
         val regex = Regex("[^0-9]")
-        return regex.replace(cadena, "")
+        val result = regex.replace(cadena, "")
+
+        return if (result.any { it.isDigit() }) {
+            result
+        } else {
+            ""
+        }
     }
 
     private fun showPublishConfirmationDialog(listing: Listing) {
