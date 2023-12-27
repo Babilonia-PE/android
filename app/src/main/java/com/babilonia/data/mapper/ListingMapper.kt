@@ -99,6 +99,7 @@ class ListingMapper @Inject constructor(
             url?.main = from.url
             url?.share = from.urlShared
             reason = from.reason
+            priceFinal = from.priceFinal
             listingType = from.listingType
             propertyType = from.propertyType
             price = from.price
@@ -196,7 +197,8 @@ class ListingMapper @Inject constructor(
             from.adExpiresAt,
             from.url,
             from.urlShared,
-            from.reason
+            from.reason,
+            from.priceFinal
         )
     }
 
@@ -245,7 +247,8 @@ class ListingMapper @Inject constructor(
             from.adExpiresAt,
             from.reason,
             from.url?.main,
-            from.url?.share
+            from.url?.share,
+            from.priceFinal
         )
     }
 }
