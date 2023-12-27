@@ -2,10 +2,12 @@ package com.babilonia.presentation.flow.main.publish.mylistings
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -266,26 +268,34 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
     private fun showUnpublishConfirmationDialog(listing: Listing) {
         var rbSelectReason = ""
         context?.let {
-            StyledAlertUnPublishDialog.Builder(it)
+            val dialog = StyledAlertUnPublishDialog.Builder(it)
                 .setTitleText(getString(R.string.unpublish_confirmation_title))
                 .setBodyTextBabilonia(getString(R.string.unpublish_confirmation_rbBailonia))
                 .setBodyTextPortal(getString(R.string.unpublish_confirmation_rbPortal))
                 .setBodyTextSocial(getString(R.string.unpublish_confirmation_rbSocial))
                 .setBodyTextReferrals(getString(R.string.unpublish_confirmation_rbReferrals))
                 .setBodyTextSell(getString(R.string.unpublish_confirmation_rbSell))
+                .setBodyReasonSell(getString(R.string.unpublish_confirmation_reason) + " $${listing.price}")
                 .setBodyText(getString(R.string.unpublish_confirmation_body))
                 .setLeftButton(getString(R.string.cancel))
                 .setOnRadioButtonSelectedListener { selectedValue ->
                     rbSelectReason = selectedValue
                 }
-                .setRightButton(getString(R.string.unpublish), R.color.colorAccent) {
+                .setRightButton(getString(R.string.unpublish), R.color.colorAccent) { infoReason ->
+                    val priceExtract = extractNumbers(infoReason)
                     listing.status = Constants.HIDDEN
                     listing.reason = rbSelectReason
+                    listing.priceFinal = priceExtract.toInt()
                     viewModel.updateListing(listing)
                 }
                 .build()
                 .show()
         }
+    }
+
+    fun extractNumbers(cadena: String): String {
+        val regex = Regex("[^0-9]")
+        return regex.replace(cadena, "")
     }
 
     private fun showPublishConfirmationDialog(listing: Listing) {

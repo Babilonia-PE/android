@@ -160,6 +160,7 @@ class ListingStorageRemote @Inject constructor(
         request.id = listingDto.id
         request.ids = mutableListOf(listingDto.id.toInt())
         request.reason = listingDto.reason
+        request.priceFinal = listingDto.priceFinal
         request.listingType = listingDto.listingType
         request.propertyType = listingDto.propertyType
         request.price = listingDto.price

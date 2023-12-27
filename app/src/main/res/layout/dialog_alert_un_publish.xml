@@ -9,144 +9,143 @@
     android:gravity="start|top"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="none"
-        android:maxLines="3"
-        android:gravity="center"
-        android:fontFamily="@font/samsungsharpsans_bold"
-        android:singleLine="false"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        tools:text="Title" />
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp">
-
-        <RadioButton
-            android:id="@+id/rbBabilonia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary"
-            android:text="Lo vendí con Babilonia"/>
-
-        <RadioButton
-            android:id="@+id/rbPortal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary"
-            android:text="Lo vendí con otro portal"/>
-
-        <RadioButton
-            android:id="@+id/rbSocial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary"
-            android:text="Lo vendí por redes sociales"/>
-
-        <RadioButton
-            android:id="@+id/rbReferrals"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary"
-            android:text="Lo vendí por referidos"/>
-
-        <RadioButton
-            android:id="@+id/rbSell"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary"
-            android:text="No lo llegue a vender"/>
-    </RadioGroup>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tyReason"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        app:errorEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etReason"
-            style="@style/createListingInputStyle"
+        <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lo vendí en: $80,000" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/tvBody"
-        style="@style/materialDialogStyle.Button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:ellipsize="none"
-        android:maxLines="20"
-        android:singleLine="false"
-        tools:text="Body" />
-
-<!--    <View-->
-<!--        android:id="@+id/dividerHorizontal"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="1dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:background="@color/toggle_gray" />-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNegative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:ellipsize="none"
             android:fontFamily="@font/samsungsharpsans_bold"
             android:gravity="center"
-            android:text="@string/MPD_action_cancel"
-            android:textAllCaps="true"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:maxLines="3"
+            android:singleLine="false"
             android:textColor="@color/black"
-            android:textSize="14sp"
-            app:cornerRadius="0dp" />
+            android:textSize="18sp"
+            tools:text="Title" />
 
-<!--        <View-->
-<!--            android:id="@+id/divider"-->
-<!--            android:layout_width="1dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="@color/toggle_gray" />-->
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="24dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPositive"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:fontFamily="@font/samsungsharpsans_bold"
-            android:gravity="center"
-            android:text="@string/sort"
-            android:textAllCaps="true"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            app:cornerRadius="0dp" />
-    </LinearLayout>
+            <RadioButton
+                android:id="@+id/rbBabilonia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="Lo vendí con Babilonia" />
 
-</androidx.appcompat.widget.AlertDialogLayout>
+            <RadioButton
+                android:id="@+id/rbPortal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="Lo vendí con otro portal" />
+
+            <RadioButton
+                android:id="@+id/rbSocial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="Lo vendí por redes sociales" />
+
+            <RadioButton
+                android:id="@+id/rbReferrals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="Lo vendí por referidos" />
+
+            <RadioButton
+                android:id="@+id/rbSell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="No lo llegue a vender" />
+        </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tyReason"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etReason"
+                style="@style/createListingInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tvBody"
+            style="@style/materialDialogStyle.Button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:ellipsize="none"
+            android:maxLines="20"
+            android:singleLine="false"
+            tools:text="Body" />
+
+        <!--    <View-->
+        <!--        android:id="@+id/dividerHorizontal"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="1dp"-->
+        <!--        android:layout_marginTop="24dp"-->
+        <!--        android:background="@color/toggle_gray" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNegative"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:gravity="center"
+                android:text="@string/MPD_action_cancel"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:cornerRadius="0dp" />
+
+            <!--        <View-->
+            <!--            android:id="@+id/divider"-->
+            <!--            android:layout_width="1dp"-->
+            <!--            android:layout_height="match_parent"-->
+            <!--            android:background="@color/toggle_gray" />-->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPositive"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/samsungsharpsans_bold"
+                android:gravity="center"
+                android:text="@string/sort"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                app:cornerRadius="0dp" />
+        </LinearLayout>
+
+    </androidx.appcompat.widget.AlertDialogLayout>

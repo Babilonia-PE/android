@@ -181,6 +181,7 @@
     <string name="unpublish_confirmation_rbReferrals">I sold it through referrals</string>
     <string name="unpublish_confirmation_rbSell">I didnt get to sell it</string>
     <string name="unpublish_confirmation_body">You can publish it again later at anytime</string>
+    <string name="unpublish_confirmation_reason">I sold it at:</string>
     <string name="publish_confirmation_body">Are you sure you want to publish the listing?</string>
     <string name="delete_confirmation_title">Delete listing?</string>
     <string name="delete_confirmation_body">Are you sure you want to delete this information? The action can not be undone.</string>

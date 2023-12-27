@@ -36,6 +36,7 @@ class ListingMapper @Inject constructor(
             id = from.id ?: 0
             url = from.url
             reason = from.reason
+            priceFinal = from.priceFinal
             urlShared = from.urlShared
             listingType = from.listingType
             propertyType = from.propertyType

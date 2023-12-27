@@ -19,6 +19,9 @@ open class ListingJson {
     @SerializedName("property_type")
     var propertyType: String? = null
 
+    @SerializedName("price_final")
+    var priceFinal: Int? = null
+
     @SerializedName("price")
     var price: Long? = null
 

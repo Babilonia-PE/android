@@ -15,6 +15,9 @@ class CreateListingRequest(
     @SerializedName("reason")
     var reason: String? = null,
 
+    @SerializedName("price_final")
+    var priceFinal: Int? = null,
+
     @SerializedName("ids")
     var ids: List<Int> = mutableListOf(),
 

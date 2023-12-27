@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.babilonia.EmptyConstants
 import com.babilonia.R
 import com.babilonia.presentation.extension.invisible
+import com.google.android.material.textfield.TextInputEditText
 
 class StyledAlertUnPublishDialog private constructor(
     context: Context,
@@ -28,6 +30,7 @@ class StyledAlertUnPublishDialog private constructor(
     private lateinit var rbSell: RadioButton
     private lateinit var leftButton: TextView
     private lateinit var rightButton: TextView
+    private var infoReason: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +86,14 @@ class StyledAlertUnPublishDialog private constructor(
             rbSell.text = text
         }    }
 
+    fun setBodyReasonSell(text: String) {
+        val etReason = findViewById<TextInputEditText>(R.id.etReason)
+        etReason?.let {
+            it.text = Editable.Factory.getInstance().newEditable(text)
+            infoReason = it.text.toString()
+        }
+    }
+
     private fun setBodyText(text: String) {
         if (text.isEmpty()) {
             body.invisible()
@@ -94,12 +105,12 @@ class StyledAlertUnPublishDialog private constructor(
     private fun setRightButton(
         text: String,
         @ColorRes textColor: Int = R.color.colorPrimary,
-        onClick: (() -> Unit)? = null
+        onClick: ((String) -> Unit)? = null
     ) {
         rightButton.text = text
         rightButton.setTextColor(ContextCompat.getColor(context, textColor))
         rightButton.setOnClickListener {
-            onClick?.invoke()
+            onClick?.invoke(infoReason)
             dismiss()
         }
     }
@@ -175,9 +186,10 @@ class StyledAlertUnPublishDialog private constructor(
         private var rbTextSell: String = EmptyConstants.EMPTY_STRING
         private var rightButtonText: String = EmptyConstants.EMPTY_STRING
         private var leftButtonText: String = EmptyConstants.EMPTY_STRING
+        private var reason: String = EmptyConstants.EMPTY_STRING
         private var rightButtonColor = R.color.colorAccent
         private var leftButtonColor = R.color.black
-        private var onRightClickCallback: (() -> Unit)? = null
+        private var onRightClickCallback: ((String) -> Unit)? = null
         private var onLeftClickCallback: (() -> Unit)? = null
         private var isCustomDialogCancelable: Boolean = true
         private var onDismissListener: (() -> Unit)? = null
@@ -218,6 +230,11 @@ class StyledAlertUnPublishDialog private constructor(
             return this
         }
 
+        fun setBodyReasonSell(text: String): Builder {
+            reason = text
+            return this
+        }
+
         fun setBodyTextSell(text: String): Builder {
             rbTextSell = text
             return this
@@ -226,7 +243,7 @@ class StyledAlertUnPublishDialog private constructor(
         fun setRightButton(
             text: String,
             @ColorRes textColor: Int = R.color.colorPrimary,
-            onClick: (() -> Unit)? = null
+            onClick: ((String) -> Unit)? = null
         ): Builder {
             rightButtonText = text
             rightButtonColor = textColor
@@ -265,7 +282,10 @@ class StyledAlertUnPublishDialog private constructor(
                     it.setBodyTextSocial(rbTextSocial)
                     it.setBodyTextReferrals(rbTextReferrals)
                     it.setBodyTextSell(rbTextSell)
-                    it.setRightButton(rightButtonText, rightButtonColor, onRightClickCallback)
+                    it.setBodyReasonSell(reason)
+                    it.setRightButton(rightButtonText, rightButtonColor) { infoReason ->
+                        onRightClickCallback?.invoke(infoReason)
+                    }
                     it.setLeftButton(leftButtonText, leftButtonColor, onLeftClickCallback)
                     it.setCancelable(isCustomDialogCancelable)
                     it.setOnRadioButtonSelectedListener(onRadioButtonSelected)

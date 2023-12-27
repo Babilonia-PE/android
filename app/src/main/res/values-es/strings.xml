@@ -191,6 +191,7 @@
     <string name="unpublish_confirmation_rbReferrals">Lo vendí por referidos</string>
     <string name="unpublish_confirmation_rbSell">No lo llegue a vender</string>
     <string name="publish_confirmation_body">¿Desea publicar el aviso?</string>
+    <string name="unpublish_confirmation_reason">Lo vendí en:</string>
     <string name="delete_confirmation_title">"¿Desea eliminar el borrador?</string>
     <string name="delete_confirmation_body">¿Está seguro que desea borrar esta información? La acción no se puede deshacer.</string>
     <string name="delete_draft">Eliminar borrador</string>

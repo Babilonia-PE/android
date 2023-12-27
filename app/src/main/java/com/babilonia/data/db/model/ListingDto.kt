@@ -17,6 +17,7 @@ open class ListingDto : RealmObject() {
     var description: String? = null
     var bathroomsCount: Int? = null
     var bedroomsCount: Int? = null
+    var priceFinal: Int? = null
     var totalFloorsCount: Int? = null
     var floorNumber: Int? = null
     var parkingSlotsCount: Int? = null

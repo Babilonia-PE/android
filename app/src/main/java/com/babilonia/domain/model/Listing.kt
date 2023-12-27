@@ -46,6 +46,7 @@ data class Listing(
     var url: String? = null,
     var urlShared: String? = null,
     var reason: String? = null,
+    var priceFinal: Int? = null,
     ) : ClusterItem {
     override fun getSnippet(): String {
         return EmptyConstants.EMPTY_STRING
@@ -72,6 +73,7 @@ data class Listing(
         if (url != other.url) return false
         if (urlShared != other.urlShared) return false
         if (reason != other.reason) return false
+        if (priceFinal != other.priceFinal) return false
         if (listingType != other.listingType) return false
         if (propertyType != other.propertyType) return false
         if (price != other.price) return false
@@ -99,6 +101,7 @@ data class Listing(
         result = 31 * result + (url?.hashCode() ?: 0)
         result = 31 * result + (urlShared?.hashCode() ?: 0)
         result = 31 * result + (reason?.hashCode() ?: 0)
+        result = 31 * result + (priceFinal?.hashCode() ?: 0)
         result = 31 * result + (listingType?.hashCode() ?: 0)
         result = 31 * result + (propertyType?.hashCode() ?: 0)
         result = 31 * result + (price ?: 0)
@@ -137,6 +140,7 @@ data class Listing(
         url = another.url
         urlShared = another.urlShared
         reason = another.reason
+        priceFinal = another.priceFinal
         listingType = another.listingType
         propertyType = another.propertyType
         price = another.price

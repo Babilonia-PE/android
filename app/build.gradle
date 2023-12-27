@@ -11,7 +11,7 @@ apply plugin: 'com.google.firebase.appdistribution'
 def versionMajor = 0
 def versionMinor = 3
 def versionPatch = 0
-def versionBuild = 10
+def versionBuild = 11
 
 
 android {
