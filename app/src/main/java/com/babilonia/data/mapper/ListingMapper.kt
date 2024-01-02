@@ -5,6 +5,7 @@ import com.babilonia.data.db.model.ContactDto
 import com.babilonia.data.db.model.FacilityDto
 import com.babilonia.data.db.model.ImageDto
 import com.babilonia.data.db.model.ListingDto
+import com.babilonia.data.network.model.json.ContactJson
 import com.babilonia.data.network.model.json.FacilityJson
 import com.babilonia.data.network.model.json.ImageJson
 import com.babilonia.data.network.model.json.ListingJson

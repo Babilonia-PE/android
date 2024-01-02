@@ -24,9 +24,6 @@ class CreateListingRequest(
     @SerializedName("id")
     var id: Long? = null,
 
-    @SerializedName("ids")
-    var ids: List<Long> = mutableListOf(),
-
     @SerializedName("listing_type")
     var listingType: String? = null,
 
@@ -141,6 +138,4 @@ class CreateListingRequest(
     @SerializedName("ad_purchased_at")
     var adPurchasedAt: String? = null,
 
-    @SerializedName("type")
-    var type: String = "listing"
 )

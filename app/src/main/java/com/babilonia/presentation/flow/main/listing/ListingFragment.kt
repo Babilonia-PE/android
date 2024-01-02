@@ -815,7 +815,7 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
     private fun openWhatsapp(numberPhone: String, listing: Listing?) {
         try {
             val message = activity?.getString(R.string.whatsapp_message) ?: ""
-            val urlNotice = BuildConfig.BASE_URL_WEB + listing?.url?.share
+            val urlNotice = BuildConfig.BASE_URL_WEB + listing?.urlShared
             val url = "https://wa.me/$numberPhone?text=$message $urlNotice"
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
