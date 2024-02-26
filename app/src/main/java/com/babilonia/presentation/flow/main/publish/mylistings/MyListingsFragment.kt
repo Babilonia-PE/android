@@ -2,12 +2,15 @@ package com.babilonia.presentation.flow.main.publish.mylistings
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -37,6 +40,7 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
     private val adapter by lazy { MyListingsPagerAdapter(
         viewModel, listOf(getString(R.string.published), getString(R.string.not_published_tab_name))) }
 
+    private var progressDialog: AlertDialog? = null
     private val navArgs: MyListingsFragmentArgs by navArgs()
 
     override fun viewCreated() {
@@ -58,6 +62,7 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
             shareListingDetail(it)
         })
         viewModel.onListingUpdatedLiveData.observe(this, Observer {
+            hideProgress()
             viewModel.myListings.value?.let {
                 setListings(it)
             }
@@ -254,14 +259,25 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
         dialog.show()
     }
 
+    fun primeraMayuscula(cadena: String): String {
+        val palabras = cadena.split(" ")
+        val palabrasMayuscula = palabras.map { it.capitalize() }
+        return palabrasMayuscula.joinToString("")
+    }
+
     private fun shareListingDetail(listing: Listing) {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
         val title = activity?.getString(R.string.share) ?: ""
         val message = activity?.getString(R.string.share_message) ?: ""
-        val url = BuildConfig.BASE_URL_WEB +listing.urlShared.toString()
+        val info = activity?.getString(R.string.share_message_desc) ?: ""
+        val info2 = activity?.getString(R.string.share_message_desc_bath) ?: ""
+        val messageInter = primeraMayuscula(listing?.propertyType.toString()) +" | "+ listing?.locationAttributes?.address +" | "+listing?.bedroomsCount +" $info - "+ listing?.bathroomsCount +" $info2 - "+ listing?.area + "m2."
+        val messageAdd = activity?.getString(R.string.share_message_add) ?: ""
+        val newMessage = "$message\n$messageInter\n$messageAdd\n"
+        val url = BuildConfig.BASE_URL_WEB + listing?.urlShared
 //        intent.putExtra(Intent.EXTRA_SUBJECT, message)
-        intent.putExtra(Intent.EXTRA_TEXT, "$message $url")
+        intent.putExtra(Intent.EXTRA_TEXT, "$newMessage$url")
         startActivity(Intent.createChooser(intent, title))
     }
 
@@ -282,6 +298,7 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
                     rbSelectReason = selectedValue
                 }
                 .setRightButton(getString(R.string.unpublish), R.color.colorAccent) { infoReason ->
+                    showProgress()
                     val priceExtract = extractNumbers(infoReason)
                     listing.status = Constants.HIDDEN
                     listing.reason = rbSelectReason
@@ -348,5 +365,28 @@ class MyListingsFragment : BaseFragment<MyListingsFragmentBinding, MyListingsVie
         private const val NOT_PUBLISHED_TAB_INDEX = 1
 
         private const val PAYMENT_ACTIVITY_REQUEST_CODE = 9856
+    }
+
+    private fun createProgressDialog() {
+        context?.let {
+            progressDialog = AlertDialog.Builder(it)
+                .setView(R.layout.dialog_progress)
+                .setCancelable(false)
+                .create()
+                .apply {
+                    window?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.transparent)))
+                }
+        }
+    }
+
+    private fun showProgress() {
+        if (progressDialog == null) {
+            createProgressDialog()
+        }
+        progressDialog?.show()
+    }
+
+    private fun hideProgress() {
+        progressDialog?.dismiss()
     }
 }

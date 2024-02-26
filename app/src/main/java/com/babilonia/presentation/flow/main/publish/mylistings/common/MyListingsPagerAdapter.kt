@@ -62,8 +62,9 @@ class MyListingsPagerAdapter(
 
     fun add(items: List<Listing>) {
         val notPublished = items.filter { it.isDraft ||
-                it.status == Constants.HIDDEN || it.publishState == PublishState.EXPIRED }
-        val published = items - notPublished
+                it.status == Constants.HIDDEN || it.publishState == PublishState.EXPIRED }.distinctBy { it.id }
+
+        val published = items.filter { it.publishState == PublishState.PUBLISHED}.distinctBy { it.id }
 
         publishedAdapter.add(published)
         publishedTab.emptyGroup.visibleOrGone(published.isEmpty())

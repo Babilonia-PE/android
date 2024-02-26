@@ -330,7 +330,10 @@
     <string name="whatsapp_message">¡Hola! Estoy muy interesado en tu propiedad publicada en Babilonia y me gustaría más información.</string>
     <string name="whatsapp_not_installed">Whatsapp no instalado</string>
 
-    <string name="share_message">Te comparto esta propiedad publicada en Babilonia.</string>
+    <string name="share_message">¡Hola! Te comparto esta increíble propiedad que encontré en Babilonia:</string>
+    <string name="share_message_add">Ingresa al enlace para descubrir todos los detalles.</string>
+    <string name="share_message_desc">dor</string>
+    <string name="share_message_desc_bath">bñ</string>
 
     <string name="departments_error">No se pudieron obtener los departamentos inicialmente. Se volveran a cargar otra vez.</string>
     <string name="provinces_error">No se pudieron obtener las provincias. Seleccione otra vez un departamento.</string>

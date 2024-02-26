@@ -104,7 +104,7 @@ class ListingMapper @Inject constructor(
     override fun mapDomainToRemote(from: Listing): ListingJson {
         return ListingJson().apply {
             id = from.id ?: 0
-            url?.main = from.url
+            url?.share = from.url
             url?.share = from.urlShared
             reason = from.reason
             priceFinal = from.priceFinal
@@ -259,7 +259,7 @@ class ListingMapper @Inject constructor(
             from.adPurchasedAt,
             from.adExpiresAt,
             from.reason,
-            from.url?.main,
+            from.url?.share,
             from.url?.share,
             from.priceFinal
         )

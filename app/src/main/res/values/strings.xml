@@ -326,7 +326,10 @@
     <string name="whatsapp_message">Hi there! I am very interested in your property listed in Babilonia and would like more information.</string>
     <string name="whatsapp_not_installed">Whatsapp not installed</string>
 
-    <string name="share_message">I share with you this property published in Babylon.</string>
+    <string name="share_message">Hello! I share with you this incredible property that I found in Babilonia:</string>
+    <string name="share_message_add">Enter the link to discover all the details.</string>
+    <string name="share_message_desc">bed</string>
+    <string name="share_message_desc_bath">bath</string>
 
     <string name="departments_error">Couldn\'t get the departments initially. They will be reloaded again.</string>
     <string name="provinces_error">The provinces could not be obtained. Select a department again.</string>

@@ -190,15 +190,26 @@ class ListingFragment : BaseFragment<ListingFragmentBinding, ListingViewModel>()
             this.shareListingDetail(listing)
         }
     }
+    fun primeraMayuscula(cadena: String): String {
+        val palabras = cadena.split(" ")  // Dividir la cadena en palabras
+        val palabrasMayuscula = palabras.map { it.capitalize() }
+        return palabrasMayuscula.joinToString("")
+    }
 
     private fun shareListingDetail(listing: Listing?) {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
         val title = activity?.getString(R.string.share) ?: ""
         val message = activity?.getString(R.string.share_message) ?: ""
-        val url = BuildConfig.BASE_URL_WEB + listing?.url
+        val info = activity?.getString(R.string.share_message_desc) ?: ""
+        val info2 = activity?.getString(R.string.share_message_desc_bath) ?: ""
+        val messageInter = primeraMayuscula(listing?.propertyType.toString()) +" | "+ listing?.locationAttributes?.address +" | "+listing?.bedroomsCount +" $info - "+ listing?.bathroomsCount +" $info2 - "+ listing?.area + "m2."
+        val messageAdd = activity?.getString(R.string.share_message_add) ?: ""
+        val newMessage = "$message\n$messageInter\n$messageAdd\n"
+        val url = BuildConfig.BASE_URL_WEB + listing?.urlShared
+        Log.e("//--//",BuildConfig.BASE_URL_WEB + listing?.urlShared)
 //        intent.putExtra(Intent.EXTRA_SUBJECT, message)
-        intent.putExtra(Intent.EXTRA_TEXT, "$message $url")
+        intent.putExtra(Intent.EXTRA_TEXT, "$newMessage$url")
         startActivity(Intent.createChooser(intent, title))
     }
 
