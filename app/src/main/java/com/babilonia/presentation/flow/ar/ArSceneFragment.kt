@@ -369,9 +369,9 @@ class ArSceneFragment : BaseFragment<ArSceneFragmentBinding, ArSceneViewModel>()
         runCatching { fotoapparat.stop() }
     }
 
-    override fun onMapReady(map: GoogleMap?) {
-        googleMap = map?.also {
-            it.uiSettings?.also { settings ->
+    override fun onMapReady(p0: GoogleMap) {
+        googleMap = p0.also {
+            it.uiSettings.also { settings ->
                 settings.isCompassEnabled = false
                 settings.isMapToolbarEnabled = false
                 settings.isZoomControlsEnabled = false

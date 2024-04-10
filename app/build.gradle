@@ -11,7 +11,7 @@ apply plugin: 'com.google.firebase.appdistribution'
 def versionMajor = 0
 def versionMinor = 3
 def versionPatch = 0
-def versionBuild = 7
+def versionBuild = 10
 
 
 android {
@@ -82,9 +82,9 @@ android {
             dev {
                 dimension "hostname"
                 versionName = android.defaultConfig.versionName + "-dev"
-                buildConfigField "String", "BASE_URL", '"https://dev.babilonia.io/"'
-                buildConfigField "String", "BASE_URL_WEB", '"https://www-testing.babilonia.io"'
-                buildConfigField "String", "BASE_URL_SERVICES", '"https://services-testing.babilonia.io/"'
+                buildConfigField "String", "BASE_URL", '"https://dev.babilonia.pe/"'
+                buildConfigField "String", "BASE_URL_WEB", '"https://www-testing.babilonia.pe"'
+                buildConfigField "String", "BASE_URL_SERVICES", '"https://services-testing.babilonia.pe/"'
                 buildConfigField "String", "ENV", '"dev/"'
                 buildConfigField "String", "CONFIG_PREFIX", '"api/"'
                 manifestPlaceholders.deeplinkHost = "babiloniadev.page.link"
@@ -99,9 +99,9 @@ android {
             prod {
                 dimension "hostname"
                 versionName = android.defaultConfig.versionName + "-prod"
-                buildConfigField "String", "BASE_URL", '"https://api.babilonia.io/"'
-                buildConfigField "String", "BASE_URL_WEB", '"https://babilonia.io"'
-                buildConfigField "String", "BASE_URL_SERVICES", '"https://services.babilonia.io/"'
+                buildConfigField "String", "BASE_URL", '"https://api.babilonia.pe/"'
+                buildConfigField "String", "BASE_URL_WEB", '"https://babilonia.pe"'
+                buildConfigField "String", "BASE_URL_SERVICES", '"https://services.babilonia.pe/"'
                 buildConfigField "String", "ENV", '"prod/"'
                 buildConfigField "String", "CONFIG_PREFIX", '"prod/"'
                 manifestPlaceholders.deeplinkHost = "babiloniaprod.page.link"
@@ -194,7 +194,7 @@ dependencies {
 
     //Google
     implementation 'com.google.android.libraries.places:places:2.4.0'
-    implementation "com.google.android.gms:play-services-maps:17.0.1"
+    implementation "com.google.android.gms:play-services-maps:18.2.0"
     implementation "com.google.android.gms:play-services-base:17.6.0"
     implementation "com.google.android.gms:play-services-location:18.0.0"
 

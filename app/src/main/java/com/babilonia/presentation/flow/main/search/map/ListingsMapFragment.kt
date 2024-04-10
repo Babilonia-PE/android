@@ -100,7 +100,7 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
         viewModel.notClearSearchLiveData.removeObservers(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map?.let{ mMap ->
             if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
@@ -452,7 +452,8 @@ class ListingsMapFragment : BaseFragment<ListingsMapFragmentBinding, ListingSear
         val markerPoint = projection?.toScreenLocation(markerPosition)
         val targetPoint = Point(markerPoint?.x ?: 0, markerPoint?.y?.plus(view?.height?.div(5) ?: 0) ?: 0)
         val targetPosition = projection?.fromScreenLocation(targetPoint)
-        map?.animateCamera(CameraUpdateFactory.newLatLng(targetPosition), 1000, null)
+        targetPosition?.let { it1 -> CameraUpdateFactory.newLatLng(it1) }
+            ?.let { it2 -> map?.animateCamera(it2, 1000, null) }
     }
 
     companion object {

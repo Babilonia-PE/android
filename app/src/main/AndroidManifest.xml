@@ -80,9 +80,12 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDr9sby2Nv15NVvBJnOr8INu9NiZg5Y50g" />
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyDLAYwmDwRtktHg_tc71yYHEK7auabLDP8" />-->
+                <meta-data
+                    android:name="com.google.android.geo.API_KEY"
+                    android:value="AIzaSyDIjFGC9agH6MASWS7ibYQfxlFbbw4du00" />
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"

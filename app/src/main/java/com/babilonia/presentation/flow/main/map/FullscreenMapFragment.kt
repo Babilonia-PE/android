@@ -206,8 +206,8 @@ class FullscreenMapFragment :
 
     private fun zoomCamera() {
         val boundsBuilder = LatLngBounds.builder().apply {
-            include(myLocationMarker?.position)
-            include(viewModel.getListingLiveData().value?.position)
+            myLocationMarker?.position?.let { include(it) }
+            viewModel.getListingLiveData().value?.position?.let { include(it) }
         }
         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(
             boundsBuilder.build(),

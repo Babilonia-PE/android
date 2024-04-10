@@ -475,6 +475,7 @@ open class SimpleRangeView @JvmOverloads constructor(
                         State.NORMAL,
                         paintText
                     )
+
                     startFixed, endFixed -> drawLabel(
                         canvas,
                         x,
@@ -482,6 +483,7 @@ open class SimpleRangeView @JvmOverloads constructor(
                         State.FIXED_THUMB,
                         paintFixedThumbText
                     )
+
                     in startFixed until start, in end until endFixed -> drawLabel(
                         canvas,
                         x,
@@ -773,11 +775,12 @@ open class SimpleRangeView @JvmOverloads constructor(
         activeThumbRadius,
         fixedThumbRadius,
         activeThumbFocusRadius
-    ).max()!!
+    ).maxOrNull()!!
 
     private fun calcMaxHeight(): Float {
         val maxRadius = calcMaxRadius() * 2
-        val maxLineHeight = listOf(lineThickness, activeLineThickness, fixedLineThickness).max()!!
+        val maxLineHeight =
+            listOf(lineThickness, activeLineThickness, fixedLineThickness).maxOrNull()!!
         return Math.max(maxRadius, maxLineHeight)
     }
 
@@ -1484,7 +1487,8 @@ open class SimpleRangeView @JvmOverloads constructor(
 
             rangeView.labelColor = labelColor ?: rangeView.labelColor
             rangeView.activeLabelColor = activeLabelColor ?: rangeView.activeLabelColor
-            rangeView.activeThumbLabelColor = activeThumbLabelColor ?: rangeView.activeThumbLabelColor
+            rangeView.activeThumbLabelColor =
+                activeThumbLabelColor ?: rangeView.activeThumbLabelColor
             rangeView.fixedLabelColor = fixedLabelColor ?: rangeView.fixedLabelColor
             rangeView.fixedThumbLabelColor = fixedThumbLabelColor ?: rangeView.fixedThumbLabelColor
             rangeView.lineColor = lineColor ?: rangeView.lineColor
@@ -1494,25 +1498,31 @@ open class SimpleRangeView @JvmOverloads constructor(
             rangeView.activeTickColor = activeTickColor ?: rangeView.activeTickColor
             rangeView.fixedTickColor = fixedTickColor ?: rangeView.fixedTickColor
             rangeView.activeThumbColor = activeThumbColor ?: rangeView.activeThumbColor
-            rangeView.activeFocusThumbColor = activeFocusThumbColor ?: rangeView.activeFocusThumbColor
+            rangeView.activeFocusThumbColor =
+                activeFocusThumbColor ?: rangeView.activeFocusThumbColor
             rangeView.fixedThumbColor = fixedThumbColor ?: rangeView.fixedThumbColor
-            rangeView.activeFocusThumbAlpha = activeFocusThumbAlpha ?: rangeView.activeFocusThumbAlpha
+            rangeView.activeFocusThumbAlpha =
+                activeFocusThumbAlpha ?: rangeView.activeFocusThumbAlpha
 
             rangeView.lineThickness = lineThickness ?: rangeView.lineThickness
             rangeView.activeLineThickness = activeLineThickness ?: rangeView.activeLineThickness
             rangeView.fixedLineThickness = fixedLineThickness ?: rangeView.fixedLineThickness
             rangeView.tickRadius = tickRadius ?: rangeView.tickRadius
-            rangeView.activeThumbFocusRadius = activeThumbFocusRadius ?: rangeView.activeThumbFocusRadius
+            rangeView.activeThumbFocusRadius =
+                activeThumbFocusRadius ?: rangeView.activeThumbFocusRadius
             rangeView.activeThumbRadius = activeThumbRadius ?: rangeView.activeThumbRadius
             rangeView.activeTickRadius = activeTickRadius ?: rangeView.activeTickRadius
             rangeView.fixedThumbRadius = fixedThumbRadius ?: rangeView.fixedThumbRadius
             rangeView.fixedTickRadius = fixedTickRadius ?: rangeView.fixedTickRadius
             rangeView.labelFontSize = labelFontSize ?: rangeView.labelFontSize
             rangeView.labelMarginBottom = labelMarginBottom ?: rangeView.labelMarginBottom
-            rangeView.minDistanceBetweenLabels = minDistanceBetweenLabels ?: rangeView.minDistanceBetweenLabels
+            rangeView.minDistanceBetweenLabels =
+                minDistanceBetweenLabels ?: rangeView.minDistanceBetweenLabels
 
-            rangeView.innerRangePaddingLeft = innerRangePaddingLeft ?: rangeView.innerRangePaddingLeft
-            rangeView.innerRangePaddingRight = innerRangePaddingRight ?: rangeView.innerRangePaddingRight
+            rangeView.innerRangePaddingLeft =
+                innerRangePaddingLeft ?: rangeView.innerRangePaddingLeft
+            rangeView.innerRangePaddingRight =
+                innerRangePaddingRight ?: rangeView.innerRangePaddingRight
             rangeView.innerRangePadding = innerRangePadding ?: rangeView.innerRangePadding
 
             rangeView.onRangeLabelsListener = onRangeLabelsListener

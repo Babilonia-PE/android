@@ -101,7 +101,7 @@ object MarkerManager : ListingsUtilsDelegate by ListingUtilsDelegateImpl {
             view.setTextColor(ContextCompat.getColor(context, R.color.white))
         }
         listing.price?.let { view.text = "$${PriceFormatter.format(it.toLong())}" }
-        return BitmapDescriptorFactory.fromBitmap(loadBitmapFromView(view))
+        return loadBitmapFromView(view)?.let { BitmapDescriptorFactory.fromBitmap(it) }
     }
 
     private fun loadBitmapFromView(v: View): Bitmap? {

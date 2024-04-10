@@ -84,8 +84,8 @@ class PlacePickerFragment : BaseCreateListingFragment<PlacePickerFragmentBinding
         }
     }
 
-    override fun onMapReady(map: GoogleMap?) {
-        this.googleMap = map
+    override fun onMapReady(p0: GoogleMap) {
+        this.googleMap = p0
         googleMap?.clear()
         googleMap?.uiSettings?.isCompassEnabled = false
 
@@ -153,9 +153,9 @@ class PlacePickerFragment : BaseCreateListingFragment<PlacePickerFragmentBinding
         val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
         place?.let {
             googleMap?.clear()
-            val marker = googleMap?.addMarker(it.latLng?.let { latlng ->
+            val marker = it.latLng?.let { latlng ->
                 MarkerOptions().position(latlng).title(it.address)
-            })
+            }?.let { it1 -> googleMap?.addMarker(it1) }
             marker?.showInfoWindow()
             val longitude = marker?.position?.longitude ?: EmptyConstants.ZERO_DOUBLE
             val latitude =  marker?.position?.latitude ?: EmptyConstants.ZERO_DOUBLE
@@ -167,11 +167,14 @@ class PlacePickerFragment : BaseCreateListingFragment<PlacePickerFragmentBinding
     }
 
     private fun moveCamera(it: LatLng?) {
-        val cameraPosition = CameraPosition.Builder()
-            .target(it)
-            .zoom(15f)
-            .build()
-        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        val cameraPosition = it?.let { it1 ->
+            CameraPosition.Builder()
+                .target(it1)
+                .zoom(15f)
+                .build()
+        }
+        cameraPosition?.let { it1 -> CameraUpdateFactory.newCameraPosition(it1) }
+            ?.let { it2 -> googleMap?.moveCamera(it2) }
     }
 
 
