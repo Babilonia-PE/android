@@ -6,6 +6,7 @@ import com.babilonia.data.datasource.AuthDataSourceRemote
 import com.babilonia.data.network.model.*
 import com.babilonia.data.network.model.json.AppConfigJson
 import com.babilonia.data.network.model.json.ImageJson
+import com.babilonia.data.network.model.json.PaisPrefixJson
 import com.babilonia.data.network.model.json.UserJson
 import com.babilonia.data.network.service.AuthService
 import com.babilonia.data.network.service.NewAuthService
@@ -34,6 +35,7 @@ class AuthStorageRemote @Inject constructor(
         fullName: String,
         email: String,
         phoneNumber: String,
+        prefix: String,
         password: String?,
         photoId: Int?
     ): Single<UserJson> {
@@ -50,6 +52,7 @@ class AuthStorageRemote @Inject constructor(
                 fullName,
                 email,
                 phoneNumber,
+                prefix,
                 password.isNullOrEmpty().not(),
                 password,
                 photo
@@ -91,6 +94,7 @@ class AuthStorageRemote @Inject constructor(
         fullName: String,
         email: String,
         password: String,
+        prefix: String,
         phoneNumber: String,
         ipAddress: String,
         userAgent: String,
@@ -101,6 +105,7 @@ class AuthStorageRemote @Inject constructor(
                 fullName,
                 email,
                 password,
+                prefix,
                 phoneNumber,
                 ipAddress,
                 userAgent,
@@ -108,6 +113,10 @@ class AuthStorageRemote @Inject constructor(
             )
         )
             .map { it.data }
+    }
+
+    override fun getListPaisPrefix(): Single<List<PaisPrefixJson>> {
+        return  newAuthService.getListPaisPrefix().map { it.data.records }
     }
 
     override fun logIn(

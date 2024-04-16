@@ -38,23 +38,24 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/appBar"
             app:layout_constraintBottom_toTopOf="@+id/btChange"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tyEmail"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
                     android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="@dimen/create_listing_margin_left_right"
                     android:hint="@string/email"
                     app:errorEnabled="true">
@@ -85,11 +86,14 @@
                         style="@style/createListingInputStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/eyes_slash"
+                        android:drawableTint="@color/MPD_pickerItemColorUnSelected"
                         android:inputType="textPassword"
                         android:text="@={model.logInLiveData.password}"
                         tools:text="test@test.com" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </ScrollView>

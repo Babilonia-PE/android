@@ -10,6 +10,7 @@ import com.babilonia.data.network.error.mapErrors
 import com.babilonia.data.network.error.mapNetworkErrors
 import com.babilonia.data.network.model.AuthRequest
 import com.babilonia.data.network.model.BaseResponse
+import com.babilonia.data.network.model.json.PaisPrefixJson
 import com.babilonia.domain.model.*
 import com.babilonia.domain.model.enums.LoginStatus
 import com.babilonia.domain.repository.AuthRepository
@@ -45,11 +46,12 @@ class AuthRepositoryImpl @Inject constructor(
         return authDataSourceRemote.deleteAccount()
     }
 
-    override fun updateUser(user: User, password: String?, photoId: Int?): Single<User> {
+    override fun updateUser(user: User, password: String?, prefix: String?, photoId: Int?): Single<User> {
         return authDataSourceRemote.updateUser(
             user.fullName ?: "",
             user.email ?: "",
             user.phoneNumber ?: "",
+            prefix.toString(),
             password,
             photoId
         )
@@ -106,6 +108,7 @@ class AuthRepositoryImpl @Inject constructor(
             signUp.fullName,
             signUp.email,
             signUp.password,
+            signUp.prefix,
             signUp.phoneNumber,
             signUp.ipa,
             signUp.ua,
@@ -134,6 +137,12 @@ class AuthRepositoryImpl @Inject constructor(
                     signUp.email
                 )
             }
+    }
+
+    override fun getListPaisPrefix(): Single<List<PaisPrefixJson>> {
+        return authDataSourceRemote.getListPaisPrefix()
+            .mapNetworkErrors()
+            .mapErrors()
     }
 
     override fun logIn(logIn: LogIn): Single<User> {

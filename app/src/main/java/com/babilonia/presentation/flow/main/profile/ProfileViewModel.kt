@@ -8,9 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import com.babilonia.R
 import com.babilonia.data.network.error.AuthFailedException
 import com.babilonia.data.network.error.EmailAlreadyTakenException
+import com.babilonia.data.network.model.json.PaisPrefixJson
 import com.babilonia.domain.model.ListingImage
+import com.babilonia.domain.model.PaisPrefix
+import com.babilonia.domain.model.SignUp
 import com.babilonia.domain.model.User
 import com.babilonia.domain.model.enums.SuccessMessageType
+import com.babilonia.domain.usecase.GetListPaisPrefixUseCase
 import com.babilonia.domain.usecase.GetUserUseCase
 import com.babilonia.domain.usecase.UpdateUserUseCase
 import com.babilonia.domain.usecase.UploadImagesUseCase
@@ -27,12 +31,15 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
+    private val getListPaisPrefixUseCase: GetListPaisPrefixUseCase,
     private val uploadImagesUseCase: UploadImagesUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val deeplinkHandler: DeeplinkHandler
 ) : BaseViewModel() {
     val authFailedData = SingleLiveEvent<Unit>()
     val userLiveData = MutableLiveData<User>()
+    val listPaisPrefix : MutableLiveData<List<PaisPrefix>> = MutableLiveData()
+    var prefix: String = ""
     var updateUserNameValidator = object : ObservableBoolean() {
         override fun get(): Boolean {
             return userLiveData.value?.fullName?.trim().isNullOrEmpty().not()
@@ -51,6 +58,10 @@ class ProfileViewModel @Inject constructor(
     var editType: SuccessMessageType? = null
     val photoUploadProgressLiveData = MutableLiveData<Boolean>(false)
     val emailAlreadyTakenLiveData = SingleLiveEvent<Unit>()
+
+    init {
+        this.listPaisPrefix.value = listOf(PaisPrefix("Peru", "51", "### ### ###", "pe"))
+    }
 
     fun checkDeeplinks() {
         if (deeplinkHandler.hasDeeplink()) {
@@ -113,8 +124,37 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
                 }
-            }, UpdateUserUseCase.Params(user, null, null))
+            }, UpdateUserUseCase.Params(user, null, prefix, null))
         }
+    }
+
+    fun getListPaisPrefix() {
+        getListPaisPrefixUseCase.execute(object : DisposableSingleObserver<List<PaisPrefixJson>>() {
+            override fun onSuccess(t: List<PaisPrefixJson>) {
+                val presentationPaisPrefixList: List<com.babilonia.presentation.flow.main.profile.phone.PaisPrefix>? = t.map { domainPaisPrefix ->
+                    com.babilonia.presentation.flow.main.profile.phone.PaisPrefix(
+                        domainPaisPrefix.name.toString(),
+                        domainPaisPrefix.prefix.toString(),
+                        domainPaisPrefix.mask.toString(),
+                        domainPaisPrefix.isoCode.toString()
+                    )
+                }
+                setPaisPrefixList(presentationPaisPrefixList)
+            }
+
+            override fun onError(e: Throwable) {
+                val defaultPaisPrefix = com.babilonia.presentation.flow.main.profile.phone.PaisPrefix("Peru", "51", "### ### ###", "pe")
+                setPaisPrefixList(listOf(defaultPaisPrefix))
+            }
+
+        },GetListPaisPrefixUseCase.Params() )
+    }
+
+    fun setPaisPrefixList(paisPrefixList: List<com.babilonia.presentation.flow.main.profile.phone.PaisPrefix>?) {
+        val convertedList = paisPrefixList?.map { paisPrefix ->
+            PaisPrefix(paisPrefix.name, paisPrefix.prefix, paisPrefix.mask, paisPrefix.isoCode)
+        }
+        listPaisPrefix.value = convertedList
     }
 
     fun updateUser(password: String?, photoId: Int?) {
@@ -145,7 +185,7 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
                 }
-            }, UpdateUserUseCase.Params(user, password, photoId))
+            }, UpdateUserUseCase.Params(user, password, prefix, photoId))
         }
     }
 

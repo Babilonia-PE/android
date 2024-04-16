@@ -2,6 +2,7 @@
 <resources>
     <dimen name="no_margin">0dp</dimen>
     <dimen name="small_margin">8dp</dimen>
+    <dimen name="small_margin_fill">4dp</dimen>
     <dimen name="search_bar_margin">56dp</dimen>
     <dimen name="stpi_default_circle_radius">6dp</dimen>
     <dimen name="stpi_default_circle_stroke_width">1dp</dimen>

@@ -2,8 +2,15 @@ package com.babilonia.presentation.flow.main.profile.phone
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.Patterns
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.babilonia.R
 import com.babilonia.databinding.ProfilePhoneFragmentBinding
@@ -17,7 +24,9 @@ class ProfilePhoneFragment : BaseFragment<ProfilePhoneFragmentBinding, ProfileVi
         viewModel.editType = SuccessMessageType.PHONE_NUMBER
         binding.model = viewModel
         viewModel.getUser()
+        viewModel.getListPaisPrefix()
         setToolbar()
+        setListPaisPrefix()
         setErrorListeners()
     }
 
@@ -40,6 +49,61 @@ class ProfilePhoneFragment : BaseFragment<ProfilePhoneFragmentBinding, ProfileVi
     override fun stopListenToEvents() {
         super.stopListenToEvents()
         //viewModel.emailAlreadyTakenLiveData.removeObservers(this)
+    }
+
+    private fun setListPaisPrefix() {
+        viewModel.listPaisPrefix.observe(viewLifecycleOwner) { paisPrefixList ->
+            val presentationPaisPrefixList: List<PaisPrefix> =
+                paisPrefixList.map { domainPaisPrefix ->
+                    PaisPrefix(
+                        domainPaisPrefix.name,
+                        domainPaisPrefix.prefix,
+                        domainPaisPrefix.mask,
+                        domainPaisPrefix.isoCode
+                    )
+                }
+            val adapter = object : ArrayAdapter<PaisPrefix>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                presentationPaisPrefixList
+            ) {
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    val view = super.getView(position, convertView, parent)
+                    val record = getItem(position)
+                    val textView = view.findViewById<TextView>(android.R.id.text1)
+                    textView.text = record?.isoCode
+                    return view
+                }
+
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    val view = super.getDropDownView(position, convertView, parent)
+                    val record = getItem(position)
+                    val textView = view.findViewById<TextView>(android.R.id.text1)
+                    textView.text = record?.name
+                    return view
+                }
+            }
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spPaisPrefix.adapter = adapter
+            binding.spPaisPrefix.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    viewModel.prefix = presentationPaisPrefixList[position].prefix
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    viewModel.prefix = "51"
+                }
+            }
+        }
     }
 
     private fun setErrorListeners() {
@@ -67,5 +131,16 @@ class ProfilePhoneFragment : BaseFragment<ProfilePhoneFragmentBinding, ProfileVi
         binding.toolbar.setNavigationOnClickListener {
             viewModel.navigateBack()
         }
+    }
+}
+
+data class PaisPrefix(
+    var name: String,
+    var prefix: String,
+    var mask: String,
+    var isoCode: String
+) {
+    override fun toString(): String {
+        return isoCode
     }
 }

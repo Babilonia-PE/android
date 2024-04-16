@@ -73,7 +73,7 @@ class CreateProfileViewModel @Inject constructor(
                         }
                     }
                 }
-            }, UpdateUserUseCase.Params(user, null, null))
+            }, UpdateUserUseCase.Params(user, null, null, null))
         }
     }
 
@@ -106,7 +106,7 @@ class CreateProfileViewModel @Inject constructor(
                         }
                     }
                 }
-            }, UpdateUserUseCase.Params(user, null, photoId))
+            }, UpdateUserUseCase.Params(user, null, null, photoId))
         }
     }
 

@@ -20,6 +20,9 @@ interface NewAuthService {
         @Body body: SignUpRequest
     ): Single<BaseResponse<SignUpResponse>>
 
+    @GET("public/phones_prefix")
+    fun getListPaisPrefix(): Single<BaseResponse<GetListPaisPrefixResponse>>
+
     @POST("auth/login")
     fun logIn(@Body body: LogInRequest): Single<BaseResponse<LogInResponse>>
 

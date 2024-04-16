@@ -10,8 +10,8 @@ import javax.inject.Inject
 class UpdateUserUseCase @Inject constructor(private val authRepository: AuthRepository) :
     SingleUseCase<User, UpdateUserUseCase.Params>() {
     override fun buildUseCaseSingle(params: Params): Single<User> {
-        return authRepository.updateUser(params.user, params.password, params.photoId)
+        return authRepository.updateUser(params.user, params.password, params.prefix, params.photoId)
     }
 
-    class Params(val user: User, val password: String?, val photoId: Int?)
+    class Params(val user: User, val password: String?, val prefix: String?, val photoId: Int?)
 }

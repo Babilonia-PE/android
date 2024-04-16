@@ -5,7 +5,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
+import android.view.MotionEvent
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.babilonia.R
@@ -13,6 +16,7 @@ import com.babilonia.databinding.LogInFragmentBinding
 import com.babilonia.presentation.base.BaseFragment
 import com.babilonia.presentation.flow.main.MainActivity
 import com.babilonia.presentation.utils.NetworkUtil
+import com.google.android.material.textfield.TextInputEditText
 
 class LogInFragment : BaseFragment<LogInFragmentBinding, LogInViewModel>() {
     private var progressDialog: AlertDialog? = null
@@ -22,6 +26,27 @@ class LogInFragment : BaseFragment<LogInFragmentBinding, LogInViewModel>() {
         setErrorListeners()
 
         viewModel.logInLiveData.value?.ipa = NetworkUtil.getIPAddress(requireContext()) ?: ""
+
+        binding.etPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eyes_slash, 0)
+        binding.etPassword.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (event.rawX >= (binding.etPassword.right - binding.etPassword.compoundDrawables[2].bounds.width())) {
+                    togglePasswordVisibility(binding.etPassword)
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
+    }
+
+    private fun togglePasswordVisibility(editText: TextInputEditText) {
+        if (editText.transformationMethod == PasswordTransformationMethod.getInstance()) {
+            editText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            editText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eyes, 0)
+        } else {
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+            editText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eyes_slash, 0)
+        }
     }
 
     override fun startListenToEvents() {

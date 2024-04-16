@@ -38,11 +38,11 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/appBar"
             app:layout_constraintBottom_toTopOf="@+id/btChange"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -109,32 +109,62 @@
                         style="@style/createListingInputStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/eyes_slash"
+                        android:drawableTint="@color/MPD_pickerItemColorUnSelected"
                         android:inputType="textPassword"
                         android:text="@={model.signUpLiveData.password}"
                         tools:text="test@test.com" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tyPhone"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/create_listing_margin_left_right"
-                    android:layout_marginEnd="@dimen/create_listing_margin_left_right"
-                    android:hint="@string/phone_number"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPhone"
-                        style="@style/createListingInputStyle"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <!--                        android:entries="@array/spinner_options"-->
+                    <!--                        android:prompt="@string/spinner_prompt"-->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/llMaterialSP"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="phone"
-                        android:text="@={model.signUpLiveData.phoneNumber}"
-                        tools:text="+51999999999" />
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="@dimen/create_listing_margin_left_right"
+                        android:layout_weight="0.7"
+                        android:layout_marginEnd="@dimen/small_margin_fill"
+                        android:background="@drawable/bg_spinner_ouline"
+                        android:orientation="vertical">
+                        <Spinner
+                            android:id="@+id/spPaisPrefix"
+                            style="@style/createListingInputStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tyPhone"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/stpi_two_dp"
+                        android:layout_marginEnd="@dimen/create_listing_margin_left_right"
+                        android:layout_weight="0.3"
+                        android:hint="@string/phone_number"
+                        app:errorEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPhone"
+                            style="@style/createListingInputStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:text="@={model.signUpLiveData.phoneNumber}"
+                            tools:text="+51999999999" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <!--<com.lamudi.phonefield.PhoneInputLayout
                     android:id="@+id/tyPhone"
