@@ -32,11 +32,15 @@ enum class PropertyType {
 
         fun getLocalizedPropertyName(resources: Resources, unlocalizedName: String?): String {
             val propertyTypes = resources.getStringArray(R.array.property_types)
-            if (unlocalizedName == null) {
-                return propertyTypes.first()
+            if (unlocalizedName.isNullOrEmpty()) {
+                return propertyTypes.firstOrNull() ?: ""
             }
-            val index = valueOf(unlocalizedName.toUpperCase(Locale.ENGLISH)).ordinal
-            return propertyTypes[index]
+            val index = try {
+                valueOf(unlocalizedName.toUpperCase(Locale.ENGLISH)).ordinal
+            } catch (e: IllegalArgumentException) {
+                return ""
+            }
+            return propertyTypes.getOrNull(index) ?: ""
         }
     }
 }
